@@ -16,3 +16,7 @@ Imports:
     htmlwidgets,
     magrittr,
     rlang
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

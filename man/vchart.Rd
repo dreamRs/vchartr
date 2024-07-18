@@ -7,6 +7,8 @@
 vchart(..., width = NULL, height = NULL, elementId = NULL)
 }
 \arguments{
+\item{...}{Configuration for creating chart.}
+
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the
 widget's container.}
@@ -19,11 +21,15 @@ widget's container.}
 automatically generated one). Useful if you have other JavaScript that
 needs to explicitly discover and interact with a specific widget instance.}
 }
+\value{
+A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
+}
 \description{
-VChart is a charting component library, see more about it here : \link{https://www.visactor.io/vchart}
+VChart is a charting component library, see more about it here : \url{https://www.visactor.io/vchart}.
 }
 \note{
-This function allow you to use JavaScript function \code{VChart} directly, see \link{https://www.visactor.io/vchart/option/} for how to specify options.
+This function allow you to use JavaScript function \code{VChart} directly,
+see \url{https://www.visactor.io/vchart/option/} for how to specify options.
 }
 \examples{
 

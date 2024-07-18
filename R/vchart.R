@@ -1,12 +1,16 @@
 #' @title Create interactive charts with VChart
 #'
 #' @description
-#' VChart is a charting component library, see more about it here : [https://www.visactor.io/vchart]
+#' VChart is a charting component library, see more about it here : [https://www.visactor.io/vchart](https://www.visactor.io/vchart).
 #'
+#' @param ... Configuration for creating chart.
 #' @inheritParams htmlwidgets::createWidget
 #'
 #' @note
-#' This function allow you to use JavaScript function `VChart` directly, see [https://www.visactor.io/vchart/option/] for how to specify options.
+#' This function allow you to use JavaScript function `VChart` directly,
+#'  see [https://www.visactor.io/vchart/option/](https://www.visactor.io/vchart/option/) for how to specify options.
+#'
+#' @return A [vchart()] `htmlwidget` object.
 #'
 #' @importFrom htmlwidgets createWidget sizingPolicy
 #'

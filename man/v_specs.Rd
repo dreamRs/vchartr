@@ -18,6 +18,9 @@ A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 Specify configuration options for a \code{\link[=vchart]{vchart()}}.
 }
 \examples{
+library(vchartr)
+data("mpg", package = "ggplot2")
+
 vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
   v_specs(
     label = list(visible = TRUE),

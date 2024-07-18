@@ -4,7 +4,7 @@
 \alias{v_labs}
 \title{Set chart title and subtitle}
 \usage{
-v_labs(vc, title, subtitle)
+v_labs(vc, title, subtitle = NULL)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
@@ -20,6 +20,9 @@ A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 Set chart title and subtitle
 }
 \examples{
+library(vchartr)
+data("mpg", package = "ggplot2")
+
 vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
   v_labs(
     title = "Title for the chart",

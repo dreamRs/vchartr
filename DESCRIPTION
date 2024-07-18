@@ -1,0 +1,15 @@
+Package: vchartr
+Title: Interactive Charts with the JavaScript 'VChart' Library
+Version: 0.0.0.9000
+Authors@R: c(
+  person("Victor", "Perrier", email = "victor.perrier@dreamrs.fr", role = c("aut", "cre")),
+  person("Fanny", "Meyer", role = "aut"))
+Description: Provides an 'htmlwidgets' interface to 'VChart.js'. 
+      'VChart', more than just a cross-platform charting library, but also an expressive data storyteller.
+      'VChart' examples and documentation are available here: <https://www.visactor.io/vchart>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    htmlwidgets

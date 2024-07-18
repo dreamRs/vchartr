@@ -1,0 +1,1 @@
+import './widgets/vchart.js'

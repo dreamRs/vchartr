@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' library(vchart)
+#' library(vchartr)
 #' data("economics", package = "ggplot2")
 #' vline(economics, aes(date, unemploy)) %>%
 #'   v_line_datazoom()

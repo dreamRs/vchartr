@@ -124,6 +124,9 @@ vline <- function(data,
       )
     )
   )
+  if (has_name(mapdata, "colour")) {
+    specs$legends$visible <- TRUE
+  }
   create_chart("vline", specs, width, height, elementId)
 }
 

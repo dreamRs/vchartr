@@ -26,17 +26,11 @@ vbar <- function(data,
   direction <- match.arg(direction)
   data <- as.data.frame(data)
   mapdata <- lapply(mapping, eval_tidy, data = data)
-
   specs <- list(
     type = "bar",
     data = list(
       list(
-        values = lapply(
-          X = seq_along(mapdata[[1]]),
-          FUN = function(i) {
-            lapply(mapdata, `[`, i)
-          }
-        )
+        values = create_values(mapdata)
       )
     ),
     seriesField = if (has_name(mapdata, "fill")) "fill",
@@ -64,3 +58,90 @@ vbar <- function(data,
   )
   exec("vchart", !!!args)
 }
+
+
+
+
+
+
+#' Create a line chart
+#'
+#' @inheritParams vchart
+#' @inheritParams vbar
+#' @param format_date Format to be applied if `x` aesthetic is a `Date`.
+#' @param format_datetime Format to be applied if `x` aesthetic is a `POSIXt`.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @examples
+vline <- function(data,
+                  mapping,
+                  format_date = "%Y-%m-%d",
+                  format_datetime = "%Y-%m-%d %H:%M",
+                  width = NULL,
+                  height = NULL,
+                  elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- lapply(mapping, eval_tidy, data = data)
+  if (inherits(mapdata$x, "Date")) {
+    mapdata$x <- as.numeric(mapdata$x) * 3600*24 * 1000
+  } else if (inherits(mapdata$x, "POSIXt")) {
+    mapdata$x <- as.numeric(mapdata$x) * 1000
+    format_date <- format_datetime
+  }
+  specs <- list(
+    type = "line",
+    data = list(
+      list(
+        values = create_values(mapdata)
+      )
+    ),
+    xField = "x",
+    yField = "y",
+    seriesField = if (has_name(mapdata, "colour")) "colour",
+    point = list(
+      visible = FALSE
+    ),
+    axes = list(
+      list(
+        orient = "bottom",
+        type = "time",
+        nice = FALSE,
+        layers = list(list(timeFormat = format_date))
+      )
+    ),
+    tooltip = list(
+      dimension = list(
+        title = list(
+          valueTimeFormat = format_date
+        ),
+        content = list(
+          list(
+            key = JS(
+              "function(datum) {",
+              "  if (datum.hasOwnProperty('colour')) {",
+              "    return datum.colour + ' : ' + datum.y;",
+              "  } else {",
+              "   return datum.y;",
+              "  }",
+              "}"
+            )
+          )
+        )
+      )
+    )
+  )
+  args <- c(
+    dropNulls(specs),
+    list(
+      width = width,
+      height = height,
+      elementId = elementId
+    )
+  )
+  exec("vchart", !!!args)
+}
+
+
+

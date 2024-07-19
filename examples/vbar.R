@@ -1,37 +1,44 @@
 
 library(vchartr)
-data("mpg", package = "ggplot2")
 
 # Classic Bar Chart
-vbar(table(Class = mpg$class), aes(Class, Freq))
+vbar(
+  top_generation,
+  aes(country, electricity_generation)
+)
 
 # Horizontal Bar Chart
-vbar(table(Class = mpg$class), aes(Class, Freq), direction = "horizontal")
+vbar(
+  top_generation,
+  aes(country, electricity_generation),
+  direction = "horizontal"
+)
+
 
 # Grouped Bar Chart
 vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year)
+  world_generation,
+  aes(year, generation, fill = source)
 )
 
 # Horizontal Grouped Bar Chart
 vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year),
+  world_generation,
+  aes(year, generation, fill = source),
   direction = "horizontal"
 )
 
 # Stacked Bar Chart
 vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year),
+  world_generation,
+  aes(year, generation, fill = source),
   stack = TRUE
 )
 
 # Percentage Stacked Bar Chart
 vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year),
+  world_generation,
+  aes(year, generation, fill = source),
   stack = TRUE,
   percent = TRUE
 )

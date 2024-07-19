@@ -13,3 +13,17 @@ create_values <- function(data) {
   )
 }
 
+
+create_chart <- function(type, specs, width, height, elementId) {
+  args <- c(
+    dropNulls(specs),
+    list(
+      width = width,
+      height = height,
+      elementId = elementId
+    )
+  )
+  vc <- exec("vchart", !!!args)
+  class(vc) <- c(class(vc), type)
+  return(vc)
+}

@@ -48,15 +48,7 @@ vbar <- function(data,
   if (has_name(mapdata, "fill")) {
     specs$legends$visible <- TRUE
   }
-  args <- c(
-    dropNulls(specs),
-    list(
-      width = width,
-      height = height,
-      elementId = elementId
-    )
-  )
-  exec("vchart", !!!args)
+  create_chart("vbar", specs, width, height, elementId)
 }
 
 
@@ -132,15 +124,7 @@ vline <- function(data,
       )
     )
   )
-  args <- c(
-    dropNulls(specs),
-    list(
-      width = width,
-      height = height,
-      elementId = elementId
-    )
-  )
-  exec("vchart", !!!args)
+  create_chart("vline", specs, width, height, elementId)
 }
 
 

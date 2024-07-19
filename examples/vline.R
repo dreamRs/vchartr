@@ -1,8 +1,47 @@
 
 library(vchartr)
-data("economics", package = "ggplot2")
-data("economics_long", package = "ggplot2")
 
-vline(economics, aes(date, unemploy))
-vline(economics_long, aes(date, value01, color = variable))
+# Basic Line Chart
+vline(eco2mix, aes(date, solar))
+
+# Smooth Line Chart
+vline(tail(eco2mix, 20), aes(date, solar), serie_id = "line_solar") %>%
+  v_specs(
+    line = list(
+      style = list(curveType = "monotone")
+    ),
+    serie = "line_solar"
+  )
+
+
+# Add Line to existing chart
+vline(eco2mix, aes(date, solar)) %>%
+  v_add_line(aes(date, wind))
+
+# Use long format for multiple lines
+vline(eco2mix_long, aes(date, production, color = source))
+
+# Add a range area
+vline(temperatures, aes(date, `2024`)) %>%
+  v_add_line(aes(date, average)) %>%
+  v_add_range_area(aes(date, ymin = low, ymax = high)) %>%
+  v_legend(visible = TRUE)
+
+# Change opacity & color for the area range
+vline(temperatures, aes(date, `2024`)) %>%
+  v_add_line(aes(date, average)) %>%
+  v_add_range_area(
+    aes(date, ymin = low, ymax = high),
+    serie_id = "range_area"
+  ) %>%
+  v_legend(visible = TRUE) %>%
+  v_specs(
+    area = list(
+      style = list(
+        fillOpacity = 1,
+        fill = "#D8DEE9"
+      )
+    ),
+    serie = "range_area"
+  )
 

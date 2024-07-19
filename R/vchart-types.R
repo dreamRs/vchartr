@@ -25,7 +25,7 @@ vbar <- function(data,
                  elementId = NULL) {
   direction <- match.arg(direction)
   data <- as.data.frame(data)
-  mapdata <- lapply(mapping, eval_tidy, data = data)
+  mapdata <- eval_mapping(data, mapping)
   specs <- list(
     type = "bar",
     data = list(
@@ -62,40 +62,58 @@ vbar <- function(data,
 #' @inheritParams vbar
 #' @param format_date Format to be applied if `x` aesthetic is a `Date`.
 #' @param format_datetime Format to be applied if `x` aesthetic is a `POSIXt`.
+#' @param name Name for the serie, only used for single serie (no `color` aesthetic supplied).
+#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()]
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-#' @examples
+#' @name line-area-chart
+#'
+#' @example examples/vline.R
 vline <- function(data,
                   mapping,
                   format_date = "%Y-%m-%d",
                   format_datetime = "%Y-%m-%d %H:%M",
+                  name = NULL,
+                  serie_id = NULL,
                   width = NULL,
                   height = NULL,
                   elementId = NULL) {
   data <- as.data.frame(data)
-  mapdata <- lapply(mapping, eval_tidy, data = data)
-  if (inherits(mapdata$x, "Date")) {
-    mapdata$x <- as.numeric(mapdata$x) * 3600*24 * 1000
-  } else if (inherits(mapdata$x, "POSIXt")) {
-    mapdata$x <- as.numeric(mapdata$x) * 1000
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
+  if (identical(attr(mapdata, "datetime_format"), "datetime"))
     format_date <- format_datetime
-  }
+  if (is.null(serie_id))
+    serie_id <- paste0("line_", genId(4))
   specs <- list(
-    type = "line",
+    type = "common",
     data = list(
       list(
+        id = serie_id,
         values = create_values(mapdata)
       )
     ),
-    xField = "x",
-    yField = "y",
-    seriesField = if (has_name(mapdata, "colour")) "colour",
-    point = list(
-      visible = FALSE
+    series = list(
+      list(
+        type = "line",
+        name = name,
+        dataId = serie_id,
+        xField = "x",
+        yField = "y",
+        seriesField = if (has_name(mapdata, "colour")) "colour",
+        point = list(
+          visible = FALSE
+        )
+      )
     ),
     axes = list(
+      list(
+        orient = "left",
+        type = "linear"
+      ),
       list(
         orient = "bottom",
         type = "time",
@@ -111,13 +129,21 @@ vline <- function(data,
         content = list(
           list(
             key = JS(
-              "function(datum) {",
-              "  if (datum.hasOwnProperty('colour')) {",
-              "    return datum.colour + ' : ' + datum.y;",
-              "  } else {",
-              "   return datum.y;",
-              "  }",
-              "}"
+              "function(datum) {
+                //console.log(datum);
+                  let val = datum.y;
+                  if (val === null) {
+                    val = '-';
+                  }
+                  if (datum.hasOwnProperty('ymin')) {
+                    val = datum.ymin + ' - ' + datum.ymax;
+                  }
+                  if (datum.hasOwnProperty('colour')) {
+                    return datum.colour + ' : ' + val;
+                  } else {
+                   return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD + ' : ' + val;
+                  }
+                }"
             )
           )
         )
@@ -127,7 +153,99 @@ vline <- function(data,
   if (has_name(mapdata, "colour")) {
     specs$legends$visible <- TRUE
   }
-  create_chart("vline", specs, width, height, elementId)
+  vc <- create_chart("vline", specs, width, height, elementId)
+  vc$x$data <- data
+  return(vc)
+}
+
+
+#' @param vc A chart created with [vline()].
+#'
+#' @export
+#'
+#' @rdname line-area-chart
+v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
+  stopifnot(
+    "'vc' must be a chart constructed with vline()" = inherits(vc, "vline")
+  )
+  if (is.null(data)) {
+    data <- vc$x$data
+  }
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
+  if (is.null(serie_id))
+    serie_id <- paste0("line_", genId(4))
+  vc$x$specs$data <- c(
+    vc$x$specs$data,
+    list(
+      list(
+        id = serie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  vc$x$specs$series <- c(
+    vc$x$specs$series,
+    list(
+      list(
+        type = "line",
+        name = name,
+        dataId = serie_id,
+        xField = "x",
+        yField = "y",
+        seriesField = if (has_name(mapdata, "colour")) "colour",
+        point = list(
+          visible = FALSE
+        )
+      )
+    )
+  )
+  return(vc)
+}
+
+
+#' @export
+#'
+#' @rdname line-area-chart
+v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
+  stopifnot(
+    "'vc' must be a chart constructed with vline()" = inherits(vc, "vline")
+  )
+  if (is.null(data)) {
+    data <- vc$x$data
+  }
+  if (is.null(name) & !is.null(mapping$ymin) & !is.null(mapping$ymax))
+    name <- paste(rlang::as_label(mapping$ymin), rlang::as_label(mapping$ymax), sep = " - ")
+  mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
+  if (is.null(serie_id))
+    serie_id <- paste0("range_area_", genId(4))
+  vc$x$specs$data <- c(
+    vc$x$specs$data,
+    list(
+      list(
+        id = serie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  vc$x$specs$series <- c(
+    list(
+      list(
+        type = "rangeArea",
+        name = name,
+        dataId = serie_id,
+        xField = "x",
+        yField = c("ymin", "ymax"),
+        seriesField = if (has_name(mapdata, "colour")) "colour",
+        point = list(
+          visible = FALSE
+        )
+      )
+    ),
+    vc$x$specs$series
+  )
+  return(vc)
 }
 
 

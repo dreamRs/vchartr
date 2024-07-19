@@ -74,3 +74,6 @@ vline(eco2mix, aes(date, wind))
 setDF(eco2mix)
 usethis::use_data(eco2mix, internal = FALSE, overwrite = TRUE, compress = "xz")
 
+setDF(eco2mix_long)
+usethis::use_data(eco2mix_long, internal = FALSE, overwrite = TRUE, compress = "xz")
+

@@ -10,8 +10,8 @@ electricity[country == "France" & year == 2023, list(electricity_generation, ren
 electricity[year == 2023 & iso_code != ""][order(-electricity_generation)][1:5, list(country, electricity_generation)]
 
 melt(
-  data = electricity[country == "World" & year == 2023],
-  id.vars = c("country", "year"),
+  data = electricity[country %in% c("China", "United States", "India") & year == 2023],
+  id.vars = c("country"),
   measure.vars = c(
     "biofuel_electricity",
     "coal_electricity",
@@ -24,8 +24,8 @@ melt(
     "solar_electricity",
     "wind_electricity"
   )
-) %>%
-  vbar(aes(variable, value))
+)
+
 
 
 vbar(

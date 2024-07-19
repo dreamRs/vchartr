@@ -4,7 +4,7 @@
 library(data.table)
 
 electricity <- fread("data-raw/owid-energy-data.csv")
-co2 <- fread("data-raw/owid-co2-data.csv")
+# co2 <- fread("data-raw/owid-co2-data.csv")
 
 
 

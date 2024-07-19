@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(vchartr)
-data("mpg", package = "ggplot2")
 ```
 
 
@@ -27,14 +26,17 @@ data("mpg", package = "ggplot2")
 Create a basic bar chart with :
 
 ```{r basic}
-vbar(table(Class = mpg$class), aes(Class, Freq)) %>% 
+vbar(
+  top_generation,
+  aes(country, electricity_generation)
+) %>% 
   v_specs(
     label = list(visible = TRUE)
   ) %>% 
   v_colors("#8FBCBB") %>% 
   v_labs(
-    title = "Title for the chart",
-    subtitle = "A subtitle to be placed under the title"
+    title = "Top electricity-generating countries",
+    subtitle = "Data for 2023, source: Our World In Data"
   )
 ```
 
@@ -42,15 +44,14 @@ vbar(table(Class = mpg$class), aes(Class, Freq)) %>%
 Highlight a specific bar in the chart :
 
 ```{r highlight-bar}
-vbar(table(Class = mpg$class), aes(Class, Freq)) %>% 
+vbar(
+  top_generation,
+  aes(country, electricity_generation)
+) %>% 
   v_specs(
     bar = list(
       style = list(
-        fill = JS(
-          "function(datum) {",
-          "return datum.x == 'compact' ? '#5E81AC' : '#88C0D0';",
-          "}"
-        )
+        fill = JS("datum => datum.x == 'Japan' ? '#5E81AC' : '#88C0D0'")
       )
     )
   )
@@ -63,12 +64,12 @@ A grouped bar chart with specific colors and custom legend :
 
 ```{r}
 vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year)
+  world_generation,
+  aes(year, generation, fill = source)
 ) %>% 
-  v_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC") %>% 
+  v_colors_manual("Low carbon" = "#8FBCBB", "Fossil fuels" = "#4C566A") %>% 
   v_legend(
-    title = list(text = "Title", visible = TRUE),
+    title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
     position = "start",
     item = list(focus = TRUE)

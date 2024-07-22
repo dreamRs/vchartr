@@ -4,7 +4,7 @@
 #' @param data Default dataset to use for chart. If not already
 #'  a `data.frame`, it will be coerced to with `as.data.frame`.
 #' @param mapping Default list of aesthetic mappings to use for chart.
-#' @param stack Whether to stack the data.
+#' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
 #' @param percent Whether to display the data as a percentage.
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
 #' @inheritParams vchart
@@ -166,7 +166,7 @@ vline <- function(data,
 #' @rdname line-area-chart
 v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
   stopifnot(
-    "'vc' must be a chart constructed with vline()" = inherits(vc, "vline")
+    "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
   )
   if (is.null(data)) {
     data <- vc$x$data
@@ -210,7 +210,7 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
 #' @rdname line-area-chart
 v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
   stopifnot(
-    "'vc' must be a chart constructed with vline()" = inherits(vc, "vline")
+    "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
   )
   if (is.null(data)) {
     data <- vc$x$data
@@ -249,4 +249,76 @@ v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = N
 }
 
 
+
+
+
+#' Create an histogram
+#'
+#' @param data Default dataset to use for chart. If not already
+#'  a `data.frame`, it will be coerced to with `as.data.frame`.
+#' @param mapping Default list of aesthetic mappings to use for chart.
+#' @inheritParams ggplot2::stat_bin
+#' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
+#' @inheritParams vchart
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vhist.R
+vhist <- function(data,
+                  mapping,
+                  bins = 30,
+                  binwidth = NULL,
+                  stack = FALSE,
+                  width = NULL,
+                  height = NULL,
+                  elementId = NULL) {
+  p <- ggplot2::ggplot(data = data, mapping = mapping)
+  p <- p + ggplot2::geom_histogram(bins = bins, binwidth = binwidth) +
+    ggplot2::scale_fill_identity()
+  hdata <- ggplot2::layer_data(p, i = 1L)
+  specs <- list(
+    type = "histogram",
+    data = list(
+      list(
+        values = create_values(hdata[, c("xmin", "xmax", "count", "fill")])
+      )
+    ),
+    xField = "xmin",
+    x2Field = "xmax",
+    yField = "count",
+    seriesField = if (has_name(mapping, "fill")) "fill",
+    stack = stack,
+    axes = list(
+      list(
+        orient = "bottom",
+        type = "linear",
+        zero = FALSE
+      )
+    ),
+    tooltip = list(
+      visible = TRUE,
+      mark = list(
+        title = list(
+          key = "title",
+          value = if (!has_name(mapping, "fill")) {
+            "Count"
+          } else {
+            JS("datum => datum[\'fill\']")
+          }
+        ),
+        content = list(
+          list(
+            key = JS("datum => Math.round(datum[\'xmin\']) + \'\uff5e\' + Math.round(datum[\'xmax\'])"),
+            value = JS("datum => datum[\'count\']")
+          )
+        )
+      )
+    )
+  )
+  if (has_name(mapping, "fill")) {
+    specs$legends$visible <- TRUE
+  }
+  create_chart("histogram", specs, width, height, elementId)
+}
 

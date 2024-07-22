@@ -21,7 +21,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{mapping}{Default list of aesthetic mappings to use for chart.}
 
-\item{stack}{Whether to stack the data.}
+\item{stack}{Whether to stack the data or not (if \code{fill} aesthetic is provided).}
 
 \item{percent}{Whether to display the data as a percentage.}
 

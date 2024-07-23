@@ -2,7 +2,7 @@
 % Please edit documentation in R/vchart-types.R
 \name{vbar}
 \alias{vbar}
-\title{Create a bar chart}
+\title{Create a Bar Chart}
 \usage{
 vbar(
   data,
@@ -43,7 +43,7 @@ needs to explicitly discover and interact with a specific widget instance.}
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 }
 \description{
-Create a bar chart
+Create a Bar Chart
 }
 \examples{
 

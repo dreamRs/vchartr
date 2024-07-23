@@ -3,6 +3,14 @@ dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
 }
 
+null_or_empty <- function(x) {
+  is.null(x) || length(x) == 0
+}
+
+dropNullsOrEmpty <- function(x) {
+  x[!vapply(x, null_or_empty, FUN.VALUE = logical(1))]
+}
+
 genId <- function(bytes = 12) {
   paste(format(as.hexmode(
     sample(256, bytes, replace = TRUE) -  1
@@ -55,6 +63,48 @@ get_serie_index <- function(vc, id) {
   if (length(index) < 1)
     warning("Serie ID: ", id, " not found.", call. = FALSE)
   index
+}
+
+
+
+
+create_tree <- function(data,
+                        levels,
+                        value,
+                        fill = NULL,
+                        ...) {
+  args <- list(...)
+  data <- as.data.frame(data)
+  if (!all(levels %in% names(data)))
+    stop("All levels must be valid variables in data", call. = FALSE)
+  data[levels] <- lapply(data[levels], as.character)
+  data <- unique(x = data)
+  lapply(
+    X = unique(data[[levels[1]]][!is.na(data[[levels[1]]])]),
+    FUN = function(var) {
+      dat <- data[data[[levels[1]]] == var, , drop = FALSE]
+      args_level <- args[[levels[1]]]
+      if (length(levels) == 1) {
+        dropNullsOrEmpty(c(list(
+          name = var,
+          value = sum(dat[[value]], na.rm = TRUE),
+          fill = if (!is.null(fill)) dat[[fill]][1]
+        ), args_level))
+      }
+      else {
+        c(dropNullsOrEmpty(list(
+          name = var,
+          children = create_tree(
+            data = dat,
+            levels = levels[-1],
+            value = value,
+            fill = fill,
+            ...
+          )
+        )), args_level)
+      }
+    }
+  )
 }
 
 

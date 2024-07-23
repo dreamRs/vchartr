@@ -1,5 +1,5 @@
 
-#' Create a bar chart
+#' Create a Bar Chart
 #'
 #' @param data Default dataset to use for chart. If not already
 #'  a `data.frame`, it will be coerced to with `as.data.frame`.
@@ -56,7 +56,7 @@ vbar <- function(data,
 
 
 
-#' Create a line chart
+#' Create a Line Chart
 #'
 #' @inheritParams vchart
 #' @inheritParams vbar
@@ -319,6 +319,152 @@ vhist <- function(data,
   if (has_name(mapping, "fill")) {
     specs$legends$visible <- TRUE
   }
-  create_chart("histogram", specs, width, height, elementId)
+  create_chart("vhist", specs, width, height, elementId)
 }
+
+
+
+
+
+
+#' Create a Scatter Chart
+#'
+#' @inheritParams vchart
+#' @inheritParams vbar
+#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()]
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vscatter.R
+vscatter <- function(data,
+                     mapping,
+                     serie_id = NULL,
+                     width = NULL,
+                     height = NULL,
+                     elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping, convert_date = FALSE)
+  if (is.null(serie_id))
+    serie_id <- paste0("scatter_", genId(4))
+  specs <- list(
+    type = "common",
+    data = list(
+      list(
+        id = serie_id,
+        values = create_values(mapdata)
+      )
+    ),
+    series = list(
+      list(
+        type = "scatter",
+        dataId = serie_id,
+        xField = "x",
+        yField = "y",
+        seriesField = if (has_name(mapdata, "colour")) "colour",
+        sizeField = if (has_name(mapdata, "size")) "size",
+        shapeField = if (has_name(mapdata, "shape")) "shape"
+      )
+    ),
+    axes = list(
+      list(
+        orient = "left",
+        type = "linear",
+        domainLine = list(visible = TRUE),
+        range = list(
+          min = floor(min(mapdata$y, na.rm = TRUE)),
+          max = ceiling(max(mapdata$y, na.rm = TRUE))
+        )
+      ),
+      list(
+        orient = "bottom",
+        type = "linear",
+        domainLine = list(visible = TRUE),
+        range = list(
+          min = floor(min(mapdata$x, na.rm = TRUE)),
+          max = ceiling(max(mapdata$x, na.rm = TRUE))
+        )
+      )
+    )
+  )
+  if (has_name(mapdata, "colour")) {
+    specs$legends$visible <- TRUE
+  }
+  vc <- create_chart("vscatter", specs, width, height, elementId)
+  vc$x$data <- data
+  return(vc)
+}
+
+
+
+
+
+#' Create a Circle Packing Chart
+#'
+#' @inheritParams vchart
+#' @inheritParams vbar
+#' @param drill Drill-down function switch.
+#' @param use_root Add a root level in the hierarchy, can be `TRUE`
+#'  (in this case root level will be named `root`) or a `character` (use as the name for the root level).
+#' @param fill_opacity Fill opacity, a JS function determining the opacity of the elements.
+#' @param label_visible A JS function to control visibility of labels.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vcirclepacking.R
+vcirclepacking <- function(data,
+                           mapping,
+                           drill = TRUE,
+                           use_root = FALSE,
+                           fill_opacity = JS("d => d.isLeaf ? 0.75 : 0.25;"),
+                           label_visible = JS("d => d.depth === 1;"),
+                           width = NULL,
+                           height = NULL,
+                           elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping)
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- sort(lvl_vars)
+  if (length(lvl_vars) > 1) {
+    values <- create_tree(
+      data = mapdata,
+      levels = lvl_vars,
+      value = "value"
+    )
+  } else {
+    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
+    values <- create_values(mapdata)
+  }
+  if (isTRUE(use_root) | is.character(use_root)) {
+    if (isTRUE(use_root))
+      use_root <- "root"
+    values <- list(
+      list(
+        name = use_root,
+        children = values
+      )
+    )
+  }
+  specs <- list(
+    type = "circlePacking",
+    data = list(
+      list(
+        values = values
+      )
+    ),
+    categoryField = "name",
+    valueField = "value",
+    drill = drill
+  )
+  if (!is.null(fill_opacity)) {
+    specs$circlePacking$style$fillOpacity <- fill_opacity
+  }
+  if (!is.null(label_visible)) {
+    specs$label$style$visible <- label_visible
+  }
+  create_chart("vcirclepacking", specs, width, height, elementId)
+}
+
+
 

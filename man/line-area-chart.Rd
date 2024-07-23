@@ -5,7 +5,7 @@
 \alias{vline}
 \alias{v_add_line}
 \alias{v_add_range_area}
-\title{Create a line chart}
+\title{Create a Line Chart}
 \usage{
 vline(
   data,
@@ -55,7 +55,7 @@ needs to explicitly discover and interact with a specific widget instance.}
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 }
 \description{
-Create a line chart
+Create a Line Chart
 }
 \examples{
 

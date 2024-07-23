@@ -468,3 +468,95 @@ vcirclepacking <- function(data,
 
 
 
+
+
+#' Create an Heatmap Chart
+#'
+#' @inheritParams vchart
+#' @inheritParams line-area-chart
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vheatmap.R
+vheatmap <- function(data,
+                     mapping,
+                     serie_id = NULL,
+                     width = NULL,
+                     height = NULL,
+                     elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping)
+  if (is.numeric(mapdata$fill)) {
+    color <- list(
+      type = "linear",
+      domain = range(pretty(range(mapdata$fill, na.rm = TRUE))),
+      range = c(
+        "#440154", "#482878", "#3E4A89", "#31688E", "#26828E",
+        "#1F9E89", "#35B779", "#6DCD59", "#B4DE2C", "#FDE725"
+      )
+    )
+    legend <- list(
+      visible = TRUE,
+      type = "color",
+      field = "fill"
+    )
+  } else if (is.character(mapdata$fill)) {
+    color <- list(
+      type = "ordinal"
+    )
+    legend <- list(
+      visible = TRUE,
+      type = "discrete",
+      field = "fill",
+      scaleName = "color"
+    )
+  } else {
+    stop(
+      "vheatmap: `fill` aesthetic is required, and must either a numeric or a character",
+      call. = FALSE
+    )
+  }
+  if (is.null(serie_id))
+  serie_id <- paste0("heatmap_", genId(4))
+  specs <- list(
+    type = "common",
+    data = list(
+      list(
+        id = serie_id,
+        values = create_values(mapdata)
+      )
+    ),
+    series = list(
+      list(
+        type = "heatmap",
+        dataId = serie_id,
+        xField = "x",
+        yField = "y",
+        valueField = "fill",
+        cell = list(
+          style = list(
+            fill = list(field = "fill", scale = "color")
+          )
+        )
+      )
+    ),
+    axes = list(
+      list(
+        orient = "bottom",
+        type = "band",
+        grid = list(visible = FALSE),
+        domainLine = list(visible = FALSE)
+      ),
+      list(
+        orient = "left",
+        type = "band",
+        grid = list(visible = FALSE),
+        domainLine = list(visible = FALSE)
+      )
+    ),
+    color = color,
+    legends = legend
+  )
+  create_chart("vheatmap", specs, width, height, elementId)
+}

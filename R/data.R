@@ -28,6 +28,32 @@
 
 
 
+#' @title CO2 emissions
+#'
+#' @description This dataset represents CO2 emissions for a subset of country over the period 1990 - 2022.
+#'
+#' @format A data frame with 495 observations and 11 variables:
+#'   * `country` : Country - Geographic location.
+#'   * `year` : Year - Year of observation.
+#'   * `co2` : Annual CO₂ emissions - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in million tonnes.
+#'   * `co2_per_gdp` : Annual CO₂ emissions per GDP (kg per international-$) - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in kilograms per dollar of GDP (2011 international-$).
+#'   * `co2_per_capita` : Annual CO₂ emissions (per capita) - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in tonnes per person.
+#'   * `co2_growth_abs` : Annual CO₂ emissions growth (abs) - Annual growth in total emissions of carbon dioxide (CO₂), excluding land-use change, measured in million tonnes.
+#'   * `co2_growth_prct` : Annual CO₂ emissions growth (%) - Annual percentage growth in total emissions of carbon dioxide (CO₂), excluding land-use change.
+#'   * `co2_per_unit_energy` : Annual CO₂ emissions per unit energy (kg per kilowatt-hour) - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in kilograms per kilowatt-hour of primary energy consumption.
+#'   * `consumption_co2` : Annual consumption-based CO₂ emissions - Annual consumption-based emissions of carbon dioxide (CO₂), measured in million tonnes.
+#'   * `consumption_co2_per_capita` : Per capita consumption-based CO₂ emissions - Annual consumption-based emissions of carbon dioxide (CO₂), measured in tonnes per person.
+#'   * `consumption_co2_per_gdp` : Annual consumption-based CO₂ emissions per GDP (kg per international-$) - Annual consumption-based emissions of carbon dioxide (CO₂), measured in kilograms per dollar of GDP (2011 international-$).
+#'
+#' @note
+#' Documentation is from Our World In Data, see [https://github.com/owid/co2-data](https://github.com/owid/co2-data) for the data
+#'  and [https://ourworldindata.org/co2-and-greenhouse-gas-emissions](https://ourworldindata.org/co2-and-greenhouse-gas-emissions) for more about CO2 emissions.
+#'
+#' @source [Our World In Data](https://github.com/owid/co2-data)
+"co2_emissions"
+
+
+
 #' @title Monthly electricity generation by source in France
 #'
 #' @description This dataset represents monthly electricity generation by source in France over the period 2012 - 2024.

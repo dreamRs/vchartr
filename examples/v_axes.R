@@ -60,3 +60,9 @@ vline(NULL, aes(x = month.name, y = sample(5:25, 12))) %>%
   v_axes(position = "left", remove = TRUE) %>% 
   v_axes(position = "right", type= "linear")
 
+# Use secondary axes
+vline(NULL, aes(x = month.name, y = sample(5:25, 12)), serie_id = "serie_left") %>%
+  v_add_line(aes(x = month.name, y = sample(5:25 * 100, 12)), serie_id = "serie_right") %>% 
+  v_axes(position = "left", seriesId = "serie_left") %>% 
+  v_axes(position = "right", type = "linear", seriesId = "serie_right")
+

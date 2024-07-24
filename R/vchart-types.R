@@ -165,6 +165,7 @@ vlinearea <- function(type,
       list(
         type = type,
         name = name,
+        id = serie_id,
         dataId = serie_id,
         xField = "x",
         yField = "y",
@@ -259,6 +260,7 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
       list(
         type = "line",
         name = name,
+        id = serie_id,
         dataId = serie_id,
         xField = "x",
         yField = "y",
@@ -302,6 +304,7 @@ v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = N
       list(
         type = "rangeArea",
         name = name,
+        id = serie_id,
         dataId = serie_id,
         xField = "x",
         yField = c("ymin", "ymax"),
@@ -426,6 +429,7 @@ vscatter <- function(data,
     series = list(
       list(
         type = "scatter",
+        id = serie_id,
         dataId = serie_id,
         xField = "x",
         yField = "y",
@@ -641,6 +645,7 @@ vheatmap <- function(data,
     series = list(
       list(
         type = "heatmap",
+        id = serie_id,
         dataId = serie_id,
         xField = "x",
         yField = "y",
@@ -711,6 +716,7 @@ vpie <- function(data,
       FUN = function(group) {
         list(
           type = "pie",
+          id = serie_id,
           dataId = paste(serie_id, group, sep = "_"),
           categoryField = "x",
           valueField = "y",
@@ -730,6 +736,7 @@ vpie <- function(data,
     series <- list(
       list(
         type = "pie",
+        id = serie_id,
         dataId = serie_id,
         categoryField = "x",
         valueField = "y",

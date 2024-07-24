@@ -17,27 +17,27 @@ vbar(
 
 # Grouped Bar Chart
 vbar(
-  world_generation,
+  subset(world_electricity, type == "total"),
   aes(year, generation, fill = source)
 )
 
 # Horizontal Grouped Bar Chart
 vbar(
-  world_generation,
+  subset(world_electricity, type == "total"),
   aes(year, generation, fill = source),
   direction = "horizontal"
 )
 
 # Stacked Bar Chart
 vbar(
-  world_generation,
+  subset(world_electricity, type == "total"),
   aes(year, generation, fill = source),
   stack = TRUE
 )
 
 # Percentage Stacked Bar Chart
 vbar(
-  world_generation,
+  subset(world_electricity, type == "total"),
   aes(year, generation, fill = source),
   stack = TRUE,
   percent = TRUE

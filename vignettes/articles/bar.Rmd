@@ -64,7 +64,7 @@ A grouped bar chart with specific colors and custom legend :
 
 ```{r}
 vbar(
-  world_generation,
+  subset(world_generation, type == "total"),
   aes(year, generation, fill = source)
 ) %>% 
   v_colors_manual("Low carbon" = "#8FBCBB", "Fossil fuels" = "#4C566A") %>% 

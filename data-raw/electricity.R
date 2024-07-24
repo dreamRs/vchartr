@@ -24,19 +24,34 @@ usethis::use_data(top_generation, overwrite = TRUE)
 
 # World low carbon & fossil generation 2014 - 2023 ------------------------
 
-world_generation <- melt(
-  data = electricity[year %in% c(2014:2023) & country == "World", list(year, low_carbon_electricity, fossil_electricity)],
+world_electricity <- melt(
+  data = electricity[year %in% c(2014:2023) & country == "World"],
   id.vars = "year",
-  measure.vars = c("low_carbon_electricity", "fossil_electricity"),
+  measure.vars = c(
+    "low_carbon_electricity",
+    "renewables_electricity", "nuclear_electricity", 
+    "fossil_electricity",
+    "oil_electricity", "gas_electricity", "coal_electricity"
+  ),
   variable.name = "source",
   variable.factor = FALSE,
   value.name = "generation"
 )
-world_generation[source == "low_carbon_electricity", source := "Low carbon"]
-world_generation[source == "fossil_electricity", source := "Fossil fuels"]
 
-setDF(world_generation)
-usethis::use_data(world_generation, overwrite = TRUE)
+world_electricity[, type := fifelse(source %in% c("low_carbon_electricity", "fossil_electricity"), "total", "detail")]
+
+world_electricity[, source := fcase(
+  source == "low_carbon_electricity", "Low carbon",
+  source == "renewables_electricity", "Renewables",
+  source == "nuclear_electricity", "Nuclear",
+  source == "fossil_electricity", "Fossil fuels",
+  source == "oil_electricity", "Oil",
+  source == "gas_electricity", "Gas",
+  source == "coal_electricity", "Coal"
+)]
+
+setDF(world_electricity)
+usethis::use_data(world_electricity, overwrite = TRUE)
 
 
 

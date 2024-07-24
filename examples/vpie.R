@@ -6,7 +6,7 @@ subset(world_generation, year == 2023 & type == "total") %>%
   vpie(aes(x = source, y = generation))
 
 # Use custom colors
-subset(world_generation, year == 2023 & type == "total") %>% 
+subset(world_electricity, year == 2023 & type == "total") %>% 
   vpie(aes(x = source, y = generation)) %>% 
   v_colors_manual(
     "Low carbon" = "#a3be8c", 
@@ -14,7 +14,7 @@ subset(world_generation, year == 2023 & type == "total") %>%
   )
 
 # Customize tooltip
-subset(world_generation, year == 2023 & type == "total") %>% 
+subset(world_electricity, year == 2023 & type == "total") %>% 
   vpie(aes(x = source, y = generation)) %>% 
   v_tooltip(
     mark = list(

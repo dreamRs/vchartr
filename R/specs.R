@@ -161,6 +161,38 @@ v_legend <- function(vc, ...) {
 }
 
 
+
+#' Set tooltip options
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param ... Options for the legend, see examples or online documentation :
+#'  [https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip).
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @examples
+#' library(vchartr)
+#' data("mpg", package = "ggplot2")
+#'
+#' vbar(
+#'   table(Class = mpg$class, Year = mpg$year),
+#'   aes(Class, Freq, fill = Year)
+#' ) %>%
+#'   v_tooltip(
+#'     visible = FALSE
+#'   )
+v_tooltip <- function(vc, ...) {
+  vc <- .vchart_specs(
+    vc,
+    "tooltip",
+    list(...)
+  )
+  return(vc)
+}
+
+
+
 #' @importFrom utils modifyList
 .vchart_specs <- function(vc, name, options) {
   stopifnot(

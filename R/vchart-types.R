@@ -560,3 +560,48 @@ vheatmap <- function(data,
   )
   create_chart("vheatmap", specs, width, height, elementId)
 }
+
+
+
+
+#' Create a Pie Chart
+#'
+#' @inheritParams vchart
+#' @inheritParams line-area-chart
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vpie.R
+vpie <- function(data,
+                 mapping,
+                 serie_id = NULL,
+                 width = NULL,
+                 height = NULL,
+                 elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping)
+  if (is.null(serie_id))
+    serie_id <- paste0("pie_", genId(4))
+  specs <- list(
+    type = "common",
+    data = list(
+      list(
+        id = serie_id,
+        values = create_values(mapdata)
+      )
+    ),
+    series = list(
+      list(
+        type = "pie",
+        dataId = serie_id,
+        categoryField = "x",
+        valueField = "y"
+      )
+    ),
+    label = list(
+      visible = TRUE
+    )
+  )
+  create_chart("vpie", specs, width, height, elementId)
+}

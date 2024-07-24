@@ -61,6 +61,26 @@
 
 
 
+#' @title World CO2 emissions
+#'
+#' @description This dataset contains world polygons with CO2 emissions.
+#'
+#' @format A data frame with 495 observations and 11 variables:
+#'   * `iso_code` : ISO code A3 for country.
+#'   * `name` : Name of country.
+#'   * `co2` : Annual CO₂ emissions - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in million tonnes.
+#'   * `co2_per_capita` : Annual CO₂ emissions (per capita) - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in tonnes per person.
+#'   * `geometry` : Geographical attributes.
+#'
+#' @note
+#' Documentation is from Our World In Data, see [https://github.com/owid/co2-data](https://github.com/owid/co2-data) for the data
+#'  and [https://ourworldindata.org/co2-and-greenhouse-gas-emissions](https://ourworldindata.org/co2-and-greenhouse-gas-emissions) for more about CO2 emissions.
+#'
+#' @source [Our World In Data](https://github.com/owid/co2-data)
+"co2_world"
+
+
+
 #' @title Monthly electricity generation by source in France
 #'
 #' @description This dataset represents monthly electricity generation by source in France over the period 2012 - 2024.

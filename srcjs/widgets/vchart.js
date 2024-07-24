@@ -16,6 +16,13 @@ HTMLWidgets.widget({
 
       renderValue: function(x) {
 
+        if (x.hasOwnProperty("map")) {
+          VChart.registerMap(x.map.name, x.map.topojson, {
+            type: "topojson",
+            object: "map"
+          });
+        }
+
         const vchart = new VChart(x.specs, { dom: el.id });
         vchart.renderAsync();
 

@@ -18,10 +18,7 @@
 #'
 #' @example examples/vchart.R
 vchart <- function(..., width = NULL, height = NULL, elementId = NULL) {
-
   x <- list(specs = list(...))
-
-  # create widget
   htmlwidgets::createWidget(
     name = "vchart",
     x = x,

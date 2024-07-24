@@ -27,4 +27,20 @@ if (rlang::is_installed(c("sf", "geojsonio"))) {
       orient = "bottom"
     )
   
+  # Map discrete data
+  vmap(
+    co2_world[!is.na(co2_world$co2_per_capita), ], 
+    aes(
+      name = name,
+      fill = ifelse(co2_per_capita >= 2.3, "Above", "Under")
+    )
+  ) %>% 
+    v_specs(
+      area = list(
+        style = list(
+          stroke = "#FFFFFF"
+        )
+      )
+    )
+  
 }

@@ -468,6 +468,49 @@ vcirclepacking <- function(data,
 
 
 
+#' Create a Treemap Chart
+#'
+#' @inheritParams vcirclepacking
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vtreemap.R
+vtreemap <- function(data,
+                     mapping,
+                     drill = TRUE,
+                     width = NULL,
+                     height = NULL,
+                     elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping)
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- sort(lvl_vars)
+  if (length(lvl_vars) > 1) {
+    values <- create_tree(
+      data = mapdata,
+      levels = lvl_vars,
+      value = "value"
+    )
+  } else {
+    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
+    values <- create_values(mapdata)
+  }
+  specs <- list(
+    type = "treemap",
+    data = list(
+      list(
+        values = values
+      )
+    ),
+    categoryField = "name",
+    valueField = "value",
+    drill = drill
+  )
+  create_chart("vtreemap", specs, width, height, elementId)
+}
+
+
 
 
 #' Create an Heatmap Chart

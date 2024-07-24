@@ -78,7 +78,7 @@ vmap <- function(data,
       topojson = topojson
     )
   )
-  htmlwidgets::createWidget(
+  widget <- createWidget(
     name = "vchart",
     x = x,
     width = width,
@@ -99,4 +99,6 @@ vmap <- function(data,
       padding = 0
     )
   )
+  class(widget) <- c(class(widget), "vmap")
+  return(widget)
 }

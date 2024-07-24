@@ -68,7 +68,7 @@ vbar <- function(data,
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-#' @name line-area-chart
+#' @name vline-varea
 #'
 #' @example examples/vline.R
 vline <- function(data,
@@ -80,6 +80,61 @@ vline <- function(data,
                   width = NULL,
                   height = NULL,
                   elementId = NULL) {
+  vlinearea(
+    type = "line",
+    aesthetic = "colour",
+    data = data,
+    mapping = mapping,
+    format_date = format_date,
+    format_datetime = format_datetime,
+    name = name,
+    serie_id = serie_id,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
+}
+
+
+#' @export
+#'
+#' @rdname vline-varea
+varea <- function(data,
+                  mapping,
+                  format_date = "%Y-%m-%d",
+                  format_datetime = "%Y-%m-%d %H:%M",
+                  name = NULL,
+                  serie_id = NULL,
+                  width = NULL,
+                  height = NULL,
+                  elementId = NULL) {
+  vlinearea(
+    type = "area",
+    aesthetic = "fill",
+    data = data,
+    mapping = mapping,
+    format_date = format_date,
+    format_datetime = format_datetime,
+    name = name,
+    serie_id = serie_id,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
+}
+
+vlinearea <- function(type,
+                      aesthetic,
+                      data,
+                      mapping,
+                      format_date = "%Y-%m-%d",
+                      format_datetime = "%Y-%m-%d %H:%M",
+                      name = NULL,
+                      serie_id = NULL,
+                      width = NULL,
+                      height = NULL,
+                      elementId = NULL) {
+  
   data <- as.data.frame(data)
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -87,7 +142,7 @@ vline <- function(data,
   if (identical(attr(mapdata, "datetime_format"), "datetime"))
     format_date <- format_datetime
   if (is.null(serie_id))
-    serie_id <- paste0("line_", genId(4))
+    serie_id <- paste0(type, "_", genId(4))
   specs <- list(
     type = "common",
     data = list(
@@ -98,12 +153,12 @@ vline <- function(data,
     ),
     series = list(
       list(
-        type = "line",
+        type = type,
         name = name,
         dataId = serie_id,
         xField = "x",
         yField = "y",
-        seriesField = if (has_name(mapdata, "colour")) "colour",
+        seriesField = if (has_name(mapdata, aesthetic)) aesthetic,
         point = list(
           visible = FALSE
         )
@@ -129,7 +184,8 @@ vline <- function(data,
         content = list(
           list(
             key = JS(
-              "function(datum) {
+              sprintf(
+                "function(datum) {
                 //console.log(datum);
                   let val = datum.y;
                   if (val === null) {
@@ -138,32 +194,34 @@ vline <- function(data,
                   if (datum.hasOwnProperty('ymin')) {
                     val = datum.ymin + ' - ' + datum.ymax;
                   }
-                  if (datum.hasOwnProperty('colour')) {
-                    return datum.colour + ' : ' + val;
+                  if (datum.hasOwnProperty('%1$s')) {
+                    return datum.%1$s + ' : ' + val;
                   } else {
                    return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD + ' : ' + val;
                   }
-                }"
+                }", aesthetic
+              )
             )
           )
         )
       )
     )
   )
-  if (has_name(mapdata, "colour")) {
+  if (has_name(mapdata, aesthetic)) {
     specs$legends$visible <- TRUE
   }
-  vc <- create_chart("vline", specs, width, height, elementId)
+  vc <- create_chart(paste0("v", type), specs, width, height, elementId)
   vc$x$data <- data
   return(vc)
 }
+
 
 
 #' @param vc A chart created with [vline()].
 #'
 #' @export
 #'
-#' @rdname line-area-chart
+#' @rdname vline-varea
 v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
@@ -207,7 +265,7 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
 
 #' @export
 #'
-#' @rdname line-area-chart
+#' @rdname vline-varea
 v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
@@ -516,7 +574,7 @@ vtreemap <- function(data,
 #' Create an Heatmap Chart
 #'
 #' @inheritParams vchart
-#' @inheritParams line-area-chart
+#' @inheritParams vline-varea
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -610,7 +668,7 @@ vheatmap <- function(data,
 #' Create a Pie Chart
 #'
 #' @inheritParams vchart
-#' @inheritParams line-area-chart
+#' @inheritParams vline-varea
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export

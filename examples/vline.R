@@ -4,6 +4,9 @@ library(vchartr)
 # Basic Line Chart
 vline(eco2mix, aes(date, solar))
 
+# Basic Area Chart
+varea(eco2mix, aes(date, solar))
+
 # Smooth Line Chart
 vline(tail(eco2mix, 20), aes(date, solar), serie_id = "line_solar") %>%
   v_specs(
@@ -20,6 +23,7 @@ vline(eco2mix, aes(date, solar)) %>%
 
 # Use long format for multiple lines
 vline(eco2mix_long, aes(date, production, color = source))
+varea(eco2mix_long, aes(date, production, fill = source))
 
 # Add a range area
 vline(temperatures, aes(date, `2024`)) %>%

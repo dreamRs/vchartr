@@ -753,3 +753,32 @@ vpie <- function(data,
   )
   create_chart("vpie", specs, width, height, elementId)
 }
+
+
+
+#' Create a Wordcloud
+#'
+#' @inheritParams vbar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vwordcloud.R
+vwordcloud <- function(data,
+                       mapping,
+                       width = NULL,
+                       height = NULL,
+                       elementId = NULL) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, mapping)
+  specs <- list(
+    type = "wordCloud",
+    data = list(values = create_values(mapdata)),
+    nameField = "word",
+    valueField = "count",
+    seriesField = if (has_name(mapdata, "colour")) "colour"
+  )
+  create_chart("vwordcloud", specs, width, height, elementId)
+}
+
+

@@ -17,6 +17,7 @@ Imports:
     magrittr,
     rlang
 Suggests: 
+    cranlogs,
     knitr,
     geojsonio,
     palmerpenguins,

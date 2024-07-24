@@ -583,25 +583,55 @@ vpie <- function(data,
   mapdata <- eval_mapping(data, mapping)
   if (is.null(serie_id))
     serie_id <- paste0("pie_", genId(4))
-  specs <- list(
-    type = "common",
-    data = list(
+  if (has_name(mapdata, "group")) {
+    groups <- unique(mapdata$group)
+    data <- lapply(
+      X = groups,
+      FUN = function(group) {
+        index <- mapdata$group == group
+        list(
+          id = paste(serie_id, group, sep = "_"),
+          values = create_values(lapply(mapdata, `[`, index))
+        )
+      }
+    )
+    series <- lapply(
+      X = groups,
+      FUN = function(group) {
+        list(
+          type = "pie",
+          dataId = paste(serie_id, group, sep = "_"),
+          categoryField = "x",
+          valueField = "y",
+          label = list(
+            visible = TRUE
+          )
+        )
+      }
+    )
+  } else {
+    data <- list(
       list(
         id = serie_id,
         values = create_values(mapdata)
       )
-    ),
-    series = list(
+    )
+    series <- list(
       list(
         type = "pie",
         dataId = serie_id,
         categoryField = "x",
-        valueField = "y"
+        valueField = "y",
+        label = list(
+          visible = TRUE
+        )
       )
-    ),
-    label = list(
-      visible = TRUE
     )
+  }
+  specs <- list(
+    type = "common",
+    data = data,
+    series = series
   )
   create_chart("vpie", specs, width, height, elementId)
 }

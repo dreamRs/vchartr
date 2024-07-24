@@ -49,6 +49,10 @@ v_specs <- function(vc, ..., serie = NULL) {
 }
 
 
+
+
+
+
 #' Set chart title and subtitle
 #'
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.

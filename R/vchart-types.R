@@ -134,7 +134,6 @@ vlinearea <- function(type,
                       width = NULL,
                       height = NULL,
                       elementId = NULL) {
-  
   data <- as.data.frame(data)
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -143,6 +142,17 @@ vlinearea <- function(type,
     format_date <- format_datetime
   if (is.null(serie_id))
     serie_id <- paste0(type, "_", genId(4))
+  axe_bottom_type <- switch(
+    attr(mapdata, "x_class"),
+    "character" = "band",
+    "factor" = "band",
+    "numeric" = "linear",
+    "integer" = "linear",
+    "POSIXct" = "time",
+    "POSIXlt" = "time",
+    "Date" = "time",
+    "band"
+  )
   specs <- list(
     type = "common",
     data = list(
@@ -171,15 +181,15 @@ vlinearea <- function(type,
       ),
       list(
         orient = "bottom",
-        type = "time",
+        type = axe_bottom_type,
         nice = FALSE,
         layers = list(list(timeFormat = format_date))
       )
     ),
-    tooltip = list(
-      dimension = list(
-        title = list(
-          valueTimeFormat = format_date
+    tooltip = list_(
+      dimension = list_(
+        title = list_(
+          valueTimeFormat = if (axe_bottom_type == "time") format_date
         ),
         content = list(
           list(

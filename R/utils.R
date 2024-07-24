@@ -3,6 +3,10 @@ dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
 }
 
+list_ <- function(...) {
+  dropNulls(list(...))
+}
+
 null_or_empty <- function(x) {
   is.null(x) || length(x) == 0
 }
@@ -44,6 +48,7 @@ create_chart <- function(type, specs, width, height, elementId) {
 #' @importFrom rlang eval_tidy
 eval_mapping <- function(data, mapping, convert_date = FALSE) {
   mapdata <- lapply(mapping, eval_tidy, data = data)
+  attr(mapdata, "x_class") <- class(mapdata$x)[1]
   if (isTRUE(convert_date)) {
     if (inherits(mapdata$x, "Date")) {
       mapdata$x <- as.numeric(mapdata$x) * 3600*24 * 1000
@@ -66,6 +71,11 @@ get_serie_index <- function(vc, id) {
 }
 
 
+get_axes_index <- function(vc, position) {
+  orient <- unlist(lapply(vc$x$specs$axes, `[[`, "orient"))
+  index <- which(position == orient)
+  index
+}
 
 
 create_tree <- function(data,

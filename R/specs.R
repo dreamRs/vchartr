@@ -1,4 +1,21 @@
 
+#' @importFrom utils modifyList
+.vchart_specs <- function(vc, name, options) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  if (is.null(vc$x$specs[[name]])) {
+    vc$x$specs[[name]] <- options
+  } else {
+    vc$x$specs[[name]] <- modifyList(
+      x = vc$x$specs[[name]],
+      val = options,
+      keep.null = TRUE
+    )
+  }
+  return(vc)
+}
+
 #' Specify configuration options for a [vchart()].
 #'
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
@@ -197,20 +214,41 @@ v_tooltip <- function(vc, ...) {
 
 
 
-#' @importFrom utils modifyList
-.vchart_specs <- function(vc, name, options) {
-  stopifnot(
-    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
-  )
-  if (is.null(vc$x$specs[[name]])) {
-    vc$x$specs[[name]] <- options
+#' Axes configuration
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param position Position of the axe on the chart.
+#' @param ... Configuration options.
+#' @param remove If `TRUE` then axe is removed and other parameters are ignored.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_axes.R
+v_axes <- function(vc,
+                   position = c("left", "bottom", "right", "top", "angle", "radius"),
+                   ...,
+                   remove = FALSE) {
+  position <- match.arg(position)
+  index <- get_axes_index(vc, position)
+  if (isTRUE(remove)) {
+    if (index == 1)
+      vc$x$specs$axes[[index]] <- NULL
   } else {
-    vc$x$specs[[name]] <- modifyList(
-      x = vc$x$specs[[name]],
-      val = options,
-      keep.null = TRUE
-    )
+    if (length(index) < 1)
+      index <- length(vc$x$specs$axes) + 1
+    if (index > length(vc$x$specs$axes)) {
+      vc$x$specs$axes[[index]] <- list(orient = position, ...)
+    } else {
+      vc$x$specs$axes[[index]] <- modifyList(
+        x = vc$x$specs$axes[[index]],
+        val = list(orient = position, ...),
+        keep.null = TRUE
+      )
+    }
   }
   return(vc)
 }
+
+
 

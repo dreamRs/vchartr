@@ -4,6 +4,7 @@ electricity <- fread("data-raw/owid-energy-data.csv")
 co2 <- fread("data-raw/owid-co2-data.csv")
 
 
+
 electricity[country == "France" & year == 2023, .SD, .SDcols = grep("electricity$", x = names(electricity), value = TRUE)]
 
 

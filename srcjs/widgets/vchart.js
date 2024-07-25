@@ -10,7 +10,7 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    // TODO: define shared variables for this instance
+    let vchart;
 
     return {
 
@@ -23,8 +23,12 @@ HTMLWidgets.widget({
           });
         }
 
-        const vchart = new VChart(x.specs, { dom: el.id });
-        vchart.renderAsync();
+        if (typeof vchart == "undefined") {
+          vchart = new VChart(x.specs, { dom: el.id });
+          vchart.renderAsync();
+        } else {
+          vchart.updateSpec(x.specs);
+        }
 
       },
 

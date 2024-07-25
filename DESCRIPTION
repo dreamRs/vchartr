@@ -17,12 +17,14 @@ Imports:
     magrittr,
     rlang
 Suggests: 
+    bslib,
     cranlogs,
     knitr,
     geojsonio,
     palmerpenguins,
     rmarkdown,
-    sf
+    sf,
+    shiny
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

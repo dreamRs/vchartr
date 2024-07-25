@@ -29,7 +29,7 @@ world_electricity <- melt(
   id.vars = "year",
   measure.vars = c(
     "low_carbon_electricity",
-    "renewables_electricity", "nuclear_electricity", 
+    "renewables_electricity", "nuclear_electricity",
     "fossil_electricity",
     "oil_electricity", "gas_electricity", "coal_electricity"
   ),
@@ -55,3 +55,25 @@ usethis::use_data(world_electricity, overwrite = TRUE)
 
 
 
+
+
+# Electricity mix top 10 countries ---------------------------------------
+
+electricity_mix <- melt(
+  data = electricity[year == 2023 & country %in% top_generation$country],
+  id.vars = "country",
+  measure.vars = c(
+    "solar_electricity", "wind_electricity", "hydro_electricity",
+    "nuclear_electricity",
+    "oil_electricity", "gas_electricity", "coal_electricity"
+  ),
+  variable.name = "source",
+  variable.factor = FALSE,
+  value.name = "generation"
+)
+electricity_mix[, source := gsub("_electricity", "", source)]
+electricity_mix[]
+
+
+setDF(electricity_mix)
+usethis::use_data(electricity_mix, overwrite = TRUE)

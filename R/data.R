@@ -12,6 +12,21 @@
 
 
 
+
+#' @title Electricity mix for 10 countries
+#'
+#' @description This dataset represents the electricity mix of 10 countries (those with the highest electricity generation) in 2023.
+#'
+#' @format A data frame with 70 observations and 3 variables:
+#'   * `country` : Country name
+#'   * `source` : source of electricity
+#'   * `generation` : Total electricity generation - Measured in terawatt-hours.
+#'
+#' @source [Our World In Data](https://github.com/owid/energy-data)
+"electricity_mix"
+
+
+
 #' @title World low carbon & fossil electricity generation 2014 - 2023
 #'
 #' @description This dataset represents world's electricity generation from low-carbon sources and fossil fuels over the period 2014 - 2023.

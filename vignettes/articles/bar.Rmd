@@ -189,3 +189,65 @@ vbar(
   )
 ```
 
+
+
+## Bar Chart with custom labels
+
+```{r}
+electricity_mix %>% 
+  filter(source == "nuclear") %>% 
+  arrange(desc(generation)) %>% 
+  vbar(
+    aes(country, generation),
+    direction = "horizontal",
+    dataserie_id = "myid"
+  ) %>% 
+  v_axes(
+    position = "bottom",
+    visible = FALSE
+  ) %>% 
+  v_axes(
+    position = "left",
+    domainLine = list(visible = FALSE),
+    tick = list(visible = FALSE)
+  ) %>% 
+  v_specs(
+    bar = list(
+      style = list(cornerRadius = c(5, 5, 5, 5), height = 10)
+    ),
+    barBackground = list(
+      visible = TRUE,
+      style = list(cornerRadius = c(5, 5, 5, 5), height = 10),
+      state = list(
+        hover = list(
+          stroke = "#D9D9D9",
+          lineWidth = 1
+        )
+      )
+    ),
+    padding = list(right = 50, left = 10),
+    extensionMark = list(
+      list(
+        type = "text",
+        dataId = "myid",
+        visible = TRUE,
+        style = list(
+          text = JS("datum => Math.round(datum.y)"),
+          fontSize = 12,
+          x = JS("(datum, ctx) => { return ctx.getRegion().getLayoutRect().width + 10; }"),
+          y = JS("(datum, ctx) => { return ctx.valueToY([datum.x]) + ctx.yBandwidth() / 2; }"),
+          textBaseline = "middle",
+          textAlign = "left",
+          fill = "#595959",
+          size = 20
+        )
+      )
+    )
+  ) %>% 
+  v_tooltip(
+    mark = list(title = list(visible = FALSE)),
+    dimension = list(title = list(visible = FALSE)),
+    style = list(shape = list(shapeType = "circle"))
+  )
+```
+

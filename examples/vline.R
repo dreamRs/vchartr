@@ -8,12 +8,12 @@ vline(eco2mix, aes(date, solar))
 varea(eco2mix, aes(date, solar))
 
 # Smooth Line Chart
-vline(tail(eco2mix, 20), aes(date, solar), serie_id = "line_solar") %>%
+vline(tail(eco2mix, 20), aes(date, solar), dataserie_id = "line_solar") %>%
   v_specs(
     line = list(
       style = list(curveType = "monotone")
     ),
-    serie = "line_solar"
+    dataserie_id = "line_solar"
   )
 
 
@@ -36,7 +36,7 @@ vline(temperatures, aes(date, `2024`)) %>%
   v_add_line(aes(date, average)) %>%
   v_add_range_area(
     aes(date, ymin = low, ymax = high),
-    serie_id = "range_area"
+    dataserie_id = "range_area"
   ) %>%
   v_legend(visible = TRUE) %>%
   v_specs(
@@ -46,6 +46,6 @@ vline(temperatures, aes(date, `2024`)) %>%
         fill = "#D8DEE9"
       )
     ),
-    serie = "range_area"
+    dataserie_id = "range_area"
   )
 

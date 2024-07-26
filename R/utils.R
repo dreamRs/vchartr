@@ -63,7 +63,7 @@ eval_mapping <- function(data, mapping, convert_date = FALSE) {
 
 
 get_serie_index <- function(vc, id) {
-  ids <- unlist(lapply(vc$x$specs$series, `[[`, "dataId"))
+  ids <- unlist(lapply(vc$x$specs$series, `[[`, "id"))
   index <- which(id == ids)
   if (length(index) < 1)
     warning("Serie ID: ", id, " not found.", call. = FALSE)

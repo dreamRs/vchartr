@@ -17,14 +17,14 @@ vscatter(
     color = species,
     shape = species
   ),
-  serie_id = "penguins_serie"
+  dataserie_id = "penguins"
 ) %>%
   v_specs(
     shape = list(
       type = "ordinal",
       range = c("circle", "square", "triangle")
     ),
-    serie = "penguins_serie"
+    dataserie_id = "penguins"
   )
 
 vscatter(

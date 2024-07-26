@@ -7,7 +7,7 @@
 vpie(
   data,
   mapping,
-  serie_id = NULL,
+  dataserie_id = NULL,
   width = NULL,
   height = NULL,
   elementId = NULL
@@ -19,7 +19,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{mapping}{Default list of aesthetic mappings to use for chart.}
 
-\item{serie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the
@@ -44,20 +44,20 @@ Create a Pie Chart
 library(vchartr)
 
 # Bvasic Pie Chart
-subset(world_electricity, year == 2023 & type == "total") \%>\% 
+subset(world_electricity, year == 2023 & type == "total") \%>\%
   vpie(aes(x = source, y = generation))
 
 # Use custom colors
-subset(world_electricity, year == 2023 & type == "total") \%>\% 
-  vpie(aes(x = source, y = generation)) \%>\% 
+subset(world_electricity, year == 2023 & type == "total") \%>\%
+  vpie(aes(x = source, y = generation)) \%>\%
   v_colors_manual(
-    "Low carbon" = "#a3be8c", 
+    "Low carbon" = "#a3be8c",
     "Fossil fuels" = "#4C566A"
   )
 
 # Customize tooltip
-subset(world_electricity, year == 2023 & type == "total") \%>\% 
-  vpie(aes(x = source, y = generation)) \%>\% 
+subset(world_electricity, year == 2023 & type == "total") \%>\%
+  vpie(aes(x = source, y = generation)) \%>\%
   v_tooltip(
     mark = list(
       content = list(
@@ -76,10 +76,10 @@ subset(world_electricity, year == 2023 & type == "total") \%>\%
 
 
 # Nested Pie Chart
-subset(world_electricity, year == 2023) \%>\% 
-  vpie(aes(x = source, y = generation, group = type), serie_id = "pie") \%>\% 
+subset(world_electricity, year == 2023) \%>\%
+  vpie(aes(x = source, y = generation, group = type), dataserie_id = "pie") \%>\%
   v_specs(
-    serie = "pie_total", # serie_id + '_' + group name
+    dataserie_id = "pie_total", # serie_id + '_' + group name
     outerRadius = 0.65,
     innerRadius = 0,
     label = list(
@@ -93,9 +93,9 @@ subset(world_electricity, year == 2023) \%>\%
         lineWidth = 2
       )
     )
-  ) \%>\% 
+  ) \%>\%
   v_specs(
-    serie = "pie_detail", # serie_id + '_' + group name
+    dataserie_id = "pie_detail", # serie_id + '_' + group name
     outerRadius = 0.8,
     innerRadius = 0.67,
     pie = list(

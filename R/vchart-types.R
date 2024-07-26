@@ -7,7 +7,7 @@
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
 #' @param percent Whether to display the data as a percentage.
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
-#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()].
+#' @param dataserie_id ID for the serie, can be used to customize the serie with [v_specs()].
 #' @inheritParams vchart
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -21,20 +21,20 @@ vbar <- function(data,
                  stack = FALSE,
                  percent = FALSE,
                  direction = c("vertical", "horizontal"),
-                 serie_id = NULL,
+                 dataserie_id = NULL,
                  width = NULL,
                  height = NULL,
                  elementId = NULL) {
   direction <- match.arg(direction)
   data <- as.data.frame(data)
   mapdata <- eval_mapping(data, mapping)
-  if (is.null(serie_id))
-    serie_id <- paste0("bar_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("bar_", genId(4))
   specs <- list(
     type = "bar",
     data = list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     ),
@@ -76,7 +76,7 @@ vbar <- function(data,
 #' @param format_date Format to be applied if `x` aesthetic is a `Date`.
 #' @param format_datetime Format to be applied if `x` aesthetic is a `POSIXt`.
 #' @param name Name for the serie, only used for single serie (no `color` aesthetic supplied).
-#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()].
+#' @param dataserie_id ID for the serie, can be used to customize the serie with [v_specs()].
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -89,7 +89,7 @@ vline <- function(data,
                   format_date = "%Y-%m-%d",
                   format_datetime = "%Y-%m-%d %H:%M",
                   name = NULL,
-                  serie_id = NULL,
+                  dataserie_id = NULL,
                   width = NULL,
                   height = NULL,
                   elementId = NULL) {
@@ -101,7 +101,7 @@ vline <- function(data,
     format_date = format_date,
     format_datetime = format_datetime,
     name = name,
-    serie_id = serie_id,
+    dataserie_id = dataserie_id,
     width = width,
     height = height,
     elementId = elementId
@@ -117,7 +117,7 @@ varea <- function(data,
                   format_date = "%Y-%m-%d",
                   format_datetime = "%Y-%m-%d %H:%M",
                   name = NULL,
-                  serie_id = NULL,
+                  dataserie_id = NULL,
                   width = NULL,
                   height = NULL,
                   elementId = NULL) {
@@ -129,7 +129,7 @@ varea <- function(data,
     format_date = format_date,
     format_datetime = format_datetime,
     name = name,
-    serie_id = serie_id,
+    dataserie_id = dataserie_id,
     width = width,
     height = height,
     elementId = elementId
@@ -143,7 +143,7 @@ vlinearea <- function(type,
                       format_date = "%Y-%m-%d",
                       format_datetime = "%Y-%m-%d %H:%M",
                       name = NULL,
-                      serie_id = NULL,
+                      dataserie_id = NULL,
                       width = NULL,
                       height = NULL,
                       elementId = NULL) {
@@ -153,8 +153,8 @@ vlinearea <- function(type,
   mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
   if (identical(attr(mapdata, "datetime_format"), "datetime"))
     format_date <- format_datetime
-  if (is.null(serie_id))
-    serie_id <- paste0(type, "_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0(type, "_", genId(4))
   axe_bottom_type <- switch(
     attr(mapdata, "x_class"),
     "character" = "band",
@@ -170,7 +170,7 @@ vlinearea <- function(type,
     type = "common",
     data = list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     ),
@@ -178,8 +178,8 @@ vlinearea <- function(type,
       list(
         type = type,
         name = name,
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         xField = "x",
         yField = "y",
         seriesField = if (has_name(mapdata, aesthetic)) aesthetic,
@@ -246,7 +246,7 @@ vlinearea <- function(type,
 #' @export
 #'
 #' @rdname vline-varea
-v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
+v_add_line <- function(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
   )
@@ -256,13 +256,13 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
-  if (is.null(serie_id))
-    serie_id <- paste0("line_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("line_", genId(4))
   vc$x$specs$data <- c(
     vc$x$specs$data,
     list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     )
@@ -273,8 +273,8 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
       list(
         type = "line",
         name = name,
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         xField = "x",
         yField = "y",
         seriesField = if (has_name(mapdata, "colour")) "colour",
@@ -291,7 +291,7 @@ v_add_line <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
 #' @export
 #'
 #' @rdname vline-varea
-v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = NULL) {
+v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vline()" = inherits(vc, "vline")
   )
@@ -301,13 +301,13 @@ v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = N
   if (is.null(name) & !is.null(mapping$ymin) & !is.null(mapping$ymax))
     name <- paste(rlang::as_label(mapping$ymin), rlang::as_label(mapping$ymax), sep = " - ")
   mapdata <- eval_mapping(data, mapping, convert_date = TRUE)
-  if (is.null(serie_id))
-    serie_id <- paste0("range_area_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("range_area_", genId(4))
   vc$x$specs$data <- c(
     vc$x$specs$data,
     list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     )
@@ -317,8 +317,8 @@ v_add_range_area <- function(vc, mapping, data = NULL, name = NULL, serie_id = N
       list(
         type = "rangeArea",
         name = name,
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         xField = "x",
         yField = c("ymin", "ymax"),
         seriesField = if (has_name(mapdata, "colour")) "colour",
@@ -415,7 +415,7 @@ vhist <- function(data,
 #'
 #' @inheritParams vchart
 #' @inheritParams vbar
-#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()]
+#' @param dataserie_id ID for the serie, can be used to customize the serie with [v_specs()]
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -423,27 +423,27 @@ vhist <- function(data,
 #' @example examples/vscatter.R
 vscatter <- function(data,
                      mapping,
-                     serie_id = NULL,
+                     dataserie_id = NULL,
                      width = NULL,
                      height = NULL,
                      elementId = NULL) {
   data <- as.data.frame(data)
   mapdata <- eval_mapping(data, mapping, convert_date = FALSE)
-  if (is.null(serie_id))
-    serie_id <- paste0("scatter_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("scatter_", genId(4))
   specs <- list(
     type = "common",
     data = list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     ),
     series = list(
       list(
         type = "scatter",
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         xField = "x",
         yField = "y",
         seriesField = if (has_name(mapdata, "colour")) "colour",
@@ -609,7 +609,7 @@ vtreemap <- function(data,
 #' @example examples/vheatmap.R
 vheatmap <- function(data,
                      mapping,
-                     serie_id = NULL,
+                     dataserie_id = NULL,
                      width = NULL,
                      height = NULL,
                      elementId = NULL) {
@@ -645,21 +645,21 @@ vheatmap <- function(data,
       call. = FALSE
     )
   }
-  if (is.null(serie_id))
-  serie_id <- paste0("heatmap_", genId(4))
+  if (is.null(dataserie_id))
+  dataserie_id <- paste0("heatmap_", genId(4))
   specs <- list(
     type = "common",
     data = list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     ),
     series = list(
       list(
         type = "heatmap",
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         xField = "x",
         yField = "y",
         valueField = "fill",
@@ -704,14 +704,14 @@ vheatmap <- function(data,
 #' @example examples/vpie.R
 vpie <- function(data,
                  mapping,
-                 serie_id = NULL,
+                 dataserie_id = NULL,
                  width = NULL,
                  height = NULL,
                  elementId = NULL) {
   data <- as.data.frame(data)
   mapdata <- eval_mapping(data, mapping)
-  if (is.null(serie_id))
-    serie_id <- paste0("pie_", genId(4))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("pie_", genId(4))
   if (has_name(mapdata, "group")) {
     groups <- unique(mapdata$group)
     data <- lapply(
@@ -719,7 +719,7 @@ vpie <- function(data,
       FUN = function(group) {
         index <- mapdata$group == group
         list(
-          id = paste(serie_id, group, sep = "_"),
+          id = paste(dataserie_id, group, sep = "_"),
           values = create_values(lapply(mapdata, `[`, index))
         )
       }
@@ -729,8 +729,8 @@ vpie <- function(data,
       FUN = function(group) {
         list(
           type = "pie",
-          id = serie_id,
-          dataId = paste(serie_id, group, sep = "_"),
+          id = paste(dataserie_id, group, sep = "_"),
+          dataId = paste(dataserie_id, group, sep = "_"),
           categoryField = "x",
           valueField = "y",
           label = list(
@@ -742,15 +742,15 @@ vpie <- function(data,
   } else {
     data <- list(
       list(
-        id = serie_id,
+        id = dataserie_id,
         values = create_values(mapdata)
       )
     )
     series <- list(
       list(
         type = "pie",
-        id = serie_id,
-        dataId = serie_id,
+        id = dataserie_id,
+        dataId = dataserie_id,
         categoryField = "x",
         valueField = "y",
         label = list(

@@ -20,7 +20,7 @@
 #'
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
 #' @param ... List of options to specify for the chart, see [https://www.visactor.io/vchart/option/](https://www.visactor.io/vchart/option/).
-#' @param serie Used to set or modify options for a chart where there are multiple series. You can use :
+#' @param dataserie_id Used to set or modify options for a chart where there are multiple series. You can use :
 #'   * a `numeric` to target the position of the serie in the order where it's added to the chart
 #'   * a `character` to refer to a `serie_id` set when the serie was added to the plot.
 #'
@@ -36,24 +36,24 @@
 #'     label = list(visible = TRUE),
 #'     color = list("firebrick")
 #'   )
-v_specs <- function(vc, ..., serie = NULL) {
+v_specs <- function(vc, ..., dataserie_id = NULL) {
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  if (is.null(serie)) {
+  if (is.null(dataserie_id)) {
     vc$x$specs <- modifyList(
       x = vc$x$specs,
       val = list(...),
       keep.null = TRUE
     )
-  } else if (is.numeric(serie)) {
-    vc$x$specs$series[[serie]] <- modifyList(
-      x = vc$x$specs$series[[serie]],
+  } else if (is.numeric(dataserie_id)) {
+    vc$x$specs$series[[dataserie_id]] <- modifyList(
+      x = vc$x$specs$series[[dataserie_id]],
       val = list(...),
       keep.null = TRUE
     )
-  } else if (is.character(serie)) {
-    serie <- get_serie_index(vc, serie)
+  } else if (is.character(dataserie_id)) {
+    serie <- get_serie_index(vc, dataserie_id)
     if (length(serie) == 1) {
       vc$x$specs$series[[serie]] <- modifyList(
         x = vc$x$specs$series[[serie]],

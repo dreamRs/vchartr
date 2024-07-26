@@ -2,20 +2,20 @@
 library(vchartr)
 
 # Bvasic Pie Chart
-subset(world_electricity, year == 2023 & type == "total") %>% 
+subset(world_electricity, year == 2023 & type == "total") %>%
   vpie(aes(x = source, y = generation))
 
 # Use custom colors
-subset(world_electricity, year == 2023 & type == "total") %>% 
-  vpie(aes(x = source, y = generation)) %>% 
+subset(world_electricity, year == 2023 & type == "total") %>%
+  vpie(aes(x = source, y = generation)) %>%
   v_colors_manual(
-    "Low carbon" = "#a3be8c", 
+    "Low carbon" = "#a3be8c",
     "Fossil fuels" = "#4C566A"
   )
 
 # Customize tooltip
-subset(world_electricity, year == 2023 & type == "total") %>% 
-  vpie(aes(x = source, y = generation)) %>% 
+subset(world_electricity, year == 2023 & type == "total") %>%
+  vpie(aes(x = source, y = generation)) %>%
   v_tooltip(
     mark = list(
       content = list(
@@ -34,10 +34,10 @@ subset(world_electricity, year == 2023 & type == "total") %>%
 
 
 # Nested Pie Chart
-subset(world_electricity, year == 2023) %>% 
-  vpie(aes(x = source, y = generation, group = type), serie_id = "pie") %>% 
+subset(world_electricity, year == 2023) %>%
+  vpie(aes(x = source, y = generation, group = type), dataserie_id = "pie") %>%
   v_specs(
-    serie = "pie_total", # serie_id + '_' + group name
+    dataserie_id = "pie_total", # serie_id + '_' + group name
     outerRadius = 0.65,
     innerRadius = 0,
     label = list(
@@ -51,9 +51,9 @@ subset(world_electricity, year == 2023) %>%
         lineWidth = 2
       )
     )
-  ) %>% 
+  ) %>%
   v_specs(
-    serie = "pie_detail", # serie_id + '_' + group name
+    dataserie_id = "pie_detail", # serie_id + '_' + group name
     outerRadius = 0.8,
     innerRadius = 0.67,
     pie = list(

@@ -14,7 +14,7 @@ vline(
   format_date = "\%Y-\%m-\%d",
   format_datetime = "\%Y-\%m-\%d \%H:\%M",
   name = NULL,
-  serie_id = NULL,
+  dataserie_id = NULL,
   width = NULL,
   height = NULL,
   elementId = NULL
@@ -26,15 +26,15 @@ varea(
   format_date = "\%Y-\%m-\%d",
   format_datetime = "\%Y-\%m-\%d \%H:\%M",
   name = NULL,
-  serie_id = NULL,
+  dataserie_id = NULL,
   width = NULL,
   height = NULL,
   elementId = NULL
 )
 
-v_add_line(vc, mapping, data = NULL, name = NULL, serie_id = NULL)
+v_add_line(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL)
 
-v_add_range_area(vc, mapping, data = NULL, name = NULL, serie_id = NULL)
+v_add_range_area(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL)
 }
 \arguments{
 \item{data}{Default dataset to use for chart. If not already
@@ -48,7 +48,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{name}{Name for the serie, only used for single serie (no \code{color} aesthetic supplied).}
 
-\item{serie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the
@@ -81,12 +81,12 @@ vline(eco2mix, aes(date, solar))
 varea(eco2mix, aes(date, solar))
 
 # Smooth Line Chart
-vline(tail(eco2mix, 20), aes(date, solar), serie_id = "line_solar") \%>\%
+vline(tail(eco2mix, 20), aes(date, solar), dataserie_id = "line_solar") \%>\%
   v_specs(
     line = list(
       style = list(curveType = "monotone")
     ),
-    serie = "line_solar"
+    dataserie_id = "line_solar"
   )
 
 
@@ -109,7 +109,7 @@ vline(temperatures, aes(date, `2024`)) \%>\%
   v_add_line(aes(date, average)) \%>\%
   v_add_range_area(
     aes(date, ymin = low, ymax = high),
-    serie_id = "range_area"
+    dataserie_id = "range_area"
   ) \%>\%
   v_legend(visible = TRUE) \%>\%
   v_specs(
@@ -119,7 +119,7 @@ vline(temperatures, aes(date, `2024`)) \%>\%
         fill = "#D8DEE9"
       )
     ),
-    serie = "range_area"
+    dataserie_id = "range_area"
   )
 
 }

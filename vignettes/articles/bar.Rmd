@@ -16,19 +16,67 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(vchartr)
+library(dplyr)
+```
+
+
+## Bar Chart
+
+Create a bar chart :
+
+```{r bar-chart}
+electricity_mix %>% 
+  filter(country == "South Korea") %>% 
+  arrange(desc(generation)) %>% 
+  vbar(
+    aes(source, generation)
+  ) %>% 
+  v_colors("#5E81AC") %>% 
+  v_axes(
+    position = "left",
+    label = list(
+      formatMethod = JS("val => `${val} TWh`")
+    )
+  ) %>% 
+  v_labs(
+    title = "South Korea electricity mix"
+  )
+```
+
+
+Colorize bars :
+
+```{r}
+electricity_mix %>% 
+  filter(country == "South Korea") %>% 
+  arrange(desc(generation)) %>% 
+  vbar(
+    aes(source, generation, fill = source)
+  ) %>%
+  v_specs(xField = "x") %>% # <- use only 'x' aesthetic on x-axis
+  v_legend(visible = FALSE) %>%
+  v_colors_manual(
+    "oil" = "#80549f",
+    "coal" = "#a68832",
+    "solar" = "#d66b0d",
+    "gas" = "#f20809",
+    "wind" = "#72cbb7",
+    "hydro" = "#2672b0",
+    "nuclear" = "#e4a701"
+  )
 ```
 
 
 
+## Horizontal Bar Chart
 
-## Basic Bar Chart
+Create a basic horizontal bar chart with :
 
-Create a basic bar chart with :
-
-```{r basic}
+```{r horizontal}
 vbar(
   top_generation,
-  aes(country, electricity_generation)
+  aes(country, electricity_generation), 
+  direction = "horizontal"
 ) %>% 
   v_specs(
     label = list(visible = TRUE)
@@ -46,7 +94,8 @@ Highlight a specific bar in the chart :
 ```{r highlight-bar}
 vbar(
   top_generation,
-  aes(country, electricity_generation)
+  aes(country, electricity_generation), 
+  direction = "horizontal"
 ) %>% 
   v_specs(
     bar = list(
@@ -57,17 +106,47 @@ vbar(
   )
 ```
 
+Or : 
+
+```{r highlight-bars}
+co2_emissions %>% 
+  filter(country == "China") %>% 
+  vbar(
+    aes(year, co2_growth_prct)
+  ) %>% 
+  v_specs(
+    bar = list(
+      style = list(
+        fill = JS("datum => datum.y <= 0 ? 'forestgreen' : 'firebrick'")
+      )
+    )
+  ) %>% 
+  v_axes(
+    position = "left",
+    title = list(
+      visible = TRUE,
+      text = "Annual CO₂ emissions growth (%)",
+      position = "start"
+    )
+  ) %>% 
+  v_labs(
+    title = "Annual percentage growth in total emissions of carbon dioxide (CO₂)"
+  )
+```
+
+
+
 
 ## Grouped Bar Chart
 
 A grouped bar chart with specific colors and custom legend : 
 
-```{r}
+```{r grouped}
 vbar(
-  subset(world_generation, type == "total"),
+  subset(world_electricity, type == "total"),
   aes(year, generation, fill = source)
 ) %>% 
-  v_colors_manual("Low carbon" = "#8FBCBB", "Fossil fuels" = "#4C566A") %>% 
+  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
   v_legend(
     title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
@@ -76,4 +155,37 @@ vbar(
   )
 ```
 
+Stack bars :
+
+```{r grouped-stacked}
+vbar(
+  subset(world_electricity, type == "total"),
+  aes(year, generation, fill = source),
+  stack = TRUE
+) %>% 
+  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_legend(
+    title = list(text = "Source of electricity", visible = TRUE),
+    orient = "right",
+    position = "start",
+    item = list(focus = TRUE)
+  )
+```
+
+
+```{r grouped-stacked-percentage}
+vbar(
+  subset(world_electricity, type == "total"),
+  aes(year, generation, fill = source),
+  stack = TRUE, 
+  percent = TRUE
+) %>% 
+  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_axes(
+    position = "left",
+    label = list(
+      formatMethod = JS("val => `${val*100}%`")
+    )
+  )
+```
 

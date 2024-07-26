@@ -97,3 +97,21 @@ vchart(
     )
   )
 )
+
+
+
+
+
+titanic <- as.data.frame(Titanic)
+
+
+
+
+
+
+
+
+
+
+
+

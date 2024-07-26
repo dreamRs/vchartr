@@ -34,7 +34,7 @@ vchart <- function(..., width = NULL, height = NULL, elementId = NULL) {
       viewer.defaultWidth = "100%",
       knitr.figure = FALSE,
       knitr.defaultWidth = "100%",
-      knitr.defaultHeight = "350px",
+      knitr.defaultHeight = "400px",
       browser.fill = TRUE,
       viewer.suppress = FALSE,
       browser.external = TRUE,

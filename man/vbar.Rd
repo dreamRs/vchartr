@@ -10,6 +10,7 @@ vbar(
   stack = FALSE,
   percent = FALSE,
   direction = c("vertical", "horizontal"),
+  serie_id = NULL,
   width = NULL,
   height = NULL,
   elementId = NULL
@@ -26,6 +27,8 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 \item{percent}{Whether to display the data as a percentage.}
 
 \item{direction}{The direction configuration of the chart: \code{"vertical"} (default) or \code{"horizontal"}.}
+
+\item{serie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the

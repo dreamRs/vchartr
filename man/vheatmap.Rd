@@ -19,7 +19,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{mapping}{Default list of aesthetic mappings to use for chart.}
 
-\item{serie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}}
+\item{serie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the

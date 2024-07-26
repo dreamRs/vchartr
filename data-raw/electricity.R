@@ -72,6 +72,10 @@ electricity_mix <- melt(
   value.name = "generation"
 )
 electricity_mix[, source := gsub("_electricity", "", source)]
+electricity_mix[, type := fifelse(
+  source %in% c("solar", "wind", "hydro", "nuclear"),
+  "Low carbon", "Fossil fuels"
+)]
 electricity_mix[]
 
 

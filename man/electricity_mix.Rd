@@ -10,6 +10,7 @@ A data frame with 70 observations and 3 variables:
 \item \code{country} : Country name
 \item \code{source} : source of electricity
 \item \code{generation} : Total electricity generation - Measured in terawatt-hours.
+\item \code{type} : Low carbon or fossil fuels type of source.
 }
 }
 \source{

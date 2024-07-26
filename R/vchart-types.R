@@ -7,6 +7,7 @@
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
 #' @param percent Whether to display the data as a percentage.
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
+#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()].
 #' @inheritParams vchart
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -20,16 +21,20 @@ vbar <- function(data,
                  stack = FALSE,
                  percent = FALSE,
                  direction = c("vertical", "horizontal"),
+                 serie_id = NULL,
                  width = NULL,
                  height = NULL,
                  elementId = NULL) {
   direction <- match.arg(direction)
   data <- as.data.frame(data)
   mapdata <- eval_mapping(data, mapping)
+  if (is.null(serie_id))
+    serie_id <- paste0("bar_", genId(4))
   specs <- list(
     type = "bar",
     data = list(
       list(
+        id = serie_id,
         values = create_values(mapdata)
       )
     ),
@@ -40,9 +45,17 @@ vbar <- function(data,
   )
   if (direction == "horizontal") {
     specs$xField <- "y"
-    specs$yField <- if (has_name(mapdata, "fill") & isFALSE(stack)) c("x", "fill") else "x"
+    specs$yField <- "x"
+    if (has_name(mapdata, "group"))
+      specs$yField <- c("group", specs$yField)
+    if (has_name(mapdata, "fill") & isFALSE(stack))
+      specs$yField <- c(specs$yField, "fill")
   } else {
-    specs$xField <- if (has_name(mapdata, "fill") & isFALSE(stack)) c("x", "fill") else "x"
+    specs$xField <- "x"
+    if (has_name(mapdata, "group"))
+      specs$xField <- c("group", specs$xField)
+    if (has_name(mapdata, "fill") & isFALSE(stack))
+      specs$xField <- c(specs$xField, "fill")
     specs$yField <- "y"
   }
   if (has_name(mapdata, "fill")) {
@@ -63,7 +76,7 @@ vbar <- function(data,
 #' @param format_date Format to be applied if `x` aesthetic is a `Date`.
 #' @param format_datetime Format to be applied if `x` aesthetic is a `POSIXt`.
 #' @param name Name for the serie, only used for single serie (no `color` aesthetic supplied).
-#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()]
+#' @param serie_id ID for the serie, can be used to customize the serie with [v_specs()].
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export

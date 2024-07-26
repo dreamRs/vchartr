@@ -21,6 +21,7 @@
 #'   * `country` : Country name
 #'   * `source` : source of electricity
 #'   * `generation` : Total electricity generation - Measured in terawatt-hours.
+#'   * `type` : Low carbon or fossil fuels type of source.
 #'
 #' @source [Our World In Data](https://github.com/owid/energy-data)
 "electricity_mix"

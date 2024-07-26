@@ -495,7 +495,7 @@ vcirclepacking <- function(data,
                            height = NULL,
                            elementId = NULL) {
   data <- as.data.frame(data)
-  mapdata <- eval_mapping(data, mapping)
+  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
   lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {
@@ -555,7 +555,7 @@ vtreemap <- function(data,
                      height = NULL,
                      elementId = NULL) {
   data <- as.data.frame(data)
-  mapdata <- eval_mapping(data, mapping)
+  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
   lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {

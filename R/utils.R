@@ -118,3 +118,13 @@ create_tree <- function(data,
 }
 
 
+
+rename_aes_lvl <- function(mapping) {
+  if (has_name(mapping, "x"))
+    names(mapping)[names(mapping) == "x"] <- "lvl1"
+  if (has_name(mapping, "y") & has_name(mapping, "value"))
+    names(mapping)[names(mapping) == "y"] <- "lvl2"
+  if (has_name(mapping, "y") & !has_name(mapping, "value"))
+    names(mapping)[names(mapping) == "y"] <- "value"
+  mapping
+}

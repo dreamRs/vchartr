@@ -157,3 +157,18 @@
 #' @source Package [rnaturalearth](https://github.com/ropensci/rnaturalearth)
 "countries_gdp"
 
+
+
+#' @title Data for Sankey Chart
+#'
+#' @description These data represent how energy is converted or transmitted before being consumed or lost.
+#'
+#' @format A data frame with 177 observations and 3 variables:
+#'   * `source` : Source
+#'   * `target` : Target
+#'   * `value` : Energy in TWh
+#'
+#' @source Department of Energy & Climate Change via Tom Counsell
+"energy_sankey"
+
+

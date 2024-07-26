@@ -46,11 +46,8 @@ ui <- page_fluid(
 
 server <- function(input, output, session) {
 
-  data_r <- reactive({
-
-  })
-
   output$mychart <- renderVchart({
+
     if (input$data == "mix") {
       elec_data <- subset(electricity_mix, country == input$country)
       mapping <- aes(source, generation, fill = source)
@@ -58,6 +55,7 @@ server <- function(input, output, session) {
       elec_data <- subset(electricity_mix, source == input$source)
       mapping <- aes(country, generation, fill = country)
     }
+
     if (input$type == "bar") {
       vc <- vbar(elec_data, mapping) %>%
         v_specs(xField = "x") %>%
@@ -83,6 +81,7 @@ server <- function(input, output, session) {
           label = list(style = list(visible = input$show_label))
         )
     }
+
     vc %>%
       v_colors_manual(
         "oil" = "#80549f",

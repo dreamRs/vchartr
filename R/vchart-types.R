@@ -782,3 +782,95 @@ vwordcloud <- function(data,
 }
 
 
+
+
+#' Create a Sankey Chart
+#'
+#' @inheritParams vbar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/vsankey.R
+vsankey <- function(data = NULL,
+                    mapping = NULL,
+                    width = NULL,
+                    height = NULL,
+                    elementId = NULL) {
+  specs <- list(
+    type = "sankey",
+    label = list(
+      visible = TRUE,
+      style = list(fontSize = 10)
+    ),
+    node = list(
+      state = list(
+        hover = list(
+          stroke = "#333333"
+        ),
+        selected = list(
+          fill = "#dddddd",
+          stroke = "#333333",
+          lineWidth = 1,
+          brighter = 1,
+          fillOpacity = 1
+        )
+      )
+    ),
+    link = list(
+      state = list(
+        hover = list(
+          fillOpacity = 1
+        ),
+        selected = list(
+          fill = "#dddddd",
+          stroke = "#333333",
+          lineWidth = 1,
+          brighter = 1,
+          fillOpacity = 1
+        )
+      )
+    )
+  )
+  if (!is.null(data) & !is.null(mapping)) {
+    data <- as.data.frame(data)
+    mapdata <- eval_mapping(data, rename_aes_sankey(mapping))
+    nodes <- data.frame(nodes = sort(unique(c(mapdata$source, mapdata$target))))
+    nodes$nodes_id <- seq_len(nrow(nodes)) - 1
+    links <- as.data.frame(mapdata)
+    links$target <- nodes$nodes_id[match(links$target, nodes$nodes)]
+    links$source <- nodes$nodes_id[match(links$source, nodes$nodes)]
+    specs$data <- list(
+      list(
+        values = list(
+          list(
+            nodes = create_values(nodes),
+            links = create_values(links)
+          )
+        )
+      )
+    )
+    specs$categoryField <- "nodes"
+    specs$valueField <- "value"
+    specs$sourceField <- "source"
+    specs$targetField <- "target"
+  } else if (is.list(data) & !is.null(data$nodes) & !is.null(data$links)) {
+    specs$data <- list(
+      list(
+        values = list(
+          list(
+            nodes = create_values(nodes),
+            links = create_values(links)
+          )
+        )
+      )
+    )
+    specs$categoryField <- names(nodes)[1]
+    specs$valueField <- names(nodes)[3]
+    specs$sourceField <- names(nodes)[1]
+    specs$targetField <- names(nodes)[2]
+  }
+  create_chart("vsankey", specs, width, height, elementId)
+}
+
+

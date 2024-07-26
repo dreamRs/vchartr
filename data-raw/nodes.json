@@ -1,0 +1,146 @@
+[
+   {
+      "nodeName":"Agricultural 'waste'"
+   },
+   {
+      "nodeName":"Bio-conversion"
+   },
+   {
+      "nodeName":"Liquid"
+   },
+   {
+      "nodeName":"Losses"
+   },
+   {
+      "nodeName":"Solid"
+   },
+   {
+      "nodeName":"Gas"
+   },
+   {
+      "nodeName":"Biofuel imports"
+   },
+   {
+      "nodeName":"Biomass imports"
+   },
+   {
+      "nodeName":"Coal imports"
+   },
+   {
+      "nodeName":"Coal"
+   },
+   {
+      "nodeName":"Coal reserves"
+   },
+   {
+      "nodeName":"District heating"
+   },
+   {
+      "nodeName":"Industry"
+   },
+   {
+      "nodeName":"Heating and cooling - commercial"
+   },
+   {
+      "nodeName":"Heating and cooling - homes"
+   },
+   {
+      "nodeName":"Electricity grid"
+   },
+   {
+      "nodeName":"Over generation / exports"
+   },
+   {
+      "nodeName":"H2 conversion"
+   },
+   {
+      "nodeName":"Road transport"
+   },
+   {
+      "nodeName":"Agriculture"
+   },
+   {
+      "nodeName":"Rail transport"
+   },
+   {
+      "nodeName":"Lighting & appliances - commercial"
+   },
+   {
+      "nodeName":"Lighting & appliances - homes"
+   },
+   {
+      "nodeName":"Gas imports"
+   },
+   {
+      "nodeName":"Ngas"
+   },
+   {
+      "nodeName":"Gas reserves"
+   },
+   {
+      "nodeName":"Thermal generation"
+   },
+   {
+      "nodeName":"Geothermal"
+   },
+   {
+      "nodeName":"H2"
+   },
+   {
+      "nodeName":"Hydro"
+   },
+   {
+      "nodeName":"International shipping"
+   },
+   {
+      "nodeName":"Domestic aviation"
+   },
+   {
+      "nodeName":"International aviation"
+   },
+   {
+      "nodeName":"National navigation"
+   },
+   {
+      "nodeName":"Marine algae"
+   },
+   {
+      "nodeName":"Nuclear"
+   },
+   {
+      "nodeName":"Oil imports"
+   },
+   {
+      "nodeName":"Oil"
+   },
+   {
+      "nodeName":"Oil reserves"
+   },
+   {
+      "nodeName":"Other waste"
+   },
+   {
+      "nodeName":"Pumped heat"
+   },
+   {
+      "nodeName":"Solar PV"
+   },
+   {
+      "nodeName":"Solar Thermal"
+   },
+   {
+      "nodeName":"Solar"
+   },
+   {
+      "nodeName":"Tidal"
+   },
+   {
+      "nodeName":"UK land based bioenergy"
+   },
+   {
+      "nodeName":"Wave"
+   },
+   {
+      "nodeName":"Wind"
+   }
+]

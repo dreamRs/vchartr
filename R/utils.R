@@ -104,6 +104,7 @@ create_tree <- function(data,
       else {
         c(dropNullsOrEmpty(list(
           name = var,
+          value = sum(dat[[value]], na.rm = TRUE),
           children = create_tree(
             data = dat,
             levels = levels[-1],
@@ -126,5 +127,14 @@ rename_aes_lvl <- function(mapping) {
     names(mapping)[names(mapping) == "y"] <- "lvl2"
   if (has_name(mapping, "y") & !has_name(mapping, "value"))
     names(mapping)[names(mapping) == "y"] <- "value"
+  mapping
+}
+
+
+rename_aes_sankey <- function(mapping) {
+  if (has_name(mapping, "x"))
+    names(mapping)[names(mapping) == "x"] <- "target"
+  if (has_name(mapping, "y"))
+    names(mapping)[names(mapping) == "y"] <- "source"
   mapping
 }

@@ -61,7 +61,15 @@ vbar <- function(data,
   if (has_name(mapdata, "fill")) {
     specs$legends$visible <- TRUE
   }
-  create_chart("vbar", specs, width, height, elementId)
+  create_chart(
+    "vbar",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -191,13 +199,15 @@ vlinearea <- function(type,
     axes = list(
       list(
         orient = "left",
-        type = "linear"
+        type = "linear",
+        zero = FALSE
       ),
       list(
         orient = "bottom",
         type = axe_bottom_type,
         nice = FALSE,
-        layers = list(list(timeFormat = format_date))
+        layers = list(list(timeFormat = format_date)),
+        zero = FALSE
       )
     ),
     tooltip = list_(
@@ -234,9 +244,15 @@ vlinearea <- function(type,
   if (has_name(mapdata, aesthetic)) {
     specs$legends$visible <- TRUE
   }
-  vc <- create_chart(paste0("v", type), specs, width, height, elementId)
-  vc$x$data <- data
-  return(vc)
+  create_chart(
+    paste0("v", type),
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -403,7 +419,15 @@ vhist <- function(data,
   if (has_name(mapping, "fill")) {
     specs$legends$visible <- TRUE
   }
-  create_chart("vhist", specs, width, height, elementId)
+  create_chart(
+    "vhist",
+    specs = specs,
+    data = data,
+    mapdata = hdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -475,9 +499,15 @@ vscatter <- function(data,
   if (has_name(mapdata, "colour")) {
     specs$legends$visible <- TRUE
   }
-  vc <- create_chart("vscatter", specs, width, height, elementId)
-  vc$x$data <- data
-  return(vc)
+  create_chart(
+    "vscatter",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -548,7 +578,15 @@ vcirclepacking <- function(data,
   if (!is.null(label_visible)) {
     specs$label$style$visible <- label_visible
   }
-  create_chart("vcirclepacking", specs, width, height, elementId)
+  create_chart(
+    "vcirclepacking",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -592,7 +630,15 @@ vtreemap <- function(data,
     valueField = "value",
     drill = drill
   )
-  create_chart("vtreemap", specs, width, height, elementId)
+  create_chart(
+    "vtreemap",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -687,7 +733,15 @@ vheatmap <- function(data,
     color = color,
     legends = legend
   )
-  create_chart("vheatmap", specs, width, height, elementId)
+  create_chart(
+    "vheatmap",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -764,7 +818,15 @@ vpie <- function(data,
     data = data,
     series = series
   )
-  create_chart("vpie", specs, width, height, elementId)
+  create_chart(
+    "vpie",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -791,7 +853,15 @@ vwordcloud <- function(data,
     valueField = "count",
     seriesField = if (has_name(mapdata, "colour")) "colour"
   )
-  create_chart("vwordcloud", specs, width, height, elementId)
+  create_chart(
+    "vwordcloud",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 
@@ -845,6 +915,7 @@ vsankey <- function(data = NULL,
       )
     )
   )
+  mapdata <- NULL
   if (!is.null(data) & !is.null(mapping)) {
     data <- as.data.frame(data)
     mapdata <- eval_mapping(data, rename_aes_sankey(mapping))
@@ -883,7 +954,15 @@ vsankey <- function(data = NULL,
     specs$sourceField <- names(nodes)[1]
     specs$targetField <- names(nodes)[2]
   }
-  create_chart("vsankey", specs, width, height, elementId)
+  create_chart(
+    "vsankey",
+    specs = specs,
+    data = data,
+    mapdata = mapdata,
+    width = width,
+    height = height,
+    elementId = elementId
+  )
 }
 
 

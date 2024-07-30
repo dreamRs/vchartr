@@ -31,7 +31,13 @@ create_values <- function(data) {
 }
 
 
-create_chart <- function(type, specs, width, height, elementId) {
+create_chart <- function(type,
+                         specs,
+                         data = NULL,
+                         mapdata = NULL,
+                         width,
+                         height,
+                         elementId) {
   args <- c(
     dropNulls(specs),
     list(
@@ -41,6 +47,8 @@ create_chart <- function(type, specs, width, height, elementId) {
     )
   )
   vc <- exec("vchart", !!!args)
+  vc$x$data <- data
+  vc$x$mapdata <- mapdata
   class(vc) <- c(class(vc), type)
   return(vc)
 }

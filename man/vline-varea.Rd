@@ -81,12 +81,21 @@ vline(eco2mix, aes(date, solar))
 varea(eco2mix, aes(date, solar))
 
 # Smooth Line Chart
-vline(tail(eco2mix, 20), aes(date, solar), dataserie_id = "line_solar") \%>\%
+vline(tail(eco2mix, 10), aes(date, solar), dataserie_id = "line") \%>\%
   v_specs(
     line = list(
       style = list(curveType = "monotone")
     ),
-    dataserie_id = "line_solar"
+    dataserie_id = "line"
+  )
+
+# Step Line Chart
+vline(tail(eco2mix, 10), aes(date, solar), dataserie_id = "line") \%>\%
+  v_specs(
+    line = list(
+      style = list(curveType = "stepAfter")
+    ),
+    dataserie_id = "line"
   )
 
 

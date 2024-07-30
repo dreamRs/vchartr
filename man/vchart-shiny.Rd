@@ -90,9 +90,9 @@ server <- function(input, output, session) {
 
     if (input$type == "bar") {
       vc <- vbar(elec_data, mapping) \%>\%
-        v_specs(xField = "x") \%>\%
         v_legend(visible = FALSE) \%>\%
         v_specs(
+          xField = "x",
           label = list(visible = input$show_label)
         )
     } else if (input$type == "pie") {

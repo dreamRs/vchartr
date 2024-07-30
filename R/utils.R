@@ -57,6 +57,8 @@ create_chart <- function(type,
 eval_mapping <- function(data, mapping, convert_date = FALSE) {
   mapdata <- lapply(mapping, eval_tidy, data = data)
   attr(mapdata, "x_class") <- class(mapdata$x)[1]
+  attr(mapdata, "scale_x") <- get_scale(mapdata$x)
+  attr(mapdata, "scale_y") <- get_scale(mapdata$y)
   if (isTRUE(convert_date)) {
     if (inherits(mapdata$x, "Date")) {
       mapdata$x <- as.numeric(mapdata$x) * 3600*24 * 1000
@@ -67,6 +69,21 @@ eval_mapping <- function(data, mapping, convert_date = FALSE) {
     }
   }
   return(mapdata)
+}
+
+
+get_scale <- function(x) {
+  if (inherits(x, c("numeric", "integer"))) {
+    "continuous"
+  } else if (inherits(x, c("character", "factor"))) {
+    "discrete"
+  } else if (inherits(x, "Date")) {
+    "date"
+  } else if (inherits(x, "POSIXt")) {
+    "datetime"
+  } else {
+    class(x)[1]
+  }
 }
 
 

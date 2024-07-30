@@ -1,6 +1,9 @@
 import "widgets";
 import VChart from "@visactor/vchart";
 
+import {format as d3_format, formatLocale as d3_format_locale} from "d3-format";
+
+export { d3_format, d3_format_locale };
 
 HTMLWidgets.widget({
 

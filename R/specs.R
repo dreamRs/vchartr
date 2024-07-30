@@ -238,11 +238,11 @@ v_axes <- function(vc,
     if (length(index) < 1)
       index <- length(vc$x$specs$axes) + 1
     if (index > length(vc$x$specs$axes)) {
-      vc$x$specs$axes[[index]] <- list(orient = position, ...)
+      vc$x$specs$axes[[index]] <- dropNulls(list(orient = position, ...))
     } else {
       vc$x$specs$axes[[index]] <- modifyList(
         x = vc$x$specs$axes[[index]],
-        val = list(orient = position, ...),
+        val = dropNulls(list(orient = position, ...)),
         keep.null = TRUE
       )
     }

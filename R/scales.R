@@ -123,15 +123,32 @@ v_scale_date <- function(vc,
     )
   }
 
-  label <- if (!is.null(dates_ticks)) {
-    list(
-      formatMethod = JS("val => {var date = new Date(val * 3600*24 * 1000); return date.toLocaleDateString();}"),
-      dataFilter = JS(sprintf(
-        "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
-        paste(dates_ticks, collapse = ", ")
-      ))
+  label <- list()
+  if (!is.null(dates_ticks)) {
+    label$dataFilter <- JS(sprintf(
+      "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
+      paste(dates_ticks, collapse = ", ")
+    ))
+  }
+  if (inherits(date_labels, "JS_EVAL")) {
+    label$formatMethod <- JS(
+      "function(value) {",
+      "var date = new Date(value * 3600 * 24 * 1000);",
+      sprintf("const fun = %s;", date_labels),
+      "return fun(date);",
+      "}"
+    )
+  } else if (is.character(date_labels)) {
+    label$formatMethod <- JS(
+      "function(value) {",
+      "var date = new Date(value * 3600 * 24 * 1000);",
+      sprintf("const fun = %s;", d3_format_time(date_labels)),
+      "return fun(date);",
+      "}"
     )
   }
+  if (length(label) < 1)
+    label <- NULL
 
   grid <- if (!is.null(dates_ticks)) {
     list(

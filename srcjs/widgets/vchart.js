@@ -2,8 +2,9 @@ import "widgets";
 import VChart from "@visactor/vchart";
 
 import {format as d3_format, formatLocale as d3_format_locale} from "d3-format";
+import {timeFormatLocale as d3_time_format_locale} from "d3-time-format";
 
-export { d3_format, d3_format_locale };
+export { d3_format, d3_format_locale, d3_time_format_locale };
 
 HTMLWidgets.widget({
 

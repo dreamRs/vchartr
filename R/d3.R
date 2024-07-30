@@ -1,5 +1,5 @@
 
-#' Format numbers with D3
+#' Format numbers and dates with D3
 #'
 #' @param format Format for numbers, currency, percentage, e.g. `".0\%"` for rounded percentage.
 #'  See online documentation : [https://github.com/d3/d3-format](https://github.com/d3/d3-format).
@@ -10,6 +10,8 @@
 #'
 #' @return a `JS` function.
 #' @export
+#'
+#' @name d3-format
 #'
 #' @importFrom htmlwidgets JS
 #'
@@ -26,9 +28,24 @@ d3_format <- function(format, prefix = "", suffix = "", locale = "en-US") {
   ))
 }
 
+#' @export
+#'
+#' @rdname d3-format
+d3_format_time <- function(format, prefix = "", suffix = "", locale = "en-US") {
+  check_locale_d3(locale, path = "d3-time-format-locale")
+  path <- system.file(file.path("d3-time-format-locale", paste0(locale, ".json")), package = "vchartr")
+  if (path != "") {
+    locale <- paste(readLines(con = path, encoding = "UTF-8"), collapse = "")
+  }
+  JS(sprintf(
+    "function(value) {var locale = d3_time_format_locale(JSON.parse('%s')); return '%s' + locale.format('%s')(value) + '%s';}",
+    locale, prefix, format, suffix
+  ))
+}
 
-check_locale_d3 <- function(x) {
-  json <- list.files(system.file("d3-format-locale", package = "vchartr"))
+
+check_locale_d3 <- function(x, path = "d3-format-locale") {
+  json <- list.files(system.file(path, package = "vchartr"))
   njson <- gsub("\\.json", "", json)
   if (!x %in% njson) {
     stop(paste(

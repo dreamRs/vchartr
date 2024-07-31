@@ -4,7 +4,14 @@
 \alias{vchart}
 \title{Create interactive charts with VChart}
 \usage{
-vchart(data, mapping, ..., width = NULL, height = NULL, elementId = NULL)
+vchart(
+  data = NULL,
+  mapping = NULL,
+  ...,
+  width = NULL,
+  height = NULL,
+  elementId = NULL
+)
 }
 \arguments{
 \item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}

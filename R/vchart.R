@@ -20,19 +20,22 @@
 #' @export
 #'
 #' @example examples/vchart.R
-vchart <- function(data,
+vchart <- function(data = NULL,
                    mapping = NULL, 
                    ...,
                    width = NULL,
                    height = NULL, 
                    elementId = NULL) {
-  if (is.data.frame(data)) {
+  if (is.data.frame(data) | is.null(data)) {
     x <- list(
       specs = list(type = "common"),
-      data,
+      data = data,
       mapping = mapping,
+      mapdata = list(),
       ...
     )
+    if (!is.null(mapping))
+      x$mapdata <- c(x$mapdata, list(eval_mapping_(data, mapping)))
   } else {
     x <- list(
       specs = list(data = data, ...)

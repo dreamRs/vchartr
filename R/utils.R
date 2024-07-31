@@ -15,10 +15,29 @@ dropNullsOrEmpty <- function(x) {
   x[!vapply(x, null_or_empty, FUN.VALUE = logical(1))]
 }
 
+list1 <- function(x){
+  if (length(x) == 1) {
+    list(x)
+  } else {
+    x
+  }
+}
+
 genId <- function(bytes = 12) {
   paste(format(as.hexmode(
     sample(256, bytes, replace = TRUE) -  1
   ), width = 2), collapse = "")
+}
+
+get_mapping <- function(vc, mapping) {
+  mapping <- c(vc$x$mapping, mapping)
+  mapping[!duplicated(names(mapping), fromLast = TRUE)]
+}
+
+get_data <- function(vc, data) {
+  if (!is.null(vc$x$data))
+    return(as.data.frame(vc$x$data))
+  return(as.data.frame(data))
 }
 
 create_values <- function(data) {
@@ -71,6 +90,19 @@ eval_mapping <- function(data, mapping, convert_date = FALSE) {
   return(mapdata)
 }
 
+eval_mapping_ <- function(data, mapping) {
+  mapdata <- lapply(mapping, eval_tidy, data = data)
+  if (inherits(mapdata$x, "factor"))
+    mapdata$x <- as.character(mapdata$x)
+  attr(mapdata, "scale_x") <- get_scale(mapdata$x)
+  attr(mapdata, "scale_y") <- get_scale(mapdata$y)
+  if (inherits(mapdata$x, "Date")) {
+    mapdata$x <- as.numeric(mapdata$x)
+  } else if (inherits(mapdata$x, "POSIXt")) {
+    mapdata$x <- as.numeric(mapdata$x)
+  }
+  return(mapdata)
+}
 
 get_scale <- function(x) {
   if (inherits(x, c("numeric", "integer"))) {

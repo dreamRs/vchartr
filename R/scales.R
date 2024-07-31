@@ -72,13 +72,7 @@ v_scale_date <- function(vc,
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  mapdata <- vc$x$mapdata
-
-  if (is.null(date_breaks))
-    date_breaks <- 5
-  if (is.null(date_labels))
-    date_labels <- "%Y-%m-%d"
-
+  
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -86,17 +80,28 @@ v_scale_date <- function(vc,
     "right" = "y",
     "left" = "y"
   )
+  
+  if (!is.null(vc$x$mapdata[[aesthetic]])) {
+    x <- vc$x$mapdata[[aesthetic]]
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
+  }
+
+  if (is.null(date_breaks))
+    date_breaks <- 5
+  if (is.null(date_labels))
+    date_labels <- "%Y-%m-%d"
 
   date_breaks_min <- if (!is.null(min)) {
     as.Date(min, origin = "1970-01-01")
   } else {
-    min(as.Date(mapdata[[aesthetic]], origin = "1970-01-01"), na.rm = TRUE)
+    min(as.Date(x, origin = "1970-01-01"), na.rm = TRUE)
   }
 
   date_breaks_max <- if (!is.null(max)) {
     as.Date(max, origin = "1970-01-01")
   } else {
-    max(as.Date(mapdata[[aesthetic]], origin = "1970-01-01"), na.rm = TRUE)
+    max(as.Date(x, origin = "1970-01-01"), na.rm = TRUE)
   }
 
   dates_ticks <- NULL
@@ -174,6 +179,7 @@ v_scale_date <- function(vc,
     position = position,
     type = "linear",
     sampling = FALSE,
+    zero = FALSE,
     min = if (!is.null(min)) as.numeric(as.Date(min)),
     max = if (!is.null(max)) as.numeric(as.Date(max)),
     tick = tick,
@@ -270,11 +276,7 @@ v_scale_continuous <- function(vc,
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  mapdata <- vc$x$mapdata
-
-  if (is.null(breaks))
-    breaks <- 5
-
+  
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -282,17 +284,26 @@ v_scale_continuous <- function(vc,
     "right" = "y",
     "left" = "y"
   )
+  
+  if (!is.null(vc$x$mapdata[[aesthetic]])) {
+    x <- vc$x$mapdata[[aesthetic]]
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
+  }
+
+  if (is.null(breaks))
+    breaks <- 5
 
   breaks_min <- if (!is.null(min)) {
     as.numeric(min)
   } else {
-    min(as.numeric(mapdata[[aesthetic]]), na.rm = TRUE)
+    min(as.numeric(x), na.rm = TRUE)
   }
 
   breaks_max <- if (!is.null(max)) {
     as.numeric(max, origin = "1970-01-01")
   } else {
-    max(as.numeric(mapdata[[aesthetic]]), na.rm = TRUE)
+    max(as.numeric(x), na.rm = TRUE)
   }
 
   breaks_ticks <- NULL

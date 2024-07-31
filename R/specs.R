@@ -7,11 +7,18 @@
   if (is.null(vc$x$specs[[name]])) {
     vc$x$specs[[name]] <- options
   } else {
-    vc$x$specs[[name]] <- modifyList(
-      x = vc$x$specs[[name]],
-      val = options,
-      keep.null = TRUE
-    )
+    if (name %in% c("data", "series")) {
+      vc$x$specs[[name]] <- c(
+        vc$x$specs[[name]],
+        options
+      )
+    } else {
+      vc$x$specs[[name]] <- modifyList(
+        x = vc$x$specs[[name]],
+        val = options,
+        keep.null = TRUE
+      )
+    }
   }
   return(vc)
 }

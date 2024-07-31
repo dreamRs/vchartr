@@ -15,7 +15,7 @@
 #'
 #' @importFrom rlang eval_tidy has_name exec
 #'
-#' @example examples/vbar.R
+#' @example examples/bar.R
 vbar <- function(data,
                  mapping,
                  stack = FALSE,

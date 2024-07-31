@@ -477,3 +477,92 @@ v_pie <- function(vc,
   return(vc)
 }
 
+
+
+
+#' Create a Circle Packing Chart
+#'
+#' @inheritParams v_bar
+#' @param drill Drill-down function switch.
+#' @param use_root Add a root level in the hierarchy, can be `TRUE`
+#'  (in this case root level will be named `root`) or a `character` (use as the name for the root level).
+#' @param fill_opacity Fill opacity, a JS function determining the opacity of the elements.
+#' @param label_visible A JS function to control visibility of labels.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_circlepacking.R
+v_circlepacking <- function(vc,
+                            mapping = NULL, 
+                            data = NULL,
+                            name = NULL,
+                            drill = TRUE,
+                            use_root = FALSE,
+                            fill_opacity = JS("d => d.isLeaf ? 0.75 : 0.25;"),
+                            label_visible = JS("d => d.depth === 1;"),
+                            ...,
+                            dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- sort(lvl_vars)
+  if (length(lvl_vars) > 1) {
+    values <- create_tree(
+      data = mapdata,
+      levels = lvl_vars,
+      value = "value"
+    )
+  } else {
+    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
+    values <- create_values(mapdata)
+  }
+  if (isTRUE(use_root) | is.character(use_root)) {
+    if (isTRUE(use_root))
+      use_root <- "root"
+    values <- list(
+      list(
+        name = use_root,
+        children = values
+      )
+    )
+  }
+  vc <- .vchart_specs(
+    vc, "data", 
+    list(
+      list(
+        id = dataserie_id,
+        values = values
+      )
+    )
+  )
+  serie <- list_(
+    type = "circlePacking",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    categoryField = "name",
+    valueField = "value",
+    drill = drill,
+    ...
+  )
+  if (!is.null(fill_opacity)) {
+    serie$circlePacking$style$fillOpacity <- fill_opacity
+  }
+  if (!is.null(label_visible)) {
+    serie$label$style$visible <- label_visible
+  }
+  vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+
+
+

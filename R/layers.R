@@ -152,9 +152,9 @@ v_line <- function(vc,
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "left", type = "linear")
   scale_x <- attr(mapdata, "scale_x")
-  if (scale_x == "discrete") {
+  if (identical(scale_x, "discrete")) {
     vc <- v_specs_axes(vc, position = "bottom", type = "band")
-  } else if (scale_x == "date") {
+  } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc = vc)
   } else {
     vc <- v_scale_x_continuous(vc = vc)
@@ -242,9 +242,9 @@ v_area <- function(vc,
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "left", type = "linear")
   scale_x <- attr(mapdata, "scale_x")
-  if (scale_x == "discrete") {
+  if (identical(scale_x, "discrete")) {
     vc <- v_specs_axes(vc, position = "bottom", type = "band")
-  } else if (scale_x == "date") {
+  } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc = vc)
   } else {
     vc <- v_scale_x_continuous(vc = vc)
@@ -334,5 +334,87 @@ v_hist <- function(vc,
   if (has_name(mapping, "fill")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
+  return(vc)
+}
+
+
+
+
+
+v_scatter <- function(vc,
+                      mapping = NULL, 
+                      data = NULL,
+                      name = NULL,
+                      dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data", 
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  serie <- list_(
+    type = "scatter",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    xField = "x",
+    yField = "y",
+    seriesField = if (has_name(mapdata, "colour")) "colour",
+    sizeField = if (has_name(mapdata, "size")) "size",
+    shapeField = if (has_name(mapdata, "shape")) "shape"
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  vc <- v_specs_axes(
+    vc, position = "left",
+    type = "linear",
+    domainLine = list(visible = TRUE),
+    zero = FALSE
+  )
+  vc <- v_specs_axes(
+    vc, position = "bottom",
+    type = "linear",
+    domainLine = list(visible = TRUE),
+    zero = FALSE
+  )
+  vc <- .vchart_specs(
+    vc, "crosshair",
+     list(
+      xField = list(
+        visible = TRUE,
+        line = list(visible = TRUE, type= "line"),
+        label = list(visible = TRUE)
+      ),
+      yField = list(
+        visible = TRUE,
+        line = list(visible = TRUE, type= "line"),
+        label = list(visible = TRUE)
+      )
+    )
+  )
+  # vc <- .vchart_specs(vc, "legends", list())
+  scale_colour <- attr(mapdata, "scale_colour")
+  if (identical(scale_colour, "continuous")) {
+    vc <- v_scale_colour_gradient(vc)
+  } else if (!is.na(scale_colour)) {
+    vc <- v_specs_legend(vc, visible = TRUE)
+  }
+  scale_size <- attr(mapdata, "scale_size")
+  if (identical(scale_size, "continuous")) {
+    vc <- v_scale_size(vc)
+  }
+  
   return(vc)
 }

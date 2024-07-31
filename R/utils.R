@@ -102,12 +102,20 @@ eval_mapping <- function(data, mapping, convert_date = FALSE) {
   return(mapdata)
 }
 
-eval_mapping_ <- function(data, mapping) {
+#' @importFrom stats complete.cases
+eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
   mapdata <- lapply(mapping, eval_tidy, data = data)
+  if (na_rm) {
+    index <- complete.cases(mapdata)
+    mapdata <- lapply(mapdata, `[`, index)
+  }
   if (inherits(mapdata$x, "factor"))
     mapdata$x <- as.character(mapdata$x)
   attr(mapdata, "scale_x") <- get_scale(mapdata$x)
   attr(mapdata, "scale_y") <- get_scale(mapdata$y)
+  attr(mapdata, "scale_colour") <- get_scale(mapdata$colour)
+  attr(mapdata, "scale_fill") <- get_scale(mapdata$fill)
+  attr(mapdata, "scale_size") <- get_scale(mapdata$size)
   if (inherits(mapdata$x, "Date")) {
     mapdata$x <- as.numeric(mapdata$x)
   } else if (inherits(mapdata$x, "POSIXt")) {
@@ -117,6 +125,7 @@ eval_mapping_ <- function(data, mapping) {
 }
 
 get_scale <- function(x) {
+  if (is.null(x)) return(NA_character_)
   if (inherits(x, c("numeric", "integer"))) {
     "continuous"
   } else if (inherits(x, c("character", "factor"))) {

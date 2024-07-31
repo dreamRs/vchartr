@@ -377,3 +377,185 @@ v_scale_continuous <- function(vc,
   )
 }
 
+
+
+
+
+# Scale colour ----------------------------------------------------------------------
+
+
+#' Color scale for continuous data
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param name Title for the legend.
+#' @param low,high Colours for low and high ends of the gradient.
+#' @param limits Limits of the scale, default (`NULL`) is to use the default scale range of the data.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#' 
+#' @name scale-gradient
+#'
+# @examples
+v_scale_colour_gradient <- function(vc,
+                                    name = NULL,
+                                    low = "#132B43",
+                                    high = "#56B1F7",
+                                    limits = NULL) {
+  v_scale_gradient(
+    vc = vc,
+    name = name,
+    low = low,
+    high = high,
+    limits = limits,
+    aesthetic = "colour"
+  )
+}
+
+#' @export
+#' 
+#' @rdname scale-gradient
+v_scale_fill_gradient <- function(vc,
+                                  name = NULL,
+                                  low = "#132B43",
+                                  high = "#56B1F7",
+                                  limits = NULL) {
+  v_scale_gradient(
+    vc = vc,
+    name = name,
+    low = low,
+    high = high,
+    limits = limits,
+    aesthetic = "fill"
+  )
+}
+
+v_scale_gradient <- function(vc,
+                             name = NULL,
+                             low = "#132B43",
+                             high = "#56B1F7",
+                             limits = NULL,
+                             aesthetic) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  
+  if (!is.null(vc$x$mapdata[[aesthetic]])) {
+    x <- vc$x$mapdata[[aesthetic]]
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
+  }
+  
+  if (is.null(limits))
+    limits <- range(pretty(range(x, na.rm = TRUE)))
+  
+  title <- if (is.character(name) & length(name) == 1) {
+    list(
+      visible = TRUE,
+      text = name
+    )
+  } else {
+    name
+  }
+  
+  index <- vapply(
+    X = vc$x$specs$series,
+    FUN = function(x) has_name(x, "seriesField"),
+    FUN.VALUE = logical(1)
+  )
+  dataserie_id <- vc$x$specs$series[index][[1]]$id
+  vc <- v_specs(
+    vc, 
+    # seriesField = NULL,
+    # point = list(
+    #   style = list(
+    #     fill = list(field = aesthetic, scale = "color")
+    #   )
+    # ),
+    color = list(
+      type = "linear",
+      domain = limits,
+      # domain = list(list(dataId = dataserie_id, fields = list(aesthetic))),
+      range = c(low, high)
+    ) 
+    # , dataserie_id = dataserie_id
+  )
+  vc <- .vchart_specs(
+    vc, "legends", 
+    list(dropNulls(list(
+      visible = TRUE,
+      type = "color",
+      field = aesthetic,
+      title = title,
+      serieId = dataserie_id
+    )))
+  )
+  return(vc)
+}
+
+
+
+
+# Scale size ------------------------------------------------------------------------
+
+
+
+#' Size scale for continuous data
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param name Title for the legend.
+#' @param range Range of sizes for the points plotted.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+# @examples
+v_scale_size <- function(vc,
+                         name = NULL,
+                         range = c(5, 30)) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  
+  if (!is.null(vc$x$mapdata$size)) {
+    x <- vc$x$mapdata$size
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, "size"))
+  }
+  
+  
+  title <- if (is.character(name) & length(name) == 1) {
+    list(
+      visible = TRUE,
+      text = name
+    )
+  } else {
+    name
+  }
+  
+  index <- vapply(
+    X = vc$x$specs$series,
+    FUN = function(x) has_name(x, "sizeField"),
+    FUN.VALUE = logical(1)
+  )
+  dataserie_id <- vc$x$specs$series[index][[1]]$id
+  vc <- v_specs(
+    vc,
+    size = list(
+      type = "linear",
+      # domain = c(2000, 7000),
+      range = range
+    ),
+    dataserie_id = dataserie_id
+  )
+  vc <- .vchart_specs(
+    vc, "legends", 
+    list(dropNulls(list(
+      visible = TRUE, 
+      type = "size",
+      field = "size"
+    )))
+  )
+  return(vc)
+}
+

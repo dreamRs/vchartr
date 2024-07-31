@@ -5,9 +5,9 @@
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
   if (is.null(vc$x$specs[[name]])) {
-    vc$x$specs[[name]] <- options
+    vc$x$specs[[name]] <- dropNulls(options)
   } else {
-    if (name %in% c("data", "series")) {
+    if (name %in% c("data", "series", "legends")) {
       vc$x$specs[[name]] <- c(
         vc$x$specs[[name]],
         options
@@ -15,7 +15,7 @@
     } else {
       vc$x$specs[[name]] <- modifyList(
         x = vc$x$specs[[name]],
-        val = options,
+        val = dropNulls(options),
         keep.null = TRUE
       )
     }
@@ -54,19 +54,19 @@ v_specs <- function(vc, ..., dataserie_id = NULL) {
       keep.null = TRUE
     )
   } else if (is.numeric(dataserie_id)) {
-    vc$x$specs$series[[dataserie_id]] <- modifyList(
+    vc$x$specs$series[[dataserie_id]] <- dropNulls(modifyList(
       x = vc$x$specs$series[[dataserie_id]],
       val = list(...),
       keep.null = TRUE
-    )
+    ))
   } else if (is.character(dataserie_id)) {
     serie <- get_serie_index(vc, dataserie_id)
     if (length(serie) == 1) {
-      vc$x$specs$series[[serie]] <- modifyList(
+      vc$x$specs$series[[serie]] <- dropNulls(modifyList(
         x = vc$x$specs$series[[serie]],
         val = list(...),
         keep.null = TRUE
-      )
+      ))
     }
   }
   return(vc)
@@ -183,7 +183,7 @@ v_specs_legend <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
     "legends",
-    list(...)
+    list(list(...))
   )
   return(vc)
 }

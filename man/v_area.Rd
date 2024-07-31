@@ -10,11 +10,10 @@ v_area(
   data = NULL,
   name = NULL,
   stack = FALSE,
-  curve_type = "linear",
-  fill = NULL,
-  fill_opacity = NULL,
+  area_style = list(curve_type = "linear", fill = NULL, fill_opacity = NULL),
   point = list(visible = FALSE),
   line = list(visible = FALSE),
+  ...,
   dataserie_id = NULL
 )
 }
@@ -30,15 +29,13 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{stack}{Whether to stack the data or not (if \code{fill} aesthetic is provided).}
 
-\item{curve_type}{Curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
-
-\item{fill}{Fill color.}
-
-\item{fill_opacity}{Stroke color.}
+\item{area_style}{Area's styles options, such as curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
 
 \item{point}{Options for showing points on lines or not.}
 
 \item{line}{Options for showing lines or not.}
+
+\item{...}{Additional parameters for the serie.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 }
@@ -67,15 +64,15 @@ vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
 
 # Fill color 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), fill = "firebrick", fill_opacity = 0.9)
+  v_area(aes(month, value), area_style = list(fill = "firebrick", fill_opacity = 0.9))
 
 # Smooth Area Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), curve_type = "monotone")
+  v_area(aes(month, value), area_style = list(curve_type = "monotone"))
 
 # Step Area Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), curve_type = "stepAfter")
+  v_area(aes(month, value), area_style = list(curve_type = "stepAfter"))
 
 # Multiple areas
 vchart(eco2mix_long) \%>\% 
@@ -94,9 +91,11 @@ within(temperatures, {difference = `2024` - average}) \%>\%
   vchart(aes(date)) \%>\% 
   v_area(
     aes(ymin = average, ymax = `2024`, difference = difference),
-    fill = JS(
-      "data => { return data.difference > 0 ? '#F68180' : '#2F64FF' ; }"
-    ),
-    fill_opacity = 1
+    area_style = list(
+      fill = JS(
+        "data => { return data.difference > 0 ? '#F68180' : '#2F64FF' ; }"
+      ),
+      fill_opacity = 1
+    )
   ) 
 }

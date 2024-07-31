@@ -12,6 +12,7 @@ v_bar(
   stack = FALSE,
   percent = FALSE,
   direction = c("vertical", "horizontal"),
+  ...,
   dataserie_id = NULL
 )
 }
@@ -30,6 +31,8 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 \item{percent}{Whether to display the data as a percentage.}
 
 \item{direction}{The direction configuration of the chart: \code{"vertical"} (default) or \code{"horizontal"}.}
+
+\item{...}{Additional parameters for the serie.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 }

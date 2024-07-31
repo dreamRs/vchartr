@@ -4,7 +4,14 @@
 \alias{v_scatter}
 \title{Create a Scatter Chart}
 \usage{
-v_scatter(vc, mapping = NULL, data = NULL, name = NULL, dataserie_id = NULL)
+v_scatter(
+  vc,
+  mapping = NULL,
+  data = NULL,
+  name = NULL,
+  ...,
+  dataserie_id = NULL
+)
 }
 \arguments{
 \item{vc}{A chart initialized with \code{\link[=vchart]{vchart()}}.}
@@ -15,6 +22,8 @@ v_scatter(vc, mapping = NULL, data = NULL, name = NULL, dataserie_id = NULL)
 a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{name}{Name for the serie, only used for single serie (no \code{color}/\code{fill} aesthetic supplied).}
+
+\item{...}{Additional parameters for the serie.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 }

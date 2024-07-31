@@ -16,15 +16,15 @@ vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>%
 
 # Fill color 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_area(aes(month, value), fill = "firebrick", fill_opacity = 0.9)
+  v_area(aes(month, value), area_style = list(fill = "firebrick", fill_opacity = 0.9))
 
 # Smooth Area Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_area(aes(month, value), curve_type = "monotone")
+  v_area(aes(month, value), area_style = list(curve_type = "monotone"))
 
 # Step Area Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_area(aes(month, value), curve_type = "stepAfter")
+  v_area(aes(month, value), area_style = list(curve_type = "stepAfter"))
 
 # Multiple areas
 vchart(eco2mix_long) %>% 
@@ -43,8 +43,10 @@ within(temperatures, {difference = `2024` - average}) %>%
   vchart(aes(date)) %>% 
   v_area(
     aes(ymin = average, ymax = `2024`, difference = difference),
-    fill = JS(
-      "data => { return data.difference > 0 ? '#F68180' : '#2F64FF' ; }"
-    ),
-    fill_opacity = 1
+    area_style = list(
+      fill = JS(
+        "data => { return data.difference > 0 ? '#F68180' : '#2F64FF' ; }"
+      ),
+      fill_opacity = 1
+    )
   ) 

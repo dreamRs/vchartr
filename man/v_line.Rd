@@ -9,10 +9,9 @@ v_line(
   mapping = NULL,
   data = NULL,
   name = NULL,
-  curve_type = "linear",
-  line_dash = 0,
-  stroke = NULL,
+  line_style = list(curve_type = "linear", line_dash = 0, stroke = NULL),
   point = list(visible = FALSE),
+  ...,
   dataserie_id = NULL
 )
 }
@@ -26,14 +25,12 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{name}{Name for the serie, only used for single serie (no \code{color}/\code{fill} aesthetic supplied).}
 
-\item{curve_type}{Curve interpolation type, see \href{https://www.visactor.io/vchart/option/lineChart#line.style.curveType}{online documentation}.}
-
-\item{line_dash}{Used to configure the dashed line mode when filling lines.
-It uses an array of values to specify the alternating lengths of lines and gaps that describe the pattern.}
-
-\item{stroke}{Stroke color.}
+\item{line_style}{Area's styles options, such as curve interpolation type,
+see \href{https://www.visactor.io/vchart/option/lineChart#line.style.curveType}{online documentation}}
 
 \item{point}{Options for showing points on lines or not.}
+
+\item{...}{Additional parameters for the serie.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 }
@@ -62,19 +59,19 @@ vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
 
 # Stroke color 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), stroke = "firebrick")
+  v_line(aes(month, value), line_style = list(stroke = "firebrick"))
 
 # Smooth Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), curve_type = "monotone")
+  v_line(aes(month, value), line_style = list(curve_type = "monotone"))
 
 # Step Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), curve_type = "stepAfter")
+  v_line(aes(month, value), line_style = list(curve_type = "stepAfter"))
 
 # Dash array 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), line_dash = c(10, 10))
+  v_line(aes(month, value), line_style = list(line_dash = c(10, 10)))
 
 # Multiple lines
 vchart(eco2mix_long) \%>\% 

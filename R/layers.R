@@ -9,6 +9,7 @@
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
 #' @param percent Whether to display the data as a percentage.
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
+#' @param ... Additional parameters for the serie.
 #' @param dataserie_id ID for the serie, can be used to customize the serie with [v_specs()].
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -24,6 +25,7 @@ v_bar <- function(vc,
                   stack = FALSE,
                   percent = FALSE,
                   direction = c("vertical", "horizontal"),
+                  ...,
                   dataserie_id = NULL) {
   direction <- match.arg(direction)
   stopifnot(
@@ -52,7 +54,8 @@ v_bar <- function(vc,
     seriesField = if (has_name(mapdata, "fill")) "fill",
     stack = stack,
     percent = percent,
-    direction = direction
+    direction = direction,
+    ...
   )
   if (direction == "horizontal") {
     serie$xField <- "y"
@@ -93,10 +96,8 @@ v_bar <- function(vc,
 #' Create a Line Chart
 #'
 #' @inheritParams v_bar
-#' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/lineChart#line.style.curveType).
-#' @param line_dash Used to configure the dashed line mode when filling lines.
-#'  It uses an array of values to specify the alternating lengths of lines and gaps that describe the pattern.
-#' @param stroke Stroke color. 
+#' @param line_style Area's styles options, such as curve interpolation type,
+#'  see [online documentation](https://www.visactor.io/vchart/option/lineChart#line.style.curveType)
 #' @param point Options for showing points on lines or not.
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -107,10 +108,13 @@ v_line <- function(vc,
                    mapping = NULL, 
                    data = NULL,
                    name = NULL,
-                   curve_type = "linear",
-                   line_dash = 0,
-                   stroke = NULL,
+                   line_style = list(
+                     curve_type = "linear",
+                     line_dash = 0,
+                     stroke = NULL
+                   ),
                    point = list(visible = FALSE),
+                   ...,
                    dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -141,13 +145,8 @@ v_line <- function(vc,
     yField = "y",
     seriesField = if (has_name(mapdata, "colour")) "colour",
     point = point,
-    line = list(
-      style = list_(
-        curveType = curve_type,
-        lineDash = list1(line_dash),
-        stroke = stroke
-      )
-    )
+    line = list(style = style_params(line_style)),
+    ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "left", type = "linear")
@@ -172,9 +171,7 @@ v_line <- function(vc,
 #'
 #' @inheritParams v_line
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
-#' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
-#' @param fill Fill color.
-#' @param fill_opacity Stroke color. 
+#' @param area_style Area's styles options, such as curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
 #' @param line Options for showing lines or not.
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -186,11 +183,14 @@ v_area <- function(vc,
                    data = NULL,
                    name = NULL,
                    stack = FALSE,
-                   curve_type = "linear",
-                   fill = NULL,
-                   fill_opacity = NULL,
+                   area_style = list(
+                     curve_type = "linear",
+                     fill = NULL,
+                     fill_opacity = NULL
+                   ),
                    point = list(visible = FALSE),
                    line = list(visible = FALSE),
+                   ...,
                    dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -233,12 +233,9 @@ v_area <- function(vc,
     point = point,
     line = line,
     area = list(
-      style = list_(
-        curveType = curve_type,
-        fillOpacity = fill_opacity,
-        fill = fill
-      )
-    )
+      style = style_params(area_style)
+    ),
+    ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "left", type = "linear")
@@ -354,6 +351,7 @@ v_scatter <- function(vc,
                       mapping = NULL, 
                       data = NULL,
                       name = NULL,
+                      ...,
                       dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -383,7 +381,8 @@ v_scatter <- function(vc,
     yField = "y",
     seriesField = if (has_name(mapdata, "colour")) "colour",
     sizeField = if (has_name(mapdata, "size")) "size",
-    shapeField = if (has_name(mapdata, "shape")) "shape"
+    shapeField = if (has_name(mapdata, "shape")) "shape",
+    ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(
@@ -424,6 +423,57 @@ v_scatter <- function(vc,
   if (identical(scale_size, "continuous")) {
     vc <- v_scale_size(vc)
   }
-  
   return(vc)
 }
+
+
+
+#' Create a Pie Chart
+#'
+#' @inheritParams v_bar
+#' @param label Options for displaying labels on the pie chart.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_pie.R
+v_pie <- function(vc,
+                  mapping = NULL, 
+                  data = NULL,
+                  name = NULL,
+                  label = list(visible = TRUE),
+                  ...,
+                  dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data", 
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  serie <- list_(
+    type = "pie",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    categoryField = "x",
+    valueField = "y",
+    label = label,
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+

@@ -16,19 +16,19 @@ vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>%
 
 # Stroke color 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_line(aes(month, value), stroke = "firebrick")
+  v_line(aes(month, value), line_style = list(stroke = "firebrick"))
 
 # Smooth Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_line(aes(month, value), curve_type = "monotone")
+  v_line(aes(month, value), line_style = list(curve_type = "monotone"))
 
 # Step Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_line(aes(month, value), curve_type = "stepAfter")
+  v_line(aes(month, value), line_style = list(curve_type = "stepAfter"))
 
 # Dash array 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>% 
-  v_line(aes(month, value), line_dash = c(10, 10))
+  v_line(aes(month, value), line_style = list(line_dash = c(10, 10)))
 
 # Multiple lines
 vchart(eco2mix_long) %>% 

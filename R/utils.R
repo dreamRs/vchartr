@@ -29,9 +29,21 @@ genId <- function(bytes = 12) {
   ), width = 2), collapse = "")
 }
 
+to_camel_case <- function(x) {
+  gsub("_([a-z])", "\\U\\1", x, perl = TRUE)
+}
+
+style_params <- function(x) {
+  if (is.null(x)) return(NULL)
+  params <- dropNulls(x)
+  names(params) <- to_camel_case(names(params))
+  params
+}
+
 get_mapping <- function(vc, mapping) {
   mapping <- c(vc$x$mapping, mapping)
-  mapping[!duplicated(names(mapping), fromLast = TRUE)]
+  mapping <- mapping[!duplicated(names(mapping), fromLast = TRUE)]
+  aes(!!!mapping)
 }
 
 get_data <- function(vc, data) {

@@ -93,7 +93,6 @@ v_bar <- function(vc,
 #' Create a Line Chart
 #'
 #' @inheritParams v_bar
-#' 
 #' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/lineChart#line.style.curveType).
 #' @param line_dash Used to configure the dashed line mode when filling lines.
 #'  It uses an array of values to specify the alternating lengths of lines and gaps that describe the pattern.
@@ -256,3 +255,84 @@ v_area <- function(vc,
   return(vc)
 }
 
+
+
+#' Create an Histogram
+#'
+#' @inheritParams v_bar
+#' @inheritParams ggplot2::stat_bin
+#' @param bar_style Style properties for histogram bars.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_hist.R
+v_hist <- function(vc,
+                   mapping = NULL, 
+                   data = NULL,
+                   name = NULL,
+                   stack = FALSE,
+                   bins = 30,
+                   binwidth = NULL,
+                   bar_style = NULL,
+                   dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  p <- ggplot2::ggplot(data = data, mapping = mapping)
+  p <- p + ggplot2::geom_histogram(bins = bins, binwidth = binwidth) +
+    ggplot2::scale_fill_identity()
+  mapdata <- ggplot2::layer_data(p, i = 1L)
+  vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- v_specs(
+    vc = vc,
+    data = list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata[, c("xmin", "xmax", "count", "fill")])
+      )
+    ),
+    type = "histogram",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    name = name,
+    xField = "xmin",
+    x2Field = "xmax",
+    yField = "count",
+    seriesField = if (has_name(mapping, "fill")) "fill",
+    stack = stack,
+    bar = list_(style = style_params(bar_style))
+  )
+  vc <- v_specs_axes(vc, position = "left", type = "linear")
+  vc <- v_specs_axes(vc, position = "bottom", type = "linear", zero = FALSE)
+  vc <- .vchart_specs(
+    vc, "tooltip",
+    list(
+      visible = TRUE,
+      mark = list(
+        title = list(
+          key = "title",
+          value = if (!has_name(mapping, "fill")) {
+            "Count"
+          } else {
+            JS("datum => datum[\'fill\']")
+          }
+        ),
+        content = list(
+          list(
+            key = JS("datum => Math.round(datum[\'xmin\']) + \'\uff5e\' + Math.round(datum[\'xmax\'])"),
+            value = JS("datum => datum[\'count\']")
+          )
+        )
+      )
+    )
+  )
+  if (has_name(mapping, "fill")) {
+    vc <- v_specs_legend(vc, visible = TRUE)
+  }
+  return(vc)
+}

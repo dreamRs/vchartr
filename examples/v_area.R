@@ -39,4 +39,12 @@ vchart(temperatures, aes(date)) %>%
   v_area(aes(ymin = low, ymax = high)) %>% 
   v_line(aes(y = average))
 
-
+within(temperatures, {difference = `2024` - average}) %>% 
+  vchart(aes(date)) %>% 
+  v_area(
+    aes(ymin = average, ymax = `2024`, difference = difference),
+    fill = JS(
+      "data => { return data.difference > 0 ? '#F68180' : '#2F64FF' ; }"
+    ),
+    fill_opacity = 1
+  ) 

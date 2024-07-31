@@ -118,14 +118,14 @@ v_labs <- function(vc, title, subtitle = NULL) {
 #' data("mpg", package = "ggplot2")
 #'
 #' vbar(table(Class = mpg$class), aes(Class, Freq)) %>%
-#'   v_colors("#8FBCBB")
+#'   v_specs_colors("#8FBCBB")
 #'
 #' vbar(
 #'   table(Class = mpg$class, Year = mpg$year),
 #'   aes(Class, Freq, fill = Year)
 #' ) %>%
-#'   v_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
-v_colors <- function(vc, ...) {
+#'   v_specs_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
+v_specs_colors <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
     "color",
@@ -137,7 +137,7 @@ v_colors <- function(vc, ...) {
 #' @export
 #'
 #' @rdname vc-colors
-v_colors_manual <- function(vc, ...) {
+v_specs_colors_manual <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
     "color",
@@ -166,13 +166,13 @@ v_colors_manual <- function(vc, ...) {
 #'   table(Class = mpg$class, Year = mpg$year),
 #'   aes(Class, Freq, fill = Year)
 #' ) %>%
-#'   v_legend(
+#'   v_specs_legend(
 #'     title = list(text = "Title", visible = TRUE),
 #'     orient = "right",
 #'     position = "start",
 #'     item = list(focus = TRUE)
 #'   )
-v_legend <- function(vc, ...) {
+v_specs_legend <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
     "legends",
@@ -200,10 +200,10 @@ v_legend <- function(vc, ...) {
 #'   table(Class = mpg$class, Year = mpg$year),
 #'   aes(Class, Freq, fill = Year)
 #' ) %>%
-#'   v_tooltip(
+#'   v_specs_tooltip(
 #'     visible = FALSE
 #'   )
-v_tooltip <- function(vc, ...) {
+v_specs_tooltip <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
     "tooltip",
@@ -224,11 +224,11 @@ v_tooltip <- function(vc, ...) {
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-#' @example examples/v_axes.R
-v_axes <- function(vc,
-                   position = c("left", "bottom", "right", "top", "angle", "radius"),
-                   ...,
-                   remove = FALSE) {
+#' @example examples/axes.R
+v_specs_axes <- function(vc,
+                         position = c("left", "bottom", "right", "top", "angle", "radius"),
+                         ...,
+                         remove = FALSE) {
   position <- match.arg(position)
   index <- get_axes_index(vc, position)
   if (isTRUE(remove)) {

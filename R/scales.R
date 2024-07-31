@@ -21,7 +21,7 @@
 #'
 #' @name scale-date
 #'
-#' @example examples/v_scale_date.R
+#' @example examples/scale_date.R
 v_scale_x_date <- function(vc,
                            name = NULL,
                            date_breaks = NULL,
@@ -169,7 +169,7 @@ v_scale_date <- function(vc,
     name
   }
 
-  v_axes(
+  v_specs_axes(
     vc = vc,
     position = position,
     type = "linear",
@@ -211,7 +211,7 @@ v_scale_date <- function(vc,
 #'
 #' @name scale-continuous
 #'
-#' @example examples/v_scale_continuous.R
+#' @example examples/scale_continuous.R
 v_scale_x_continuous <- function(vc,
                                  name = NULL,
                                  breaks = NULL,
@@ -351,7 +351,7 @@ v_scale_continuous <- function(vc,
     name
   }
 
-  v_axes(
+  v_specs_axes(
     vc = vc,
     position = position,
     type = "linear",

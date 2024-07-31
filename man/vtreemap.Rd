@@ -14,10 +14,9 @@ vtreemap(
 )
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{drill}{Drill-down function switch.}
 

@@ -4,10 +4,14 @@
 \alias{vchart}
 \title{Create interactive charts with VChart}
 \usage{
-vchart(..., width = NULL, height = NULL, elementId = NULL)
+vchart(data, mapping, ..., width = NULL, height = NULL, elementId = NULL)
 }
 \arguments{
-\item{...}{Configuration for creating chart.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
+
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
+
+\item{...}{Additional parameters.}
 
 \item{width}{Fixed width for widget (in css units). The default is
 \code{NULL}, which results in intelligent automatic sizing based on the

@@ -38,7 +38,7 @@ varea(eco2mix_long, aes(date, production, fill = source))
 vline(temperatures, aes(date, `2024`)) %>%
   v_add_line(aes(date, average)) %>%
   v_add_range_area(aes(date, ymin = low, ymax = high)) %>%
-  v_legend(visible = TRUE)
+  v_specs_legend(visible = TRUE)
 
 # Change opacity & color for the area range
 vline(temperatures, aes(date, `2024`)) %>%
@@ -47,7 +47,7 @@ vline(temperatures, aes(date, `2024`)) %>%
     aes(date, ymin = low, ymax = high),
     dataserie_id = "range_area"
   ) %>%
-  v_legend(visible = TRUE) %>%
+  v_specs_legend(visible = TRUE) %>%
   v_specs(
     area = list(
       style = list(

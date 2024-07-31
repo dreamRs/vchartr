@@ -17,10 +17,9 @@ vcirclepacking(
 )
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{drill}{Drill-down function switch.}
 
@@ -70,7 +69,7 @@ vcirclepacking(
   countries_gdp,
   aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD)
 ) \%>\%
-  v_colors_manual(
+  v_specs_colors_manual(
     Oceania = "#E6AB02",
     Africa = "#1B9E77",
     Americas = "#D95F02",

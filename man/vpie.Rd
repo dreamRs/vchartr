@@ -14,10 +14,9 @@ vpie(
 )
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
@@ -50,7 +49,7 @@ subset(world_electricity, year == 2023 & type == "total") \%>\%
 # Use custom colors
 subset(world_electricity, year == 2023 & type == "total") \%>\%
   vpie(aes(x = source, y = generation)) \%>\%
-  v_colors_manual(
+  v_specs_colors_manual(
     "Low carbon" = "#a3be8c",
     "Fossil fuels" = "#4C566A"
   )
@@ -58,7 +57,7 @@ subset(world_electricity, year == 2023 & type == "total") \%>\%
 # Customize tooltip
 subset(world_electricity, year == 2023 & type == "total") \%>\%
   vpie(aes(x = source, y = generation)) \%>\%
-  v_tooltip(
+  v_specs_tooltip(
     mark = list(
       content = list(
         list(

@@ -2,13 +2,13 @@
 % Please edit documentation in R/specs.R
 \name{vc-colors}
 \alias{vc-colors}
-\alias{v_colors}
-\alias{v_colors_manual}
+\alias{v_specs_colors}
+\alias{v_specs_colors_manual}
 \title{Set color(s) for chart}
 \usage{
-v_colors(vc, ...)
+v_specs_colors(vc, ...)
 
-v_colors_manual(vc, ...)
+v_specs_colors_manual(vc, ...)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
@@ -27,11 +27,11 @@ library(vchartr)
 data("mpg", package = "ggplot2")
 
 vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
-  v_colors("#8FBCBB")
+  v_specs_colors("#8FBCBB")
 
 vbar(
   table(Class = mpg$class, Year = mpg$year),
   aes(Class, Freq, fill = Year)
 ) \%>\%
-  v_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
+  v_specs_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
 }

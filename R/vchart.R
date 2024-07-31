@@ -4,7 +4,9 @@
 #' @description
 #' VChart is a charting component library, see more about it here : [https://www.visactor.io/vchart](https://www.visactor.io/vchart).
 #'
-#' @param ... Configuration for creating chart.
+#' @param data Can be a `data.frame` if function used with other layers functions or a list of parameters for configuring a chart.
+#' @param mapping Default list of aesthetic mappings to use for chart, only used if `data` is a `data.frame`.
+#' @param ... Additional parameters.
 #' @inheritParams htmlwidgets::createWidget
 #'
 #' @note
@@ -18,9 +20,25 @@
 #' @export
 #'
 #' @example examples/vchart.R
-vchart <- function(..., width = NULL, height = NULL, elementId = NULL) {
-  x <- list(specs = list(...))
-  htmlwidgets::createWidget(
+vchart <- function(data,
+                   mapping = NULL, 
+                   ...,
+                   width = NULL,
+                   height = NULL, 
+                   elementId = NULL) {
+  if (is.data.frame(data)) {
+    x <- list(
+      specs = list(type = "common"),
+      data,
+      mapping = mapping,
+      ...
+    )
+  } else {
+    x <- list(
+      specs = list(data = data, ...)
+    )
+  }
+  createWidget(
     name = "vchart",
     x = x,
     width = width,

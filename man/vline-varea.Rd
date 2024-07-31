@@ -37,10 +37,9 @@ v_add_line(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL)
 v_add_range_area(vc, mapping, data = NULL, name = NULL, dataserie_id = NULL)
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{format_date}{Format to be applied if \code{x} aesthetic is a \code{Date}.}
 
@@ -111,7 +110,7 @@ varea(eco2mix_long, aes(date, production, fill = source))
 vline(temperatures, aes(date, `2024`)) \%>\%
   v_add_line(aes(date, average)) \%>\%
   v_add_range_area(aes(date, ymin = low, ymax = high)) \%>\%
-  v_legend(visible = TRUE)
+  v_specs_legend(visible = TRUE)
 
 # Change opacity & color for the area range
 vline(temperatures, aes(date, `2024`)) \%>\%
@@ -120,7 +119,7 @@ vline(temperatures, aes(date, `2024`)) \%>\%
     aes(date, ymin = low, ymax = high),
     dataserie_id = "range_area"
   ) \%>\%
-  v_legend(visible = TRUE) \%>\%
+  v_specs_legend(visible = TRUE) \%>\%
   v_specs(
     area = list(
       style = list(

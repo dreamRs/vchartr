@@ -18,7 +18,7 @@ vcirclepacking(
   countries_gdp,
   aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD)
 ) %>%
-  v_colors_manual(
+  v_specs_colors_manual(
     Oceania = "#E6AB02",
     Africa = "#1B9E77",
     Americas = "#D95F02",

@@ -54,8 +54,8 @@ electricity_mix %>%
     aes(source, generation, fill = source)
   ) %>%
   v_specs(xField = "x") %>% # <- use only 'x' aesthetic on x-axis
-  v_legend(visible = FALSE) %>%
-  v_colors_manual(
+  v_specs_legend(visible = FALSE) %>%
+  v_specs_colors_manual(
     "oil" = "#80549f",
     "coal" = "#a68832",
     "solar" = "#d66b0d",
@@ -81,7 +81,7 @@ vbar(
   v_specs(
     label = list(visible = TRUE)
   ) %>% 
-  v_colors("#8FBCBB") %>% 
+  v_specs_colors("#8FBCBB") %>% 
   v_labs(
     title = "Top electricity-generating countries",
     subtitle = "Data for 2023, source: Our World In Data"
@@ -121,7 +121,7 @@ co2_emissions %>%
       )
     )
   ) %>% 
-  v_axes(
+  v_specs_axes(
     position = "left",
     title = list(
       visible = TRUE,
@@ -146,8 +146,8 @@ vbar(
   subset(world_electricity, type == "total"),
   aes(year, generation, fill = source)
 ) %>% 
-  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
-  v_legend(
+  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
     position = "start",
@@ -163,8 +163,8 @@ vbar(
   aes(year, generation, fill = source),
   stack = TRUE
 ) %>% 
-  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
-  v_legend(
+  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
     position = "start",
@@ -180,8 +180,8 @@ vbar(
   stack = TRUE, 
   percent = TRUE
 ) %>% 
-  v_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
-  v_axes(
+  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_specs_axes(
     position = "left",
     label = list(
       formatMethod = JS("val => `${val*100}%`")
@@ -202,11 +202,11 @@ electricity_mix %>%
     direction = "horizontal",
     dataserie_id = "myid"
   ) %>% 
-  v_axes(
+  v_specs_axes(
     position = "bottom",
     visible = FALSE
   ) %>% 
-  v_axes(
+  v_specs_axes(
     position = "left",
     domainLine = list(visible = FALSE),
     tick = list(visible = FALSE)
@@ -244,7 +244,7 @@ electricity_mix %>%
       )
     )
   ) %>% 
-  v_tooltip(
+  v_specs_tooltip(
     mark = list(title = list(visible = FALSE)),
     dimension = list(title = list(visible = FALSE)),
     style = list(shape = list(shapeType = "circle"))

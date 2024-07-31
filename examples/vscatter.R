@@ -31,7 +31,7 @@ vscatter(
   penguins,
   aes(x = flipper_length_mm, y = body_mass_g, color = species)
 ) %>%
-  v_colors_manual(
+  v_specs_colors_manual(
     Adelie = "#ffa232",
     Chinstrap = "#33a2a2",
     Gentoo = "#b34df2"

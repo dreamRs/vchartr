@@ -62,14 +62,14 @@ if (rlang::is_installed(c("sf", "geojsonio"))) {
     aes(name = name, fill = co2_per_capita), 
     projection = "equalEarth"
   ) \%>\% 
-    v_colors(
+    v_specs_colors(
       range = c(
         "#FFFFE5", "#FFF7BC", "#FEE391", 
         "#FEC44F", "#FE9929", "#EC7014", 
         "#CC4C02", "#993404", "#662506"
       )
     ) \%>\% 
-    v_legend(
+    v_specs_legend(
       orient = "bottom"
     )
   

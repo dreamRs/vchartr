@@ -14,10 +14,9 @@ vheatmap(
 )
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
 
@@ -53,7 +52,7 @@ vheatmap(
   co2_emissions,
   aes(x = year, y = country, fill = co2_per_capita)
 ) \%>\%
-  v_colors(
+  v_specs_colors(
     range = rev(
       c("#8C510A", "#BF812D", "#DFC27D", "#F6E8C3",
         "#C7EAE5", "#80CDC1", "#35978F", "#01665E")
@@ -72,7 +71,7 @@ vheatmap(
   co2_emissions,
   aes(x = year, y = country, fill = co2_growth_change)
 ) \%>\%
-  v_colors_manual(
+  v_specs_colors_manual(
     Increase = "firebrick",
     Decrease = "forestgreen"
   )

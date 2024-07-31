@@ -58,7 +58,7 @@ server <- function(input, output, session) {
 
     if (input$type == "bar") {
       vc <- vbar(elec_data, mapping) %>%
-        v_legend(visible = FALSE) %>%
+        v_specs_legend(visible = FALSE) %>%
         v_specs(
           xField = "x",
           label = list(visible = input$show_label)
@@ -83,7 +83,7 @@ server <- function(input, output, session) {
     }
 
     vc %>%
-      v_colors_manual(
+      v_specs_colors_manual(
         "oil" = "#80549f",
         "coal" = "#a68832",
         "solar" = "#d66b0d",

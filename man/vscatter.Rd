@@ -14,10 +14,9 @@ vscatter(
 )
 }
 \arguments{
-\item{data}{Default dataset to use for chart. If not already
-a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
+\item{data}{Can be a \code{data.frame} if function used with other layers functions or a list of parameters for configuring a chart.}
 
-\item{mapping}{Default list of aesthetic mappings to use for chart.}
+\item{mapping}{Default list of aesthetic mappings to use for chart, only used if \code{data} is a \code{data.frame}.}
 
 \item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}}
 
@@ -73,7 +72,7 @@ vscatter(
   penguins,
   aes(x = flipper_length_mm, y = body_mass_g, color = species)
 ) \%>\%
-  v_colors_manual(
+  v_specs_colors_manual(
     Adelie = "#ffa232",
     Chinstrap = "#33a2a2",
     Gentoo = "#b34df2"

@@ -28,6 +28,8 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{name}{Name for the serie, only used for single serie (no \code{color}/\code{fill} aesthetic supplied).}
 
+\item{stack}{Whether to stack the data or not (if \code{fill} aesthetic is provided).}
+
 \item{curve_type}{Curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
 
 \item{fill}{Fill color.}
@@ -52,7 +54,7 @@ library(vchartr)
 
 # Basic Area Chart
 vchart(eco2mix) \%>\% 
-  v_area(aes(date, solar), points = TRUE)
+  v_area(aes(date, solar))
 
 # Two areas
 vchart(eco2mix, aes(date)) \%>\% 

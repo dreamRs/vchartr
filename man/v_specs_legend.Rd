@@ -4,13 +4,15 @@
 \alias{v_specs_legend}
 \title{Set legend options}
 \usage{
-v_specs_legend(vc, ...)
+v_specs_legend(vc, ..., add = FALSE)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
 
-\item{...}{Options for the legend, see examples or online documentation :
-\url{https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend}.}
+\item{...}{Options for the legend, see examples or
+\href{https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend}{online documentation}.}
+
+\item{add}{Add the legend to exiting ones or overwrite all previous legends.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

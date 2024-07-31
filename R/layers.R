@@ -171,6 +171,7 @@ v_line <- function(vc,
 #' Create an Area Chart
 #'
 #' @inheritParams v_line
+#' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
 #' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
 #' @param fill Fill color.
 #' @param fill_opacity Stroke color. 
@@ -341,6 +342,14 @@ v_hist <- function(vc,
 
 
 
+#' Create a Scatter Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_scatter.R
 v_scatter <- function(vc,
                       mapping = NULL, 
                       data = NULL,
@@ -409,7 +418,7 @@ v_scatter <- function(vc,
   if (identical(scale_colour, "continuous")) {
     vc <- v_scale_colour_gradient(vc)
   } else if (!is.na(scale_colour)) {
-    vc <- v_specs_legend(vc, visible = TRUE)
+    vc <- v_specs_legend(vc, visible = TRUE, seriesId = dataserie_id)
   }
   scale_size <- attr(mapdata, "scale_size")
   if (identical(scale_size, "continuous")) {

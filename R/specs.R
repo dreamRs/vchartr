@@ -159,8 +159,9 @@ v_specs_colors_manual <- function(vc, ...) {
 #' Set legend options
 #'
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
-#' @param ... Options for the legend, see examples or online documentation :
-#'  [https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend).
+#' @param ... Options for the legend, see examples or
+#'  [online documentation](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend).
+#' @param add Add the legend to exiting ones or overwrite all previous legends.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -179,12 +180,16 @@ v_specs_colors_manual <- function(vc, ...) {
 #'     position = "start",
 #'     item = list(focus = TRUE)
 #'   )
-v_specs_legend <- function(vc, ...) {
-  vc <- .vchart_specs(
-    vc,
-    "legends",
-    list(list(...))
-  )
+v_specs_legend <- function(vc, ..., add = FALSE) {
+  if (isTRUE(add)) {
+    vc <- .vchart_specs(
+      vc,
+      "legends",
+      list(list(...))
+    )
+  } else {
+    vc$x$specs$legends <- list(list(...))
+  }
   return(vc)
 }
 

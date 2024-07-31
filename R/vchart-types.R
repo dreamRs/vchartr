@@ -59,7 +59,7 @@ vbar <- function(data,
     specs$yField <- "y"
   }
   if (has_name(mapdata, "fill")) {
-    specs$legends$visible <- TRUE
+    specs$legends[[1]] <- list(visible <- TRUE)
   }
   create_chart(
     "vbar",
@@ -242,7 +242,7 @@ vlinearea <- function(type,
     )
   )
   if (has_name(mapdata, aesthetic)) {
-    specs$legends$visible <- TRUE
+    specs$legends[[1]] <- list(visible <- TRUE)
   }
   create_chart(
     paste0("v", type),
@@ -417,7 +417,7 @@ vhist <- function(data,
     )
   )
   if (has_name(mapping, "fill")) {
-    specs$legends$visible <- TRUE
+    specs$legends[[1]] <- list(visible <- TRUE)
   }
   create_chart(
     "vhist",
@@ -497,7 +497,7 @@ vscatter <- function(data,
     )
   )
   if (has_name(mapdata, "colour")) {
-    specs$legends$visible <- TRUE
+    specs$legends[[1]] <- list(visible <- TRUE)
   }
   create_chart(
     "vscatter",

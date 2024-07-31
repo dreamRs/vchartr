@@ -3,7 +3,7 @@ library(vchartr)
 
 # Basic Area Chart
 vchart(eco2mix) %>% 
-  v_area(aes(date, solar), points = TRUE)
+  v_area(aes(date, solar))
 
 # Two areas
 vchart(eco2mix, aes(date)) %>% 

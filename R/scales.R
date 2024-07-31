@@ -390,6 +390,8 @@ v_scale_continuous <- function(vc,
 #' @param name Title for the legend.
 #' @param low,high Colours for low and high ends of the gradient.
 #' @param limits Limits of the scale, default (`NULL`) is to use the default scale range of the data.
+#' @param position Position of the legend.
+#' @param align Alignment of the legend.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -401,13 +403,17 @@ v_scale_colour_gradient <- function(vc,
                                     name = NULL,
                                     low = "#132B43",
                                     high = "#56B1F7",
-                                    limits = NULL) {
+                                    limits = NULL,
+                                    position = c("right", "bottom", "left", "top"),
+                                    align = c("middle", "start", "end")) {
   v_scale_gradient(
     vc = vc,
     name = name,
     low = low,
     high = high,
     limits = limits,
+    position = position,
+    align = align,
     aesthetic = "colour"
   )
 }
@@ -419,13 +425,17 @@ v_scale_fill_gradient <- function(vc,
                                   name = NULL,
                                   low = "#132B43",
                                   high = "#56B1F7",
-                                  limits = NULL) {
+                                  limits = NULL,
+                                  position = c("right", "bottom", "left", "top"),
+                                  align = c("middle", "start", "end")) {
   v_scale_gradient(
     vc = vc,
     name = name,
     low = low,
     high = high,
     limits = limits,
+    position = position,
+    align = align,
     aesthetic = "fill"
   )
 }
@@ -435,7 +445,11 @@ v_scale_gradient <- function(vc,
                              low = "#132B43",
                              high = "#56B1F7",
                              limits = NULL,
+                             position = c("right", "bottom", "left", "top"),
+                             align = c("middle", "start", "end"),
                              aesthetic) {
+  position <- match.arg(position)
+  align <- match.arg(align)
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
@@ -458,27 +472,13 @@ v_scale_gradient <- function(vc,
     name
   }
   
-  index <- vapply(
-    X = vc$x$specs$series,
-    FUN = function(x) has_name(x, "seriesField"),
-    FUN.VALUE = logical(1)
-  )
-  dataserie_id <- vc$x$specs$series[index][[1]]$id
   vc <- v_specs(
     vc, 
-    # seriesField = NULL,
-    # point = list(
-    #   style = list(
-    #     fill = list(field = aesthetic, scale = "color")
-    #   )
-    # ),
     color = list(
       type = "linear",
       domain = limits,
-      # domain = list(list(dataId = dataserie_id, fields = list(aesthetic))),
       range = c(low, high)
     ) 
-    # , dataserie_id = dataserie_id
   )
   vc <- .vchart_specs(
     vc, "legends", 
@@ -487,7 +487,9 @@ v_scale_gradient <- function(vc,
       type = "color",
       field = aesthetic,
       title = title,
-      serieId = dataserie_id
+      # serieId = dataserie_id,
+      orient = position,
+      position = align
     )))
   )
   return(vc)
@@ -505,6 +507,8 @@ v_scale_gradient <- function(vc,
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
 #' @param name Title for the legend.
 #' @param range Range of sizes for the points plotted.
+#' @param position Position of the legend.
+#' @param align Alignment of the legend.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -512,7 +516,11 @@ v_scale_gradient <- function(vc,
 # @examples
 v_scale_size <- function(vc,
                          name = NULL,
-                         range = c(5, 30)) {
+                         range = c(5, 30),
+                         position = c("right", "bottom", "left", "top"),
+                         align = c("middle", "start", "end")) {
+  position <- match.arg(position)
+  align <- match.arg(align)
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
@@ -553,7 +561,9 @@ v_scale_size <- function(vc,
     list(dropNulls(list(
       visible = TRUE, 
       type = "size",
-      field = "size"
+      field = "size",
+      orient = position,
+      position = align
     )))
   )
   return(vc)

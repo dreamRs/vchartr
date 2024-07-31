@@ -93,11 +93,12 @@ v_bar <- function(vc,
 #' Create a Line Chart
 #'
 #' @inheritParams v_bar
-#' @param points Show points on lines or not.
-#' @param curve_type Curve interpolation type, see [https://www.visactor.io](https://www.visactor.io/vchart/option/lineChart#line.style.curveType).
+#' 
+#' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/lineChart#line.style.curveType).
 #' @param line_dash Used to configure the dashed line mode when filling lines.
 #'  It uses an array of values to specify the alternating lengths of lines and gaps that describe the pattern.
 #' @param stroke Stroke color. 
+#' @param point Options for showing points on lines or not.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -107,11 +108,11 @@ v_line <- function(vc,
                    mapping = NULL, 
                    data = NULL,
                    name = NULL,
-                   dataserie_id = NULL,
-                   points = FALSE,
                    curve_type = "linear",
                    line_dash = 0,
-                   stroke = NULL) {
+                   stroke = NULL,
+                   point = list(visible = FALSE),
+                   dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -140,9 +141,7 @@ v_line <- function(vc,
     xField = "x",
     yField = "y",
     seriesField = if (has_name(mapdata, "colour")) "colour",
-    point = list(
-      visible = isTRUE(points)
-    ),
+    point = point,
     line = list(
       style = list_(
         curveType = curve_type,
@@ -151,10 +150,7 @@ v_line <- function(vc,
       )
     )
   )
-  vc <- .vchart_specs(
-    vc, "series",
-    list(serie)
-  )
+  vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "left", type = "linear")
   scale_x <- attr(mapdata, "scale_x")
   if (scale_x == "discrete") {
@@ -165,6 +161,96 @@ v_line <- function(vc,
     vc <- v_scale_x_continuous(vc = vc)
   }
   if (has_name(mapdata, "colour")) {
+    vc <- v_specs_legend(vc, visible = TRUE)
+  }
+  return(vc)
+}
+
+
+
+
+#' Create an Area Chart
+#'
+#' @inheritParams v_line
+#' @param curve_type Curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
+#' @param fill Fill color.
+#' @param fill_opacity Stroke color. 
+#' @param line Options for showing lines or not.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_area.R
+v_area <- function(vc,
+                   mapping = NULL, 
+                   data = NULL,
+                   name = NULL,
+                   stack = FALSE,
+                   curve_type = "linear",
+                   fill = NULL,
+                   fill_opacity = NULL,
+                   point = list(visible = FALSE),
+                   line = list(visible = FALSE),
+                   dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data", 
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  if (has_name(mapdata, "y")) {
+    type <- "area"
+    yField <- "y"
+  } else if (all(has_name(mapdata, c("ymin", "ymax")))) {
+    type <- "rangeArea"
+    yField <- c("ymin", "ymax")
+  } else {
+    stop("v_area() must have aesthetic `y` or `ymin`/`ymax`", call. = FALSE)
+  }
+  serie <- list_(
+    type = type,
+    name = name,
+    id = dataserie_id,
+    dataId = dataserie_id,
+    xField = "x",
+    yField = yField,
+    seriesField = if (has_name(mapdata, "fill")) "fill",
+    stack = isTRUE(stack),
+    point = point,
+    line = line,
+    area = list(
+      style = list_(
+        curveType = curve_type,
+        fillOpacity = fill_opacity,
+        fill = fill
+      )
+    )
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  vc <- v_specs_axes(vc, position = "left", type = "linear")
+  scale_x <- attr(mapdata, "scale_x")
+  if (scale_x == "discrete") {
+    vc <- v_specs_axes(vc, position = "bottom", type = "band")
+  } else if (scale_x == "date") {
+    vc <- v_scale_x_date(vc = vc)
+  } else {
+    vc <- v_scale_x_continuous(vc = vc)
+  }
+  if (has_name(mapdata, "fill")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   return(vc)

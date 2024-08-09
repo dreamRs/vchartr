@@ -549,6 +549,7 @@ v_circlepacking <- function(vc,
     type = "circlePacking",
     id = dataserie_id,
     dataId = dataserie_id,
+    name = name,
     categoryField = "name",
     valueField = "value",
     drill = drill,
@@ -621,6 +622,7 @@ v_treemap <- function(vc,
     type = "treemap",
     id = dataserie_id,
     dataId = dataserie_id,
+    name = name,
     categoryField = "name",
     valueField = "value",
     drill = drill,
@@ -702,6 +704,7 @@ v_heatmap <- function(vc,
     type = "heatmap",
     id = dataserie_id,
     dataId = dataserie_id,
+    name = name,
     xField = "x",
     yField = "y",
     valueField = "fill",
@@ -731,3 +734,55 @@ v_heatmap <- function(vc,
   )
   return(vc)
 }
+
+
+
+#' Create a Wordcloud
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_wordcloud.R
+v_wordcloud <- function(vc,
+                        mapping = NULL,
+                        data = NULL,
+                        name = NULL,
+                        ...,
+                        dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$word))
+    name <- rlang::as_label(mapping$word)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  serie <- list_(
+    type = "wordCloud",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    name = name,
+    nameField = "word",
+    valueField = "count",
+    seriesField = if (has_name(mapdata, "colour")) "colour",
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+
+

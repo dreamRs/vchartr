@@ -173,3 +173,14 @@
 "energy_sankey"
 
 
+
+
+#' @title Top CRAN downloads
+#'
+#' @description The dataset contains data about CRAN downloads retrieved with [cranlogs::cran_top_downloads](https://r-hub.github.io/cranlogs/).
+#'
+#' @format A data frame with 100 observations and 5 variables.
+#'
+#' @source [cranlogs](https://r-hub.github.io/cranlogs/)
+"top_cran_downloads"
+

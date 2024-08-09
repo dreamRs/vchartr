@@ -198,6 +198,20 @@ create_tree <- function(data,
 
 
 
+make_sankey_data <- function(data, mapping) {
+  data <- as.data.frame(data)
+  mapdata <- eval_mapping(data, rename_aes_sankey(mapping))
+  nodes <- data.frame(nodes = sort(unique(c(mapdata$source, mapdata$target))))
+  nodes$nodes_id <- seq_len(nrow(nodes)) - 1
+  links <- as.data.frame(mapdata)
+  links$target <- nodes$nodes_id[match(links$target, nodes$nodes)]
+  links$source <- nodes$nodes_id[match(links$source, nodes$nodes)]
+  return(list(nodes = nodes, links = links))
+}
+
+
+
+
 rename_aes_lvl <- function(mapping) {
   if (has_name(mapping, "x"))
     names(mapping)[names(mapping) == "x"] <- "lvl1"

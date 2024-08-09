@@ -786,3 +786,101 @@ v_wordcloud <- function(vc,
 }
 
 
+
+
+
+
+#' Create a Sankey Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_sankey.R
+v_sankey <- function(vc,
+                     mapping = NULL,
+                     data = NULL,
+                     name = NULL,
+                     ...,
+                     dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+
+  if (is.null(name) & !is.null(mapping$word))
+    name <- rlang::as_label(mapping$word)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+
+  specs <- list(
+    type = "sankey",
+    label = list(
+      visible = TRUE,
+      style = list(fontSize = 10)
+    ),
+    ...
+  )
+
+  mapdata <- NULL
+
+  if (!is.null(data) & !is.null(mapping)) {
+    if (has_name(mapping, "lvl1") & has_name(mapping, "value")) {
+      mapdata <- eval_mapping(data, mapping)
+      lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+      lvl_vars <- sort(lvl_vars)
+      specs$data <- list(
+        list(
+          name = name,
+          id = dataserie_id,
+          values = list(
+            list(
+              nodes = create_tree(as.data.frame(mapdata), lvl_vars, value = "value")
+            )
+          )
+        )
+      )
+      specs$categoryField <- "name"
+      specs$valueField <- "value"
+      specs$nodeKey <- JS("datum => datum.name")
+    } else {
+      sankey_dat <- make_sankey_data(data, mapping)
+      specs$data <- list(
+        list(
+          name = name,
+          id = dataserie_id,
+          values = list(
+            list(
+              nodes = create_values(sankey_dat$nodes),
+              links = create_values(sankey_dat$links)
+            )
+          )
+        )
+      )
+      specs$categoryField <- "nodes"
+      specs$valueField <- "value"
+      specs$sourceField <- "source"
+      specs$targetField <- "target"
+    }
+  } else if (is.list(data) & !is.null(data$nodes) & !is.null(data$links)) {
+    specs$data <- list(
+      list(
+        id = dataserie_id,
+        values = list(
+          list(
+            nodes = create_values(data$nodes),
+            links = create_values(data$links)
+          )
+        )
+      )
+    )
+    specs$categoryField <- names(data$nodes)[1]
+    specs$valueField <- names(data$nodes)[3]
+    specs$sourceField <- names(data$nodes)[1]
+    specs$targetField <- names(data$nodes)[2]
+  }
+  vc$x$specs <- dropNulls(specs)
+  return(vc)
+}

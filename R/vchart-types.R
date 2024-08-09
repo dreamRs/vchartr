@@ -692,7 +692,7 @@ vheatmap <- function(data,
     )
   }
   if (is.null(dataserie_id))
-  dataserie_id <- paste0("heatmap_", genId(4))
+    dataserie_id <- paste0("heatmap_", genId(4))
   specs <- list(
     type = "common",
     data = list(

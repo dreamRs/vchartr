@@ -629,3 +629,105 @@ v_treemap <- function(vc,
   vc <- .vchart_specs(vc, "series", list(serie))
   return(vc)
 }
+
+
+
+
+
+#' Create a Heatmap Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_heatmap.R
+v_heatmap <- function(vc,
+                      mapping = NULL,
+                      data = NULL,
+                      name = NULL,
+                      ...,
+                      dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping(data, mapping)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  if (is.numeric(mapdata$fill)) {
+    color <- list(
+      type = "linear",
+      domain = range(pretty(range(mapdata$fill, na.rm = TRUE))),
+      range = c(
+        "#440154", "#482878", "#3E4A89", "#31688E", "#26828E",
+        "#1F9E89", "#35B779", "#6DCD59", "#B4DE2C", "#FDE725"
+      )
+    )
+    legend <- list(
+      visible = TRUE,
+      type = "color",
+      field = "fill"
+    )
+  } else if (is.character(mapdata$fill)) {
+    color <- list(
+      type = "ordinal"
+    )
+    legend <- list(
+      visible = TRUE,
+      type = "discrete",
+      field = "fill",
+      scaleName = "color"
+    )
+  } else {
+    stop(
+      "vheatmap: `fill` aesthetic is required, and must either be a numeric or a character",
+      call. = FALSE
+    )
+  }
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  serie <- list_(
+    type = "heatmap",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    xField = "x",
+    yField = "y",
+    valueField = "fill",
+    cell = list(
+      style = list(
+        fill = list(field = "fill", scale = "color")
+      )
+    ),
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  vc <- .vchart_specs(vc, "color", color)
+  vc <- .vchart_specs(vc, "legends", legend)
+  vc <- v_specs_axes(
+    vc,
+    position = "left",
+    type = "band",
+    grid = list(visible = FALSE),
+    domainLine = list(visible = FALSE)
+  )
+  vc <- v_specs_axes(
+    vc,
+    position = "bottom",
+    type = "band",
+    grid = list(visible = FALSE),
+    domainLine = list(visible = FALSE)
+  )
+  return(vc)
+}

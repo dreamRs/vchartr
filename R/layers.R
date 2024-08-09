@@ -1,6 +1,6 @@
 
 #' Create a Bar Chart
-#' 
+#'
 #' @param vc A chart initialized with [vchart()].
 #' @param mapping Default list of aesthetic mappings to use for chart.
 #' @param data Default dataset to use for chart. If not already
@@ -19,7 +19,7 @@
 #'
 #' @example examples/v_bar.R
 v_bar <- function(vc,
-                  mapping = NULL, 
+                  mapping = NULL,
                   data = NULL,
                   name = NULL,
                   stack = FALSE,
@@ -38,7 +38,7 @@ v_bar <- function(vc,
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -105,7 +105,7 @@ v_bar <- function(vc,
 #'
 #' @example examples/v_line.R
 v_line <- function(vc,
-                   mapping = NULL, 
+                   mapping = NULL,
                    data = NULL,
                    name = NULL,
                    line_style = list(
@@ -128,7 +128,7 @@ v_line <- function(vc,
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -179,7 +179,7 @@ v_line <- function(vc,
 #'
 #' @example examples/v_area.R
 v_area <- function(vc,
-                   mapping = NULL, 
+                   mapping = NULL,
                    data = NULL,
                    name = NULL,
                    stack = FALSE,
@@ -204,7 +204,7 @@ v_area <- function(vc,
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -266,7 +266,7 @@ v_area <- function(vc,
 #'
 #' @example examples/v_hist.R
 v_hist <- function(vc,
-                   mapping = NULL, 
+                   mapping = NULL,
                    data = NULL,
                    name = NULL,
                    stack = FALSE,
@@ -348,7 +348,7 @@ v_hist <- function(vc,
 #'
 #' @example examples/v_scatter.R
 v_scatter <- function(vc,
-                      mapping = NULL, 
+                      mapping = NULL,
                       data = NULL,
                       name = NULL,
                       ...,
@@ -365,7 +365,7 @@ v_scatter <- function(vc,
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -438,7 +438,7 @@ v_scatter <- function(vc,
 #'
 #' @example examples/v_pie.R
 v_pie <- function(vc,
-                  mapping = NULL, 
+                  mapping = NULL,
                   data = NULL,
                   name = NULL,
                   label = list(visible = TRUE),
@@ -456,7 +456,7 @@ v_pie <- function(vc,
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -494,7 +494,7 @@ v_pie <- function(vc,
 #'
 #' @example examples/v_circlepacking.R
 v_circlepacking <- function(vc,
-                            mapping = NULL, 
+                            mapping = NULL,
                             data = NULL,
                             name = NULL,
                             drill = TRUE,
@@ -537,7 +537,7 @@ v_circlepacking <- function(vc,
     )
   }
   vc <- .vchart_specs(
-    vc, "data", 
+    vc, "data",
     list(
       list(
         id = dataserie_id,
@@ -566,3 +566,66 @@ v_circlepacking <- function(vc,
 
 
 
+
+
+
+#' Create a Treemap Chart
+#'
+#' @inheritParams v_bar
+#' @param drill Drill-down function switch.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_treemap.R
+v_treemap <- function(vc,
+                      mapping = NULL,
+                      data = NULL,
+                      name = NULL,
+                      drill = TRUE,
+                      ...,
+                      dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- sort(lvl_vars)
+  if (length(lvl_vars) > 1) {
+    values <- create_tree(
+      data = mapdata,
+      levels = lvl_vars,
+      value = "value"
+    )
+  } else {
+    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
+    values <- create_values(mapdata)
+  }
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = values
+      )
+    )
+  )
+  serie <- list_(
+    type = "treemap",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    categoryField = "name",
+    valueField = "value",
+    drill = drill,
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}

@@ -59,7 +59,7 @@ vbar <- function(data,
     specs$yField <- "y"
   }
   if (has_name(mapdata, "fill")) {
-    specs$legends[[1]] <- list(visible <- TRUE)
+    specs$legends[[1]] <- list(visible = TRUE)
   }
   create_chart(
     "vbar",

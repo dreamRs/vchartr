@@ -7,7 +7,7 @@
 v_specs(vc, ..., dataserie_id = NULL)
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{List of options to specify for the chart, see \url{https://www.visactor.io/vchart/option/}.}
 

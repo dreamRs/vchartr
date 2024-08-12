@@ -25,7 +25,7 @@
 
 #' Specify configuration options for a [vchart()].
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param ... List of options to specify for the chart, see [https://www.visactor.io/vchart/option/](https://www.visactor.io/vchart/option/).
 #' @param dataserie_id Used to set or modify options for a chart where there are multiple series. You can use :
 #'   * a `numeric` to target the position of the serie in the order where it's added to the chart

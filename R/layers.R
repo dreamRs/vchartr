@@ -35,6 +35,7 @@ v_bar <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "bar")
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
@@ -123,6 +124,7 @@ v_line <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "line")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -199,6 +201,7 @@ v_area <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "area")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -284,6 +287,7 @@ v_hist <- function(vc,
     ggplot2::scale_fill_identity()
   mapdata <- ggplot2::layer_data(p, i = 1L)
   vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
+  vc$x$type <- c(vc$x$type, "hist")
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- v_specs(
@@ -360,6 +364,7 @@ v_scatter <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "scatter")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -451,6 +456,7 @@ v_pie <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "pie")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -474,6 +480,62 @@ v_pie <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+
+
+
+
+#' Create a Radar Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_radar.R
+v_radar <- function(vc,
+                    mapping = NULL,
+                    data = NULL,
+                    name = NULL,
+                    ...,
+                    dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "radar")
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  serie <- list_(
+    type = "radar",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    categoryField = "x",
+    valueField = "y",
+    seriesField = if (has_name(mapdata, "colour")) "colour",
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  vc <- v_specs_axes(vc, position = "angle")
+  vc <- v_specs_axes(vc, position = "radius")
+  if (has_name(mapdata, "colour")) {
+    vc <- v_specs_legend(vc, visible = TRUE)
+  }
   return(vc)
 }
 
@@ -510,6 +572,7 @@ v_circlepacking <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "circlepacking")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -593,6 +656,7 @@ v_treemap <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "treemap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -657,6 +721,7 @@ v_heatmap <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "heatmap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
@@ -758,6 +823,7 @@ v_wordcloud <- function(vc,
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "wordcloud")
   if (is.null(name) & !is.null(mapping$word))
     name <- rlang::as_label(mapping$word)
   if (is.null(dataserie_id))
@@ -809,8 +875,8 @@ v_sankey <- function(vc,
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-
-  if (is.null(name) & !is.null(mapping$word))
+  vc$x$type <- c(vc$x$type, "sankey")
+  if (is.null(name) & !is.null(mapping$x))
     name <- rlang::as_label(mapping$word)
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
@@ -826,7 +892,7 @@ v_sankey <- function(vc,
 
   mapdata <- NULL
 
-  if (!is.null(data) & !is.null(mapping)) {
+  if (!is.null(data) & length(mapping) > 0) {
     if (has_name(mapping, "lvl1") & has_name(mapping, "value")) {
       mapdata <- eval_mapping(data, mapping)
       lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
@@ -877,9 +943,9 @@ v_sankey <- function(vc,
       )
     )
     specs$categoryField <- names(data$nodes)[1]
-    specs$valueField <- names(data$nodes)[3]
-    specs$sourceField <- names(data$nodes)[1]
-    specs$targetField <- names(data$nodes)[2]
+    specs$valueField <- names(data$links)[3]
+    specs$sourceField <- names(data$links)[1]
+    specs$targetField <- names(data$links)[2]
   }
   vc$x$specs <- dropNulls(specs)
   return(vc)

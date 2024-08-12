@@ -5,6 +5,10 @@ vchart(eco2mix) %>%
   v_line(aes(date, solar)) %>%
   v_scale_x_date(name = "Date")
 
+vchart(eco2mix) %>%
+  v_bar(aes(date, solar)) %>%
+  v_scale_x_date(name = "Date")
+
 
 vchart(eco2mix) %>%
   v_line(aes(date, solar)) %>%

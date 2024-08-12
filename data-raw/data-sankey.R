@@ -1,4 +1,7 @@
 
+
+# Energy data -------------------------------------------------------------
+
 # source: https://www.visactor.io/vchart/demo/sankey-chart/basic-sankey
 
 library(jsonlite)
@@ -38,80 +41,10 @@ usethis::use_data(energy_sankey, overwrite = TRUE)
 
 
 
-# Tests -------------------------------------------------------------------
-
-vsankey(data, aes(target, source, value = value))
-
-vsankey() %>%
-  v_sankey_nodes(nodes_data, aes(name = nodeName)) %>%
-  v_sankey_links(links_data, aes(target, source, value = value))
-
-vsankey(list(nodes = nodes_data, links = links_data))
-
-vchart(
-  type = "sankey",
-  data = list(
-    list(
-      values = list(
-        list(
-          nodes = create_values(nodes),
-          links = create_values(links)
-        )
-      )
-    )
-  ),
-  categoryField = "nodeName",
-  valueField = "value",
-  sourceField = "source",
-  targetField = "target",
-  label = list(
-    visible = TRUE,
-    style = list(fontSize = 10)
-  ),
-  node = list(
-    state = list(
-      hover = list(
-        stroke = "#333333"
-      ),
-      selected = list(
-        fill = "#dddddd",
-        stroke = "#333333",
-        lineWidth = 1,
-        brighter = 1,
-        fillOpacity = 1
-      )
-    )
-  ),
-  link = list(
-    state = list(
-      hover = list(
-        fillOpacity = 1
-      ),
-      selected = list(
-        fill = "#dddddd",
-        stroke = "#333333",
-        lineWidth = 1,
-        brighter = 1,
-        fillOpacity = 1
-      )
-    )
-  )
-)
 
 
-
-
-
-titanic <- as.data.frame(Titanic)
-
-
-
-
-
-
-
-
-
+as.data.frame(Titanic) %>%
+  aggregate(data = ., Freq ~ Class + Survived, FUN = sum)
 
 
 

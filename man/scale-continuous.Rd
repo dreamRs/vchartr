@@ -15,6 +15,7 @@ v_scale_x_continuous(
   zero = FALSE,
   min = NULL,
   max = NULL,
+  ...,
   position = "bottom"
 )
 
@@ -27,6 +28,7 @@ v_scale_y_continuous(
   zero = FALSE,
   min = NULL,
   max = NULL,
+  ...,
   position = "left"
 )
 }
@@ -54,6 +56,8 @@ v_scale_y_continuous(
 \item{min}{Minimum value on the axis.}
 
 \item{max}{Maximum value on the axis.}
+
+\item{...}{Additional parameters for the axis.}
 
 \item{position}{Position of the axis.}
 }

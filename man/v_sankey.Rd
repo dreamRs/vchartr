@@ -60,9 +60,24 @@ vchart(energy_sankey) \%>\%
 
 
 # With data as tree structure
-vchart(as.data.frame(Titanic)) \%>\%
+titanic <- as.data.frame(Titanic)
+vchart(titanic) \%>\%
   v_sankey(aes(
-    lvl1 = Class, lvl2 = Sex, lvl3 = Age, lvl4 = Survived,
+    lvl1 = Class,
+    lvl2 = Sex,
+    lvl3 = Age,
+    lvl4 = Survived,
     value = Freq
   ))
+
+
+# Only one level
+titanic_class <- titanic \%>\%
+  aggregate(data = ., Freq ~ Class + Survived, FUN = sum)
+
+vchart(titanic_class) \%>\%
+  v_sankey(aes(Survived, Class, value = Freq))
+
+
+
 }

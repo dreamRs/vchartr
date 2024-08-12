@@ -4,6 +4,8 @@
 \alias{scale-date}
 \alias{v_scale_x_date}
 \alias{v_scale_y_date}
+\alias{v_scale_x_datetime}
+\alias{v_scale_y_datetime}
 \title{Axis scale for date/time data}
 \usage{
 v_scale_x_date(
@@ -13,6 +15,7 @@ v_scale_x_date(
   date_labels = NULL,
   min = NULL,
   max = NULL,
+  ...,
   position = "bottom"
 )
 
@@ -23,6 +26,31 @@ v_scale_y_date(
   date_labels = NULL,
   min = NULL,
   max = NULL,
+  ...,
+  position = "left"
+)
+
+v_scale_x_datetime(
+  vc,
+  name = NULL,
+  date_breaks = NULL,
+  date_labels = NULL,
+  tz = "",
+  min = NULL,
+  max = NULL,
+  ...,
+  position = "bottom"
+)
+
+v_scale_y_datetime(
+  vc,
+  name = NULL,
+  date_breaks = NULL,
+  date_labels = NULL,
+  tz = "",
+  min = NULL,
+  max = NULL,
+  ...,
   position = "left"
 )
 }
@@ -44,7 +72,11 @@ v_scale_y_date(
 
 \item{max}{Maximum value on the axis.}
 
+\item{...}{Additional parameters for the axis.}
+
 \item{position}{Position of the axis.}
+
+\item{tz}{The timezone.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
@@ -58,6 +90,10 @@ library(vchartr)
 
 vchart(eco2mix) \%>\%
   v_line(aes(date, solar)) \%>\%
+  v_scale_x_date(name = "Date")
+
+vchart(eco2mix) \%>\%
+  v_bar(aes(date, solar)) \%>\%
   v_scale_x_date(name = "Date")
 
 

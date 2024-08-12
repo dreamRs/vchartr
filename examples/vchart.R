@@ -1,6 +1,7 @@
 
 library(vchartr)
 
+# Use JS syntax to construct chart
 vchart(
   type = "bar",
   data = list(
@@ -23,3 +24,20 @@ vchart(
     xField = list(visible = TRUE)
   )
 )
+
+# or use R API
+data.frame(
+  day = c(
+    "Monday", "Tuesday", "Wednesday",
+    "Thursday", "Friday", "Saturday", "Sunday"
+  ),
+  value = c(12, 8, 18, 25, 14, 5, 7)
+) %>%
+  vchart() %>%
+  v_bar(aes(day, value)) %>%
+  v_specs(
+    crosshair = list(
+      xField = list(visible = TRUE)
+    )
+  )
+

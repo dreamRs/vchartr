@@ -14,6 +14,7 @@
 #' @param date_labels The format to be applied on Date/POSIXct in the labels.
 #' @param min Minimum value on the axis.
 #' @param max Maximum value on the axis.
+#' @param ... Additional parameters for the axis.
 #' @param position Position of the axis.
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -28,6 +29,7 @@ v_scale_x_date <- function(vc,
                            date_labels = NULL,
                            min = NULL,
                            max = NULL,
+                           ...,
                            position = "bottom") {
   v_scale_date(
     vc = vc,
@@ -36,7 +38,8 @@ v_scale_x_date <- function(vc,
     date_breaks = date_breaks,
     date_labels = date_labels,
     min = min,
-    max = max
+    max = max,
+    ...
   )
 }
 
@@ -49,6 +52,7 @@ v_scale_y_date <- function(vc,
                            date_labels = NULL,
                            min = NULL,
                            max = NULL,
+                           ...,
                            position = "left") {
   v_scale_date(
     vc = vc,
@@ -57,7 +61,8 @@ v_scale_y_date <- function(vc,
     date_breaks = date_breaks,
     date_labels = date_labels,
     min = min,
-    max = max
+    max = max,
+    ...
   )
 }
 
@@ -68,11 +73,12 @@ v_scale_date <- function(vc,
                          date_breaks = NULL,
                          date_labels = NULL,
                          min = NULL,
-                         max = NULL) {
+                         max = NULL,
+                         ...) {
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  
+
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -80,7 +86,7 @@ v_scale_date <- function(vc,
     "right" = "y",
     "left" = "y"
   )
-  
+
   if (!is.null(vc$x$mapdata[[aesthetic]])) {
     x <- vc$x$mapdata[[aesthetic]]
   } else {
@@ -185,10 +191,201 @@ v_scale_date <- function(vc,
     tick = tick,
     label = label,
     grid = grid,
-    title = title
+    title = title,
+    ...
   )
 }
 
+
+
+
+
+# Datetime ----------------------------------------------------------------
+
+#' @param tz The timezone.
+#'
+#' @export
+#'
+#' @rdname scale-date
+v_scale_x_datetime <- function(vc,
+                               name = NULL,
+                               date_breaks = NULL,
+                               date_labels = NULL,
+                               tz = "",
+                               min = NULL,
+                               max = NULL,
+                               ...,
+                               position = "bottom") {
+  v_scale_datetime(
+    vc = vc,
+    position = position,
+    name = name,
+    date_breaks = date_breaks,
+    date_labels = date_labels,
+    tz = tz,
+    min = min,
+    max = max,
+    ...
+  )
+}
+
+#' @export
+#'
+#' @rdname scale-date
+v_scale_y_datetime <- function(vc,
+                               name = NULL,
+                               date_breaks = NULL,
+                               date_labels = NULL,
+                               tz = "",
+                               min = NULL,
+                               max = NULL,
+                               ...,
+                               position = "left") {
+  v_scale_datetime(
+    vc = vc,
+    position = position,
+    name = name,
+    date_breaks = date_breaks,
+    date_labels = date_labels,
+    tz = tz,
+    min = min,
+    max = max,
+    ...
+  )
+}
+
+
+
+
+v_scale_datetime <- function(vc,
+                             position,
+                             name = NULL,
+                             date_breaks = NULL,
+                             date_labels = NULL,
+                             tz = "",
+                             min = NULL,
+                             max = NULL,
+                             ...) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+
+  aesthetic <- switch(
+    position,
+    "bottom" = "x",
+    "top" = "x",
+    "right" = "y",
+    "left" = "y"
+  )
+
+  if (!is.null(vc$x$mapdata[[aesthetic]])) {
+    x <- vc$x$mapdata[[aesthetic]]
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
+  }
+
+  if (is.null(date_breaks))
+    date_breaks <- 5
+  if (is.null(date_labels))
+    date_labels <- "%Y-%m-%d %H:%M"
+
+  date_breaks_min <- if (!is.null(min)) {
+    as.POSIXct(min, origin = "1970-01-01", tz = tz)
+  } else {
+    min(as.POSIXct(x, origin = "1970-01-01", tz = tz), na.rm = TRUE)
+  }
+
+  date_breaks_max <- if (!is.null(max)) {
+    as.POSIXct(max, origin = "1970-01-01", tz = tz)
+  } else {
+    max(as.POSIXct(x, origin = "1970-01-01", tz = tz), na.rm = TRUE)
+  }
+
+  dates_ticks <- NULL
+  if (is.numeric(date_breaks) & length(date_breaks) == 1) {
+    dates_ticks <- round(as.numeric(seq(from = date_breaks_min, to = date_breaks_max, length.out = date_breaks)))
+  } else if (is.character(date_breaks) & length(date_breaks) == 1) {
+    dates_ticks <- as.numeric(seq(from = date_breaks_min, to = date_breaks_max, by = date_breaks))
+  } else {
+    if (is.character(date_breaks)) {
+      dates_ticks <- as.numeric(as.POSIXct(dates_ticks, origin = "1970-01-01", tz = tz))
+    } else {
+      dates_ticks <- as.numeric(dates_ticks)
+    }
+  }
+
+  tick <- if (!is.null(dates_ticks)) {
+    list(
+      visible = TRUE,
+      tickStep = 1,
+      dataFilter = JS(sprintf(
+        "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
+        paste(dates_ticks, collapse = ", ")
+      ))
+    )
+  }
+
+  label <- list()
+  if (!is.null(dates_ticks)) {
+    label$dataFilter <- JS(sprintf(
+      "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
+      paste(dates_ticks, collapse = ", ")
+    ))
+  }
+  if (inherits(date_labels, "JS_EVAL")) {
+    label$formatMethod <- JS(
+      "function(value) {",
+      "var date = new Date(value * 1000);",
+      sprintf("const fun = %s;", date_labels),
+      "return fun(date);",
+      "}"
+    )
+  } else if (is.character(date_labels)) {
+    label$formatMethod <- JS(
+      "function(value) {",
+      "var date = new Date(value * 1000);",
+      sprintf("const fun = %s;", d3_format_time(date_labels)),
+      "return fun(date);",
+      "}"
+    )
+  }
+  if (length(label) < 1)
+    label <- NULL
+
+  grid <- if (!is.null(dates_ticks)) {
+    list(
+      style = JS(sprintf(
+        "(value, index, datum) => {var values = [%s]; return {visible: values.includes(value)};}",
+        paste(dates_ticks, collapse = ", ")
+      ))
+    )
+  }
+
+  title <- if (is.character(name) & length(name) == 1) {
+    list(
+      visible = TRUE,
+      text = name,
+      position = "middle"
+    )
+  } else {
+    name
+  }
+
+  v_specs_axes(
+    vc = vc,
+    position = position,
+    type = "linear",
+    sampling = FALSE,
+    zero = FALSE,
+    min = if (!is.null(min)) as.numeric(as.Date(min)),
+    max = if (!is.null(max)) as.numeric(as.Date(max)),
+    tick = tick,
+    label = label,
+    grid = grid,
+    title = title,
+    ...
+  )
+}
 
 
 
@@ -210,6 +407,7 @@ v_scale_date <- function(vc,
 #' @param zero Force axis to start at 0.
 #' @param min Minimum value on the axis.
 #' @param max Maximum value on the axis.
+#' @param ... Additional parameters for the axis.
 #' @param position Position of the axis.
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -226,7 +424,10 @@ v_scale_x_continuous <- function(vc,
                                  zero = FALSE,
                                  min = NULL,
                                  max = NULL,
+                                 ...,
                                  position = "bottom") {
+  if ("radar" %in% vc$x$type)
+    position <- "angle"
   v_scale_continuous(
     vc = vc,
     position = position,
@@ -235,7 +436,8 @@ v_scale_x_continuous <- function(vc,
     pretty = pretty,
     labels = labels,
     min = min,
-    max = max
+    max = max,
+    ...
   )
 }
 
@@ -251,7 +453,10 @@ v_scale_y_continuous <- function(vc,
                                  zero = FALSE,
                                  min = NULL,
                                  max = NULL,
+                                 ...,
                                  position = "left") {
+  if ("radar" %in% vc$x$type)
+    position <- "radius"
   v_scale_continuous(
     vc = vc,
     position = position,
@@ -260,10 +465,12 @@ v_scale_y_continuous <- function(vc,
     pretty = pretty,
     labels = labels,
     min = min,
-    max = max
+    max = max,
+    ...
   )
 }
 
+#' @importFrom rlang %||%
 v_scale_continuous <- function(vc,
                                position,
                                name = NULL,
@@ -272,19 +479,23 @@ v_scale_continuous <- function(vc,
                                labels = NULL,
                                zero = FALSE,
                                min = NULL,
-                               max = NULL) {
+                               max = NULL,
+                               ...) {
+  args <- list(...)
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  
+
   aesthetic <- switch(
     position,
     "bottom" = "x",
     "top" = "x",
     "right" = "y",
-    "left" = "y"
+    "left" = "y",
+    "radius" = "y",
+    "angle" = "x"
   )
-  
+
   if (!is.null(vc$x$mapdata[[aesthetic]])) {
     x <- vc$x$mapdata[[aesthetic]]
   } else {
@@ -328,7 +539,7 @@ v_scale_continuous <- function(vc,
     )
   }
 
-  label <- list()
+  label <- args$label %||% list()
   if (!is.null(breaks_ticks)) {
     label$dataFilter <- JS(sprintf(
       "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
@@ -344,11 +555,14 @@ v_scale_continuous <- function(vc,
     label <- NULL
 
   grid <- if (!is.null(breaks_ticks)) {
-    list(
-      style = JS(sprintf(
-        "(value, index, datum) => {var values = [%s]; return {visible: values.includes(value)};}",
-        paste(breaks_ticks, collapse = ", ")
-      ))
+    c(
+      list(
+        style = JS(sprintf(
+          "(value, index, datum) => {var values = [%s]; return {visible: values.includes(value)};}",
+          paste(breaks_ticks, collapse = ", ")
+        ))
+      ),
+      args$grid
     )
   }
 
@@ -373,11 +587,106 @@ v_scale_continuous <- function(vc,
     tick = tick,
     label = label,
     grid = grid,
-    title = title
+    title = title,
+    ...
   )
 }
 
 
+
+
+# Discrete ----------------------------------------------------------------
+
+
+#' Axis scale for discrete data
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param name Title for the axis.
+#' @param ... Additional parameters for the axis.
+#' @param position Position of the axis.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @name scale-discrete
+#'
+#' @example examples/scale_discrete.R
+v_scale_x_discrete <- function(vc,
+                               name = NULL,
+                               ...,
+                               position = "bottom") {
+  if ("radar" %in% vc$x$type)
+    position <- "angle"
+  v_scale_discrete(
+    vc = vc,
+    position = position,
+    name = name,
+    ...
+  )
+}
+
+
+#' @export
+#'
+#' @rdname scale-discrete
+v_scale_y_discrete <- function(vc,
+                               name = NULL,
+                               ...,
+                               position = "left") {
+  if ("radar" %in% vc$x$type)
+    position <- "radius"
+  v_scale_discrete(
+    vc = vc,
+    position = position,
+    name = name,
+    ...
+  )
+}
+
+
+v_scale_discrete <- function(vc,
+                             position,
+                             name = NULL,
+                             ...) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+
+  aesthetic <- switch(
+    position,
+    "bottom" = "x",
+    "top" = "x",
+    "right" = "y",
+    "left" = "y",
+    "radius" = "y",
+    "angle" = "x"
+  )
+
+  if (!is.null(vc$x$mapdata[[aesthetic]])) {
+    x <- vc$x$mapdata[[aesthetic]]
+  } else {
+    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
+  }
+
+
+  title <- if (is.character(name) & length(name) == 1) {
+    list(
+      visible = TRUE,
+      text = name,
+      position = "middle"
+    )
+  } else {
+    name
+  }
+
+  v_specs_axes(
+    vc = vc,
+    position = position,
+    type = "band",
+    title = title,
+    ...
+  )
+}
 
 
 
@@ -395,7 +704,7 @@ v_scale_continuous <- function(vc,
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#' 
+#'
 #' @name scale-gradient
 #'
 # @examples
@@ -419,7 +728,7 @@ v_scale_colour_gradient <- function(vc,
 }
 
 #' @export
-#' 
+#'
 #' @rdname scale-gradient
 v_scale_fill_gradient <- function(vc,
                                   name = NULL,
@@ -453,16 +762,16 @@ v_scale_gradient <- function(vc,
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  
+
   if (!is.null(vc$x$mapdata[[aesthetic]])) {
     x <- vc$x$mapdata[[aesthetic]]
   } else {
     x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
   }
-  
+
   if (is.null(limits))
     limits <- range(pretty(range(x, na.rm = TRUE)))
-  
+
   title <- if (is.character(name) & length(name) == 1) {
     list(
       visible = TRUE,
@@ -471,17 +780,17 @@ v_scale_gradient <- function(vc,
   } else {
     name
   }
-  
+
   vc <- v_specs(
-    vc, 
+    vc,
     color = list(
       type = "linear",
       domain = limits,
       range = c(low, high)
-    ) 
+    )
   )
   vc <- .vchart_specs(
-    vc, "legends", 
+    vc, "legends",
     list(dropNulls(list(
       visible = TRUE,
       type = "color",
@@ -524,14 +833,14 @@ v_scale_size <- function(vc,
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  
+
   if (!is.null(vc$x$mapdata$size)) {
     x <- vc$x$mapdata$size
   } else {
     x <- unlist(lapply(vc$x$mapdata, `[[`, "size"))
   }
-  
-  
+
+
   title <- if (is.character(name) & length(name) == 1) {
     list(
       visible = TRUE,
@@ -540,7 +849,7 @@ v_scale_size <- function(vc,
   } else {
     name
   }
-  
+
   index <- vapply(
     X = vc$x$specs$series,
     FUN = function(x) has_name(x, "sizeField"),
@@ -557,9 +866,9 @@ v_scale_size <- function(vc,
     dataserie_id = dataserie_id
   )
   vc <- .vchart_specs(
-    vc, "legends", 
+    vc, "legends",
     list(dropNulls(list(
-      visible = TRUE, 
+      visible = TRUE,
       type = "size",
       field = "size",
       orient = position,

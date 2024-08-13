@@ -7,7 +7,7 @@
 v_specs_tooltip(vc, ...)
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{Options for the tooltip, see examples or
 \href{https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip}{online documentation}.}

@@ -1,4 +1,5 @@
 
+# source  : https://www.visactor.io/vchart/demo/player/basic-player
 
 library(jsonlite)
 
@@ -8,16 +9,43 @@ head(browsers)
 
 
 vchart(browsers) %>%
-  v_pie(aes(browserName, value, player = date))
+  v_pie(aes(browserName, value, player = date), dataserie_id = "my_id") %>%
+  v_specs(
+    customMark = list(
+      list(
+        type = "text",
+        dataId = "my_id",
+        style = list(
+          textBaseline = "bottom",
+          fontSize = 120,
+          textAlign = "right",
+          fontWeight = 700,
+          text = JS("datum => datum.player"),
+          x = JS(
+            "(datum, ctx) => {",
+            " return ctx.vchart.getChart().getCanvasRect().width - 50;",
+            "}"
+          ),
+          y = JS(
+            "(datum, ctx) => {",
+            " return ctx.vchart.getChart().getCanvasRect().height - 50;",
+            "}"
+          ),
+          fill = "grey",
+          fillOpacity = 0.5
+        )
+      )
+    )
+  )
 
 vchart(browsers) %>%
-  v_bar(aes(browserName, value, player = date))
+  v_bar(aes(browserName, value, player = date), direction = "h")
 
 vchart(browsers) %>%
   v_circlepacking(aes(browserName, value = value, player = date), label_visible = TRUE)
 
 vchart(browsers) %>%
-  v_treemap(aes(browserName, value, player = date))
+  v_treemap(aes(browserName, value, player = date), label = list(visible = TRUE))
 
 
 # browsers <- subset(browsers, browserName %in% c("Chrome", "IE"))
@@ -64,4 +92,4 @@ vchart(subset(browsers, date == 2010)) %>%
   )
 
 str(.Last.value$x$specs)
-jsonlite::toJSON(.Last.value$x$specs, pretty = TRUE, auto_unbox = TRUE)
+jsonlite::toJSON(.Last.value$x$specs, pretty = TRUE, auto_unbox = TRUE, force = TRUE)

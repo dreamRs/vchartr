@@ -11,7 +11,7 @@ v_specs_colors(vc, ...)
 v_specs_colors_manual(vc, ...)
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{Colors options, can be a single color code, a vector of colors to use or a list with more options.
 For \code{v_colors_manual} it should be a named list with data values as name and color as values.}

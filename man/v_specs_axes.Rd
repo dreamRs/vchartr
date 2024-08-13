@@ -12,7 +12,7 @@ v_specs_axes(
 )
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{position}{Position of the axe on the chart.}
 

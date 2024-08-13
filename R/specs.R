@@ -23,6 +23,20 @@
   return(vc)
 }
 
+
+.vchart_specs2 <- function(vc, name, options) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  if (is.null(vc$x$specs[[name]])) {
+    vc$x$specs[[name]] <- list()
+  }
+  vc$x$specs[[name]][[length(vc$x$specs[[name]]) + 1]] <- dropNulls(options)
+  return(vc)
+}
+
+
+
 #' Specify configuration options for a [vchart()].
 #'
 #' @param vc An htmlwidget created with [vchart()].
@@ -80,7 +94,7 @@ v_specs <- function(vc, ..., dataserie_id = NULL) {
 
 #' Set chart title and subtitle
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param title Title for the chart.
 #' @param subtitle Subtitle for the chart.
 #'
@@ -113,7 +127,7 @@ v_labs <- function(vc, title, subtitle = NULL) {
 
 #' Set color(s) for chart
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param ... Colors options, can be a single color code, a vector of colors to use or a list with more options.
 #'  For `v_colors_manual` it should be a named list with data values as name and color as values.
 #'
@@ -159,7 +173,7 @@ v_specs_colors_manual <- function(vc, ...) {
 
 #' Set legend options
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param ... Options for the legend, see examples or
 #'  [online documentation](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Legend).
 #' @param add Add the legend to exiting ones or overwrite all previous legends.
@@ -196,7 +210,7 @@ v_specs_legend <- function(vc, ..., add = FALSE) {
 
 #' Set tooltip options
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param ... Options for the tooltip, see examples or
 #'  [online documentation](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip).
 #'
@@ -225,7 +239,7 @@ v_specs_tooltip <- function(vc, ...) {
 
 #' Axes configuration
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param position Position of the axe on the chart.
 #' @param ... Configuration options.
 #' @param remove If `TRUE` then axe is removed and other parameters are ignored.
@@ -265,7 +279,7 @@ v_specs_axes <- function(vc,
 
 #' Set player options
 #'
-#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param vc An htmlwidget created with [vchart()].
 #' @param ... Options for the legend, see examples or
 #'  [online documentation](https://www.visactor.io/vchart/option/commonChart#player).
 #'
@@ -320,3 +334,21 @@ v_default_player <- function(vc,
 }
 
 
+
+#' Add custom mark to chart
+#'
+#' @param vc An htmlwidget created with [vchart()].
+#' @param ... Options for the legend, see examples or
+#'  [online documentation](https://www.visactor.io/vchart/option/commonChart#customMark).
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+v_specs_custom_mark <- function(vc, ...) {
+  vc <- .vchart_specs2(
+    vc,
+    "customMark",
+    list(...)
+  )
+  return(vc)
+}

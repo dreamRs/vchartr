@@ -7,7 +7,7 @@
 v_labs(vc, title, subtitle = NULL)
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{title}{Title for the chart.}
 

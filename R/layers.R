@@ -52,7 +52,7 @@ v_bar <- function(vc,
     id = dataserie_id,
     dataId = dataserie_id,
     name = name,
-    seriesField = if (has_name(mapdata, "fill")) "fill",
+    seriesField = if (has_name(mapping, "fill")) "fill",
     stack = stack,
     percent = percent,
     direction = direction,
@@ -61,9 +61,9 @@ v_bar <- function(vc,
   if (direction == "horizontal") {
     serie$xField <- "y"
     serie$yField <- "x"
-    if (has_name(mapdata, "group"))
+    if (has_name(mapping, "group"))
       serie$yField <- c("group", serie$yField)
-    if (has_name(mapdata, "fill") & isFALSE(stack))
+    if (has_name(mapping, "fill") & isFALSE(stack))
       serie$yField <- c(serie$yField, "fill")
     if (is.null(name) & !is.null(mapping$x))
       serie$name <- rlang::as_label(mapping$x)
@@ -71,9 +71,9 @@ v_bar <- function(vc,
     vc <- v_specs_axes(vc, position = "left", type = "band")
   } else {
     serie$xField <- "x"
-    if (has_name(mapdata, "group"))
+    if (has_name(mapping, "group"))
       serie$xField <- c("group", serie$xField)
-    if (has_name(mapdata, "fill") & isFALSE(stack))
+    if (has_name(mapping, "fill") & isFALSE(stack))
       serie$xField <- c(serie$xField, "fill")
     serie$yField <- "y"
     if (is.null(name) & !is.null(mapping$y))
@@ -85,7 +85,7 @@ v_bar <- function(vc,
     vc, "series",
     list(serie)
   )
-  if (has_name(mapdata, "fill")) {
+  if (has_name(mapping, "fill")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   if (has_player(mapdata)) {
@@ -148,7 +148,7 @@ v_line <- function(vc,
     dataId = dataserie_id,
     xField = "x",
     yField = "y",
-    seriesField = if (has_name(mapdata, "colour")) "colour",
+    seriesField = if (has_name(mapping, "colour")) "colour",
     point = point,
     line = list(style = style_params(line_style)),
     ...
@@ -163,7 +163,7 @@ v_line <- function(vc,
   } else {
     vc <- v_scale_x_continuous(vc = vc)
   }
-  if (has_name(mapdata, "colour")) {
+  if (has_name(mapping, "colour")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   return(vc)
@@ -218,10 +218,10 @@ v_area <- function(vc,
       )
     )
   )
-  if (has_name(mapdata, "y")) {
+  if (has_name(mapping, "y")) {
     type <- "area"
     yField <- "y"
-  } else if (all(has_name(mapdata, c("ymin", "ymax")))) {
+  } else if (all(has_name(mapping, c("ymin", "ymax")))) {
     type <- "rangeArea"
     yField <- c("ymin", "ymax")
   } else {
@@ -234,7 +234,7 @@ v_area <- function(vc,
     dataId = dataserie_id,
     xField = "x",
     yField = yField,
-    seriesField = if (has_name(mapdata, "fill")) "fill",
+    seriesField = if (has_name(mapping, "fill")) "fill",
     stack = isTRUE(stack),
     point = point,
     line = line,
@@ -253,7 +253,7 @@ v_area <- function(vc,
   } else {
     vc <- v_scale_x_continuous(vc = vc)
   }
-  if (has_name(mapdata, "fill")) {
+  if (has_name(mapping, "fill")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   return(vc)
@@ -387,9 +387,9 @@ v_scatter <- function(vc,
     dataId = dataserie_id,
     xField = "x",
     yField = "y",
-    seriesField = if (has_name(mapdata, "colour")) "colour",
-    sizeField = if (has_name(mapdata, "size")) "size",
-    shapeField = if (has_name(mapdata, "shape")) "shape",
+    seriesField = if (has_name(mapping, "colour")) "colour",
+    sizeField = if (has_name(mapping, "size")) "size",
+    shapeField = if (has_name(mapping, "shape")) "shape",
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
@@ -533,13 +533,13 @@ v_radar <- function(vc,
     dataId = dataserie_id,
     categoryField = "x",
     valueField = "y",
-    seriesField = if (has_name(mapdata, "colour")) "colour",
+    seriesField = if (has_name(mapping, "colour")) "colour",
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "angle")
   vc <- v_specs_axes(vc, position = "radius")
-  if (has_name(mapdata, "colour")) {
+  if (has_name(mapping, "colour")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   return(vc)
@@ -878,7 +878,7 @@ v_wordcloud <- function(vc,
     name = name,
     nameField = "word",
     valueField = "count",
-    seriesField = if (has_name(mapdata, "colour")) "colour",
+    seriesField = if (has_name(mapping, "colour")) "colour",
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))

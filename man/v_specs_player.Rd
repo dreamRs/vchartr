@@ -7,7 +7,7 @@
 v_specs_player(vc, ...)
 }
 \arguments{
-\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
+\item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{Options for the legend, see examples or
 \href{https://www.visactor.io/vchart/option/commonChart#player}{online documentation}.}

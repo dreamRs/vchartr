@@ -197,8 +197,8 @@ v_specs_legend <- function(vc, ..., add = FALSE) {
 #' Set tooltip options
 #'
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
-#' @param ... Options for the legend, see examples or online documentation :
-#'  [https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip).
+#' @param ... Options for the tooltip, see examples or
+#'  [online documentation](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip).
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -259,5 +259,64 @@ v_specs_axes <- function(vc,
   return(vc)
 }
 
+
+
+
+
+#' Set player options
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param ... Options for the legend, see examples or
+#'  [online documentation](https://www.visactor.io/vchart/option/commonChart#player).
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @examples
+#' library(vchartr)
+#' data("mpg", package = "ggplot2")
+#'
+#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
+#'   v_bar(aes(Class, Freq, fill = Year)) %>%
+#'   v_specs_tooltip(
+#'     visible = FALSE
+#'   )
+v_specs_player <- function(vc, ...) {
+  vc <- .vchart_specs(
+    vc,
+    "player",
+    list(...)
+  )
+  return(vc)
+}
+
+
+v_default_player <- function(vc,
+                             mapdata,
+                             dataserie_id,
+                             fun_values = create_values,
+                             ...) {
+  v_specs_player(
+    vc,
+    auto = FALSE,
+    loop = FALSE,
+    alternate = TRUE,
+    interval = 500,
+    width = 500,
+    position = "middle",
+    type = "discrete",
+    specs = lapply(
+      X = mapdata,
+      FUN = function(dat) {
+        list(
+          data = list(
+            id = dataserie_id,
+            values = fun_values(dat, ...)
+          )
+        )
+      }
+    )
+  )
+}
 
 

@@ -88,6 +88,9 @@ v_bar <- function(vc,
   if (has_name(mapdata, "fill")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
+  if (has_player(mapdata)) {
+    vc <- v_default_player(vc, mapdata, dataserie_id)
+  }
   return(vc)
 }
 
@@ -474,12 +477,15 @@ v_pie <- function(vc,
     type = "pie",
     id = dataserie_id,
     dataId = dataserie_id,
-    categoryField = "x",
+    seriesField = "x",
     valueField = "y",
     label = label,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
+  if (has_player(mapdata)) {
+    vc <- v_default_player(vc, mapdata, dataserie_id)
+  }
   return(vc)
 }
 
@@ -570,14 +576,14 @@ v_circlepacking <- function(vc,
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "circlepacking")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
-  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapping), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {
     values <- create_tree(
@@ -586,8 +592,7 @@ v_circlepacking <- function(vc,
       value = "value"
     )
   } else {
-    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
-    values <- create_values(mapdata)
+    values <- create_values(mapdata, .names = list(name = "x", value = "y"))
   }
   if (isTRUE(use_root) | is.character(use_root)) {
     if (isTRUE(use_root))
@@ -625,6 +630,21 @@ v_circlepacking <- function(vc,
     serie$label$style$visible <- label_visible
   }
   vc <- .vchart_specs(vc, "series", list(serie))
+  if (has_player(mapdata)) {
+    if (length(lvl_vars) > 1) {
+      vc <- v_default_player(
+        vc, mapdata, dataserie_id,
+        levels = lvl_vars,
+        value = "value"
+      )
+    } else {
+      vc <- v_default_player(
+        vc, mapdata, dataserie_id,
+        fun_values = create_values,
+        .names = list(name = "x", value = "y")
+      )
+    }
+  }
   return(vc)
 }
 
@@ -654,14 +674,14 @@ v_treemap <- function(vc,
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "treemap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
-  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapdata), value = TRUE)
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapping), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {
     values <- create_tree(
@@ -670,8 +690,7 @@ v_treemap <- function(vc,
       value = "value"
     )
   } else {
-    names(mapdata)[names(mapdata) == lvl_vars] <- "name"
-    values <- create_values(mapdata)
+    values <- create_values(mapdata, .names = list(name = "x", value = "y"))
   }
   vc <- .vchart_specs(
     vc, "data",
@@ -693,6 +712,21 @@ v_treemap <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
+  if (has_player(mapdata)) {
+    if (length(lvl_vars) > 1) {
+      vc <- v_default_player(
+        vc, mapdata, dataserie_id,
+        levels = lvl_vars,
+        value = "value"
+      )
+    } else {
+      vc <- v_default_player(
+        vc, mapdata, dataserie_id,
+        fun_values = create_values,
+        .names = list(name = "x", value = "y")
+      )
+    }
+  }
   return(vc)
 }
 

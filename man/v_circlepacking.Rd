@@ -50,14 +50,14 @@ Create a Circle Packing Chart
 
 library(vchartr)
 
-vchart(countries_gdp) \%>\% 
+vchart(countries_gdp) \%>\%
   v_circlepacking(
     aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD)
   )
 
 
 # With root level
-vchart(countries_gdp) \%>\% 
+vchart(countries_gdp) \%>\%
   v_circlepacking(
     aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD),
     use_root = "World"
@@ -65,7 +65,7 @@ vchart(countries_gdp) \%>\%
 
 
 # Custom colors
-vchart(countries_gdp) \%>\% 
+vchart(countries_gdp) \%>\%
   v_circlepacking(
     aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD)
   ) \%>\%
@@ -79,9 +79,9 @@ vchart(countries_gdp) \%>\%
   )
 
 # Bubble Chart
-vchart(countries_gdp) \%>\% 
+vchart(countries_gdp) \%>\%
   v_circlepacking(
-    aes(lvl = ADMIN, value = GDP_MD),
+    aes(ADMIN, GDP_MD),
     label_visible = JS("d => d.value > 261921;"), # 261921 = 3rd Qu.
   )
 }

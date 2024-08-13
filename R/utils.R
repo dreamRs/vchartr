@@ -52,7 +52,11 @@ get_data <- function(vc, data) {
   return(as.data.frame(data))
 }
 
-create_values <- function(data) {
+create_values <- function(data, .names = NULL) {
+  if (has_player(data))
+    data <- data[[1]]
+  if (!is.null(.names))
+    data <- rename_list(data, .names)
   lapply(
     X = seq_along(data[[1]]),
     FUN = function(i) {
@@ -61,6 +65,9 @@ create_values <- function(data) {
   )
 }
 
+has_player <- function(x) {
+  isTRUE(attr(x, "player"))
+}
 
 create_chart <- function(type,
                          specs,
@@ -111,16 +118,30 @@ eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
   }
   if (inherits(mapdata$x, "factor"))
     mapdata$x <- as.character(mapdata$x)
-  attr(mapdata, "scale_x") <- get_scale(mapdata$x)
-  attr(mapdata, "scale_y") <- get_scale(mapdata$y)
-  attr(mapdata, "scale_colour") <- get_scale(mapdata$colour)
-  attr(mapdata, "scale_fill") <- get_scale(mapdata$fill)
-  attr(mapdata, "scale_size") <- get_scale(mapdata$size)
+  if (inherits(mapdata$y, "factor"))
+    mapdata$y <- as.character(mapdata$y)
+  scale_x <- get_scale(mapdata$x)
+  scale_y <- get_scale(mapdata$y)
+  scale_colour <- get_scale(mapdata$colour)
+  scale_fill <- get_scale(mapdata$fill)
+  scale_size <- get_scale(mapdata$size)
   if (inherits(mapdata$x, "Date")) {
     mapdata$x <- as.numeric(mapdata$x)
   } else if (inherits(mapdata$x, "POSIXt")) {
     mapdata$x <- as.numeric(mapdata$x)
   }
+  if (has_name(mapdata, "player")) {
+    mapdata <- lapply(
+      X = unname(split(as.data.frame(mapdata), as.character(mapdata$player))),
+      FUN = as.list
+    )
+    attr(mapdata, "player") <- TRUE
+  }
+  attr(mapdata, "scale_x") <- scale_x
+  attr(mapdata, "scale_y") <- scale_y
+  attr(mapdata, "scale_colour") <- scale_colour
+  attr(mapdata, "scale_fill") <- scale_fill
+  attr(mapdata, "scale_size") <- scale_size
   return(mapdata)
 }
 
@@ -161,6 +182,8 @@ create_tree <- function(data,
                         value,
                         fill = NULL,
                         ...) {
+  if (has_player(data))
+    data <- data[[1]]
   args <- list(...)
   data <- as.data.frame(data)
   if (!all(levels %in% names(data)))
@@ -230,3 +253,16 @@ rename_aes_sankey <- function(mapping) {
     names(mapping)[names(mapping) == "y"] <- "source"
   mapping
 }
+
+
+rename_list <- function(.list, .names) {
+  for (i in seq_along(.names)) {
+    new <- names(.names)[i]
+    old <- .names[[i]]
+    if (has_name(.list, old)) {
+      names(.list)[names(.list) == old] <- new
+    }
+  }
+  return(.list)
+}
+

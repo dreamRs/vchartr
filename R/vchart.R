@@ -34,7 +34,7 @@ vchart <- function(data = NULL,
       mapdata = list(),
       ...
     )
-    if (!is.null(mapping))
+    if (!is.null(mapping) & !is.null(data))
       x$mapdata <- c(x$mapdata, list(eval_mapping_(as.data.frame(data), mapping)))
   } else {
     x <- list(

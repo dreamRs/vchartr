@@ -457,6 +457,8 @@ v_scale_y_continuous <- function(vc,
                                  position = "left") {
   if ("radar" %in% vc$x$type)
     position <- "radius"
+  if ("gauge" %in% vc$x$type)
+    position <- "gauge"
   v_scale_continuous(
     vc = vc,
     position = position,
@@ -493,8 +495,11 @@ v_scale_continuous <- function(vc,
     "right" = "y",
     "left" = "y",
     "radius" = "y",
-    "angle" = "x"
+    "angle" = "x",
+    "gauge" = "y"
   )
+  if (position == "gauge")
+    position <- "angle"
 
   if (!is.null(vc$x$mapdata[[aesthetic]])) {
     x <- vc$x$mapdata[[aesthetic]]
@@ -504,6 +509,9 @@ v_scale_continuous <- function(vc,
 
   if (is.null(breaks))
     breaks <- 5
+
+  if (length(x) < 2)
+    breaks <- NULL
 
   breaks_min <- if (!is.null(min)) {
     as.numeric(min)
@@ -528,7 +536,7 @@ v_scale_continuous <- function(vc,
     breaks_ticks <- as.numeric(breaks)
   }
 
-  tick <- if (!is.null(breaks_ticks)) {
+  tick <- if (length(breaks_ticks) > 0) {
     list(
       visible = TRUE,
       tickStep = 1,
@@ -540,7 +548,7 @@ v_scale_continuous <- function(vc,
   }
 
   label <- args$label %||% list()
-  if (!is.null(breaks_ticks)) {
+  if (length(breaks_ticks) > 0) {
     label$dataFilter <- JS(sprintf(
       "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
       paste(breaks_ticks, collapse = ", ")
@@ -554,7 +562,7 @@ v_scale_continuous <- function(vc,
   if (length(label) < 1)
     label <- NULL
 
-  grid <- if (!is.null(breaks_ticks)) {
+  grid <- if (length(breaks_ticks) > 0) {
     c(
       list(
         style = JS(sprintf(

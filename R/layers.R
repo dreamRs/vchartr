@@ -950,3 +950,65 @@ v_sankey <- function(vc,
   vc$x$specs <- dropNulls(specs)
   return(vc)
 }
+
+
+
+
+
+#' Create a Gauge Chart
+#'
+#' @inheritParams v_bar
+#' @param outerRadius Sector outer radius, with a numerical range of 0 - 1.
+#' @param innerRadius Sector inner radius, with a numerical range of 0 - 1.
+#' @param startAngle Starting angle of the sector. In degrees.
+#' @param endAngle Ending angle of the sector. In degrees.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_gauge.R
+v_gauge <- function(vc,
+                    mapping = NULL,
+                    data = NULL,
+                    name = NULL,
+                    outerRadius = 0.8,
+                    innerRadius = 0.75,
+                    startAngle = -240,
+                    endAngle = 60,
+                    ...,
+                    dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- "gauge"
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc$x$specs$type <- "gauge"
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  vc <- v_specs(
+    vc,
+    radiusField = "x",
+    valueField = "y",
+    outerRadius = outerRadius,
+    innerRadius = innerRadius,
+    startAngle = startAngle,
+    endAngle = endAngle,
+    ...
+  )
+  return(vc)
+}
+

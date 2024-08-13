@@ -38,7 +38,8 @@
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
 #'
-#' vbar(table(Class = mpg$class), aes(Class, Freq)) %>%
+#' vchart(table(Class = mpg$class)) %>%
+#'   v_bar(aes(Class, Freq)) %>%
 #'   v_specs(
 #'     label = list(visible = TRUE),
 #'     color = list("firebrick")
@@ -90,7 +91,8 @@ v_specs <- function(vc, ..., dataserie_id = NULL) {
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
 #'
-#' vbar(table(Class = mpg$class), aes(Class, Freq)) %>%
+#' vchart(table(Class = mpg$class), aes(Class, Freq)) %>%
+#'   v_bar() %>%
 #'   v_labs(
 #'     title = "Title for the chart",
 #'     subtitle = "A subtitle to be placed under the title"
@@ -124,13 +126,12 @@ v_labs <- function(vc, title, subtitle = NULL) {
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
 #'
-#' vbar(table(Class = mpg$class), aes(Class, Freq)) %>%
+#' vchart(table(Class = mpg$class)) %>%
+#'   v_bar(aes(Class, Freq)) %>%
 #'   v_specs_colors("#8FBCBB")
 #'
-#' vbar(
-#'   table(Class = mpg$class, Year = mpg$year),
-#'   aes(Class, Freq, fill = Year)
-#' ) %>%
+#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
+#'   v_bar(aes(Class, Freq, fill = Year)) %>%
 #'   v_specs_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
 v_specs_colors <- function(vc, ...) {
   vc <- .vchart_specs(
@@ -170,10 +171,8 @@ v_specs_colors_manual <- function(vc, ...) {
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
 #'
-#' vbar(
-#'   table(Class = mpg$class, Year = mpg$year),
-#'   aes(Class, Freq, fill = Year)
-#' ) %>%
+#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
+#'   v_bar(aes(Class, Freq, fill = Year)) %>%
 #'   v_specs_legend(
 #'     title = list(text = "Title", visible = TRUE),
 #'     orient = "right",
@@ -208,10 +207,8 @@ v_specs_legend <- function(vc, ..., add = FALSE) {
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
 #'
-#' vbar(
-#'   table(Class = mpg$class, Year = mpg$year),
-#'   aes(Class, Freq, fill = Year)
-#' ) %>%
+#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
+#'   v_bar(aes(Class, Freq, fill = Year)) %>%
 #'   v_specs_tooltip(
 #'     visible = FALSE
 #'   )

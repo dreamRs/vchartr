@@ -27,7 +27,8 @@ Specify configuration options for a \code{\link[=vchart]{vchart()}}.
 library(vchartr)
 data("mpg", package = "ggplot2")
 
-vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
+vchart(table(Class = mpg$class)) \%>\%
+  v_bar(aes(Class, Freq)) \%>\%
   v_specs(
     label = list(visible = TRUE),
     color = list("firebrick")

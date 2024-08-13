@@ -21,12 +21,12 @@
 #'
 #' @example examples/vchart.R
 vchart <- function(data = NULL,
-                   mapping = NULL, 
+                   mapping = NULL,
                    ...,
                    width = NULL,
-                   height = NULL, 
+                   height = NULL,
                    elementId = NULL) {
-  if (is.data.frame(data) | is.null(data)) {
+  if (inherits(data, c("data.frame", "table")) | is.null(data)) {
     x <- list(
       specs = list(type = "common"),
       data = data,
@@ -35,7 +35,7 @@ vchart <- function(data = NULL,
       ...
     )
     if (!is.null(mapping))
-      x$mapdata <- c(x$mapdata, list(eval_mapping_(data, mapping)))
+      x$mapdata <- c(x$mapdata, list(eval_mapping_(as.data.frame(data), mapping)))
   } else {
     x <- list(
       specs = list(data = data, ...)

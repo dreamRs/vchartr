@@ -28,9 +28,8 @@ Create a bar chart :
 electricity_mix %>% 
   filter(country == "South Korea") %>% 
   arrange(desc(generation)) %>% 
-  vbar(
-    aes(source, generation)
-  ) %>% 
+  vchart() %>% 
+  v_bar(aes(source, generation)) %>% 
   v_colors("#5E81AC") %>% 
   v_axes(
     position = "left",
@@ -50,9 +49,8 @@ Colorize bars :
 electricity_mix %>% 
   filter(country == "South Korea") %>% 
   arrange(desc(generation)) %>% 
-  vbar(
-    aes(source, generation, fill = source)
-  ) %>%
+  vchart() %>% 
+  v_bar(aes(source, generation, fill = source)) %>%
   v_specs(xField = "x") %>% # <- use only 'x' aesthetic on x-axis
   v_specs_legend(visible = FALSE) %>%
   v_specs_colors_manual(
@@ -73,12 +71,10 @@ electricity_mix %>%
 Create a basic horizontal bar chart with :
 
 ```{r horizontal}
-vbar(
-  top_generation,
-  aes(country, electricity_generation), 
-  direction = "horizontal"
-) %>% 
-  v_specs(
+vchart(top_generation) %>% 
+  v_bar(
+    aes(country, electricity_generation), 
+    direction = "horizontal",
     label = list(visible = TRUE)
   ) %>% 
   v_specs_colors("#8FBCBB") %>% 
@@ -92,12 +88,10 @@ vbar(
 Highlight a specific bar in the chart :
 
 ```{r highlight-bar}
-vbar(
-  top_generation,
-  aes(country, electricity_generation), 
-  direction = "horizontal"
-) %>% 
-  v_specs(
+vchart(top_generation) %>% 
+  v_bar(
+    aes(country, electricity_generation), 
+    direction = "horizontal",
     bar = list(
       style = list(
         fill = JS("datum => datum.x == 'Japan' ? '#5E81AC' : '#88C0D0'")
@@ -111,10 +105,9 @@ Or :
 ```{r highlight-bars}
 co2_emissions %>% 
   filter(country == "China") %>% 
-  vbar(
-    aes(year, co2_growth_prct)
-  ) %>% 
-  v_specs(
+  vchart() %>% 
+  v_bar(
+    aes(year, co2_growth_prct),
     bar = list(
       style = list(
         fill = JS("datum => datum.y <= 0 ? 'forestgreen' : 'firebrick'")
@@ -142,10 +135,10 @@ co2_emissions %>%
 A grouped bar chart with specific colors and custom legend : 
 
 ```{r grouped}
-vbar(
-  subset(world_electricity, type == "total"),
-  aes(year, generation, fill = source)
-) %>% 
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(aes(year, generation, fill = source)) %>% 
   v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
   v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
@@ -158,11 +151,10 @@ vbar(
 Stack bars :
 
 ```{r grouped-stacked}
-vbar(
-  subset(world_electricity, type == "total"),
-  aes(year, generation, fill = source),
-  stack = TRUE
-) %>% 
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(aes(year, generation, fill = source), stack = TRUE) %>% 
   v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
   v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
@@ -174,12 +166,14 @@ vbar(
 
 
 ```{r grouped-stacked-percentage}
-vbar(
-  subset(world_electricity, type == "total"),
-  aes(year, generation, fill = source),
-  stack = TRUE, 
-  percent = TRUE
-) %>% 
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(
+    aes(year, generation, fill = source), 
+    stack = TRUE, 
+    percent = TRUE
+  ) %>% 
   v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
   v_specs_axes(
     position = "left",
@@ -196,22 +190,12 @@ vbar(
 ```{r}
 electricity_mix %>% 
   filter(source == "nuclear") %>% 
-  arrange(desc(generation)) %>% 
-  vbar(
+  arrange(generation) %>% 
+  vchart() %>% 
+  v_bar(
     aes(country, generation),
     direction = "horizontal",
-    dataserie_id = "myid"
-  ) %>% 
-  v_specs_axes(
-    position = "bottom",
-    visible = FALSE
-  ) %>% 
-  v_specs_axes(
-    position = "left",
-    domainLine = list(visible = FALSE),
-    tick = list(visible = FALSE)
-  ) %>% 
-  v_specs(
+    dataserie_id = "myid",
     bar = list(
       style = list(cornerRadius = c(5, 5, 5, 5), height = 10)
     ),
@@ -224,7 +208,18 @@ electricity_mix %>%
           lineWidth = 1
         )
       )
-    ),
+    )
+  ) %>% 
+  v_specs_axes(
+    position = "bottom",
+    visible = FALSE
+  ) %>% 
+  v_specs_axes(
+    position = "left",
+    domainLine = list(visible = FALSE),
+    tick = list(visible = FALSE)
+  ) %>% 
+  v_specs(
     padding = list(right = 50, left = 10),
     extensionMark = list(
       list(

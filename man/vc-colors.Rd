@@ -26,12 +26,11 @@ Set color(s) for chart
 library(vchartr)
 data("mpg", package = "ggplot2")
 
-vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
+vchart(table(Class = mpg$class)) \%>\%
+  v_bar(aes(Class, Freq)) \%>\%
   v_specs_colors("#8FBCBB")
 
-vbar(
-  table(Class = mpg$class, Year = mpg$year),
-  aes(Class, Freq, fill = Year)
-) \%>\%
+vchart(table(Class = mpg$class, Year = mpg$year)) \%>\%
+  v_bar(aes(Class, Freq, fill = Year)) \%>\%
   v_specs_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
 }

@@ -12,7 +12,7 @@ v_line_datazoom(
 )
 }
 \arguments{
-\item{vc}{A chart created with \code{\link[=vline]{vline()}}.}
+\item{vc}{A chart created with \code{\link[=vchart]{vchart()}}.}
 
 \item{start, end}{Formatter for the start/end label, e.g. : \code{"Start: \\{label:\%Y-\%m-\%d\\}"},
 where the part between braces will be replaced by the date with the format specified.}
@@ -28,6 +28,7 @@ Add data zoom on a line or area chart
 \examples{
 library(vchartr)
 data("economics", package = "ggplot2")
-vline(economics, aes(date, unemploy)) \%>\%
+vchart(economics, aes(date, unemploy)) \%>\%
+  v_line() \%>\%
   v_line_datazoom()
 }

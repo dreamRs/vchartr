@@ -36,42 +36,42 @@ Create a Scatter Chart
 \examples{
 
 library(vchartr)
-library(palmerpenguins)
+data("penguins", package = "palmerpenguins")
 
 # Basic scatter chart
-vchart(penguins) \%>\% 
+vchart(penguins) \%>\%
   v_scatter(aes(x = flipper_length_mm, y = body_mass_g))
 
 # Color series with discrete values
-vchart(penguins) \%>\% 
+vchart(penguins) \%>\%
   v_scatter(aes(x = flipper_length_mm, y = body_mass_g, color = species))
 
 # Color series with continuous values
-vchart(penguins) \%>\% 
+vchart(penguins) \%>\%
   v_scatter(aes(x = bill_length_mm, y = bill_depth_mm, color = body_mass_g))
 
-# Size of points 
-vchart(penguins) \%>\% 
+# Size of points
+vchart(penguins) \%>\%
   v_scatter(aes(x = bill_length_mm, y = bill_depth_mm, size = body_mass_g))
 
 # Size and color
-vchart(penguins) \%>\% 
+vchart(penguins) \%>\%
   v_scatter(aes(
     x = bill_length_mm,
     y = bill_depth_mm,
-    color = body_mass_g, 
+    color = body_mass_g,
     size = body_mass_g
   ))
 
 
-vchart(penguins) \%>\% 
+vchart(penguins) \%>\%
   v_scatter(
     aes(
       x = bill_length_mm,
       y = bill_depth_mm,
       color = species,
       shape = species
-    ), 
+    ),
     dataserie_id = "id"
   ) \%>\%
   v_specs(
@@ -84,10 +84,10 @@ vchart(penguins) \%>\%
 
 
 
-vscatter(
-  penguins,
-  aes(x = flipper_length_mm, y = body_mass_g, color = species)
-) \%>\%
+vchart(penguins) \%>\%
+  v_scatter(
+    aes(x = flipper_length_mm, y = body_mass_g, color = species)
+  ) \%>\%
   v_specs_colors_manual(
     Adelie = "#ffa232",
     Chinstrap = "#33a2a2",

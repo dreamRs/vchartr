@@ -23,7 +23,8 @@ Set chart title and subtitle
 library(vchartr)
 data("mpg", package = "ggplot2")
 
-vbar(table(Class = mpg$class), aes(Class, Freq)) \%>\%
+vchart(table(Class = mpg$class), aes(Class, Freq)) \%>\%
+  v_bar() \%>\%
   v_labs(
     title = "Title for the chart",
     subtitle = "A subtitle to be placed under the title"

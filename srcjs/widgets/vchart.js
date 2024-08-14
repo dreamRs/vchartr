@@ -3,6 +3,10 @@ import VChart from "@visactor/vchart";
 import { allThemeMap } from "@visactor/vchart-theme";
 
 import * as dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 import "dayjs/locale/af";
 import "dayjs/locale/am";
 import "dayjs/locale/ar-dz";

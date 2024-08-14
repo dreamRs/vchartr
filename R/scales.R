@@ -85,6 +85,8 @@ v_scale_date <- function(vc,
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
 
+  args <- list(...)
+  
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -140,7 +142,7 @@ v_scale_date <- function(vc,
     )
   }
 
-  label <- list()
+  label <- args$label %||% list()
   if (length(dates_ticks) > 0) {
     label$dataFilter <- JS(sprintf(
       "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
@@ -184,7 +186,6 @@ v_scale_date <- function(vc,
     title = title,
     ...
   )
-  
   v_specs_tooltip(
     vc = vc,
     dimension = list(
@@ -193,7 +194,13 @@ v_scale_date <- function(vc,
       ),
       content = list(
         list(
-          key = JS("datum => datum.hasOwnProperty('colour') ? datum.colour : datum.__VCHART_DEFAULT_DATA_SERIES_FIELD"),
+          key = JS(
+            "datum => {",
+            "if (datum.hasOwnProperty('colour')) return datum.colour;",
+            "if (datum.hasOwnProperty('fill')) return datum.fill;",
+            "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
+            "}"
+          ),
           value = JS("datum => datum.y")
         )
       )
@@ -216,7 +223,8 @@ v_scale_x_datetime <- function(vc,
                                name = NULL,
                                date_breaks = NULL,
                                date_labels = NULL,
-                               tz = "",
+                               date_labels_tooltip = date_labels,
+                               tz = NULL,
                                min = NULL,
                                max = NULL,
                                ...,
@@ -227,6 +235,7 @@ v_scale_x_datetime <- function(vc,
     name = name,
     date_breaks = date_breaks,
     date_labels = date_labels,
+    date_labels_tooltip = date_labels_tooltip,
     tz = tz,
     min = min,
     max = max,
@@ -241,7 +250,8 @@ v_scale_y_datetime <- function(vc,
                                name = NULL,
                                date_breaks = NULL,
                                date_labels = NULL,
-                               tz = "",
+                               date_labels_tooltip = date_labels,
+                               tz = NULL,
                                min = NULL,
                                max = NULL,
                                ...,
@@ -252,6 +262,7 @@ v_scale_y_datetime <- function(vc,
     name = name,
     date_breaks = date_breaks,
     date_labels = date_labels,
+    date_labels_tooltip = date_labels_tooltip,
     tz = tz,
     min = min,
     max = max,
@@ -267,7 +278,8 @@ v_scale_datetime <- function(vc,
                              name = NULL,
                              date_breaks = NULL,
                              date_labels = NULL,
-                             tz = "",
+                             date_labels_tooltip = date_labels,
+                             tz = NULL,
                              min = NULL,
                              max = NULL,
                              ...) {
@@ -275,6 +287,8 @@ v_scale_datetime <- function(vc,
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
 
+  args <- list(...)
+  
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -289,10 +303,10 @@ v_scale_datetime <- function(vc,
     x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
   }
 
-  if (is.null(date_breaks))
-    date_breaks <- 5
   if (is.null(date_labels))
-    date_labels <- "%Y-%m-%d %H:%M"
+    date_labels <- "YYYY-MM-DD HH:mm"
+  if (is.null(date_labels_tooltip))
+    date_labels_tooltip <- "YYYY-MM-DD HH:mm"
 
   date_breaks_min <- if (!is.null(min)) {
     as.POSIXct(min, origin = "1970-01-01", tz = tz)
@@ -319,7 +333,7 @@ v_scale_datetime <- function(vc,
     }
   }
 
-  tick <- if (!is.null(dates_ticks)) {
+  tick <- if (length(dates_ticks) > 0) {
     list(
       visible = TRUE,
       tickStep = 1,
@@ -330,34 +344,18 @@ v_scale_datetime <- function(vc,
     )
   }
 
-  label <- list()
-  if (!is.null(dates_ticks)) {
+  label <- args$label %||% list()
+  if (length(dates_ticks) > 0) {
     label$dataFilter <- JS(sprintf(
       "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
       paste(dates_ticks, collapse = ", ")
     ))
   }
-  if (inherits(date_labels, "JS_EVAL")) {
-    label$formatMethod <- JS(
-      "function(value) {",
-      "var date = new Date(value * 1000);",
-      sprintf("const fun = %s;", date_labels),
-      "return fun(date);",
-      "}"
-    )
-  } else if (is.character(date_labels)) {
-    label$formatMethod <- JS(
-      "function(value) {",
-      "var date = new Date(value * 1000);",
-      sprintf("const fun = %s;", d3_format_time(date_labels)),
-      "return fun(date);",
-      "}"
-    )
-  }
+  label$formatMethod <- label_format_datetime(date_labels, tz = tz)
   if (length(label) < 1)
     label <- NULL
 
-  grid <- if (!is.null(dates_ticks)) {
+  grid <- if (length(dates_ticks) > 0) {
     list(
       style = JS(sprintf(
         "(value, index, datum) => {var values = [%s]; return {visible: values.includes(value)};}",
@@ -376,7 +374,7 @@ v_scale_datetime <- function(vc,
     name
   }
 
-  v_specs_axes(
+  vc <- v_specs_axes(
     vc = vc,
     position = position,
     type = "linear",
@@ -390,8 +388,27 @@ v_scale_datetime <- function(vc,
     title = title,
     ...
   )
+  v_specs_tooltip(
+    vc = vc,
+    dimension = list(
+      title = list(
+        value = label_format_datetime(date_labels_tooltip, tz = tz)
+      ),
+      content = list(
+        list(
+          key = JS(
+            "datum => {",
+            "if (datum.hasOwnProperty('colour')) return datum.colour;",
+            "if (datum.hasOwnProperty('fill')) return datum.fill;",
+            "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
+            "}"
+          ),
+          value = JS("datum => datum.y")
+        )
+      )
+    )
+  )
 }
-
 
 
 # Continuous --------------------------------------------------------------

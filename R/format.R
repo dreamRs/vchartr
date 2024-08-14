@@ -60,9 +60,12 @@ check_locale_d3 <- function(x, path = "d3-format-locale") {
 #' @param suffix Character string to append after formatted value.
 #' @param locale Localization to use, for example `"fr"` for french,
 #'  see possible values [online](https://cdn.jsdelivr.net/npm/dayjs@1/locale.json).
+#' @param tz Timezone to use.
 #'
 #' @return a `JS` function.
 #' @export
+#' 
+#' @name format-date
 #'
 #' @example examples/format-dates.R
 format_date_dayjs <- function(format, prefix = "", suffix = "", locale = "en") {
@@ -72,6 +75,17 @@ format_date_dayjs <- function(format, prefix = "", suffix = "", locale = "en") {
   ))
 }
 
+#' @export
+#' 
+#' @rdname format-date
+format_datetime_dayjs <- function(format, prefix = "", suffix = "", locale = "en", tz = NULL) {
+  if (is.null(tz))
+    return(format_date_dayjs(format, prefix, suffix, locale))
+  JS(sprintf(
+    "function(value) {return '%s' + dayjs(value).tz('%s').locale('%s').format('%s') + '%s';}",
+    prefix, tz, locale, format, suffix
+  ))
+}
 
 
 label_format_date <- function(fmt) {
@@ -89,4 +103,22 @@ label_format_date <- function(fmt) {
     "}"
   )
 }
+
+
+label_format_datetime <- function(fmt, tz = NULL) {
+  if (!inherits(fmt, c("JS_EVAL", "character"))) {
+    stop("vchart scale date : `date_labels` must either be a character or a JS function.", call. = FALSE)
+  }
+  if (!inherits(fmt, "JS_EVAL"))
+    fmt <- format_datetime_dayjs(fmt, tz = tz)
+  JS(
+    "function(value) {",
+    "var num = value.hasOwnProperty('x') ? value.x : value;",
+    "var date = new Date(num * 1000);",
+    sprintf("const fun = %s;", fmt),
+    "return fun(date);",
+    "}"
+  )
+}
+
 

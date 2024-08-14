@@ -86,7 +86,7 @@ v_bar <- function(vc,
     list(serie)
   )
   if (has_name(mapping, "fill")) {
-    vc <- v_specs_legend(vc, visible = TRUE)
+    vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
   if (has_player(mapdata)) {
     vc <- v_default_player(vc, mapdata, dataserie_id)
@@ -254,7 +254,7 @@ v_area <- function(vc,
     vc <- v_scale_x_continuous(vc = vc)
   }
   if (has_name(mapping, "fill")) {
-    vc <- v_specs_legend(vc, visible = TRUE)
+    vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
   return(vc)
 }
@@ -337,7 +337,7 @@ v_hist <- function(vc,
     )
   )
   if (has_name(mapping, "fill")) {
-    vc <- v_specs_legend(vc, visible = TRUE)
+    vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
   return(vc)
 }
@@ -425,7 +425,7 @@ v_scatter <- function(vc,
   if (identical(scale_colour, "continuous")) {
     vc <- v_scale_colour_gradient(vc)
   } else if (!is.na(scale_colour)) {
-    vc <- v_specs_legend(vc, visible = TRUE, seriesId = dataserie_id)
+    vc <- v_scale_color_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
   scale_size <- attr(mapdata, "scale_size")
   if (identical(scale_size, "continuous")) {

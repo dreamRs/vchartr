@@ -726,15 +726,21 @@ v_scale_discrete <- function(vc,
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #' 
+#' @importFrom rlang is_list is_named
+#' 
 #' @name scale-color-manual
 #' @example examples/scale_color_manual.R
 v_scale_color_manual <- function(vc, values) {
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  colors <- vc$x$specs$color$specified %||% list()
-  colors <- modifyList(colors, as.list(values))
-  vc$x$specs$color$specified <- colors
+  color <- vc$x$specs$color
+  if (is_list(color) & !is_named(color))
+    vc$x$specs$color <- list()
+  specified <- vc$x$specs$color$specified %||% list()
+  specified <- modifyList(specified, as.list(values))
+  vc$x$specs$color$specified <- specified
+  vc <- v_specs_legend(vc, visible = TRUE)
   return(vc)
 }
 
@@ -742,6 +748,37 @@ v_scale_color_manual <- function(vc, values) {
 #' 
 #' @rdname scale-color-manual
 v_scale_fill_manual <- v_scale_color_manual
+
+
+#' Discrete color scale
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param palette A color vector or the name of an R palette.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#' 
+#' @importFrom rlang is_list is_named
+#' @importFrom grDevices palette.colors palette.pals
+#' 
+#' @name scale-color-manual
+#' @example examples/scale_color_discrete.R
+v_scale_color_discrete <- function(vc, palette) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  if (length(palette) == 1 &&palette %in% palette.pals())
+    palette <- palette.colors(palette = palette)
+  vc <- v_specs_colors(vc = vc, unname(palette))
+  vc <- v_specs_legend(vc, visible = TRUE)
+  return(vc)
+}
+
+#' @export
+#' 
+#' @rdname scale-color-manual
+v_scale_fill_discrete <- v_scale_color_discrete
+
 
 
 

@@ -4,22 +4,34 @@
 \alias{scale-color-manual}
 \alias{v_scale_color_manual}
 \alias{v_scale_fill_manual}
+\alias{v_scale_color_discrete}
+\alias{v_scale_fill_discrete}
 \title{Manual color scale}
 \usage{
 v_scale_color_manual(vc, values)
 
 v_scale_fill_manual(vc, values)
+
+v_scale_color_discrete(vc, palette)
+
+v_scale_fill_discrete(vc, palette)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}} or specific chart's type function.}
 
 \item{values}{A named list with data values as name and color as values}
+
+\item{palette}{A color vector or the name of an R palette.}
 }
 \value{
+A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
+
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 }
 \description{
 Manual color scale
+
+Discrete color scale
 }
 \examples{
 
@@ -47,4 +59,22 @@ vchart(palmerpenguins::penguins) \%>\%
     Chinstrap = "#33a2a2",
     Gentoo = "#b34df2"
   ))
+
+library(vchartr)
+
+subset(electricity_mix, country \%in\% c("France", "Canada")) \%>\% 
+  vchart() \%>\% 
+  v_bar(aes(country, generation, fill = source)) \%>\% 
+  v_scale_fill_discrete("Okabe-Ito")
+
+subset(electricity_mix, country \%in\% c("France", "Canada")) \%>\% 
+  vchart() \%>\% 
+  v_bar(aes(country, generation, fill = source)) \%>\% 
+  v_scale_fill_discrete("ggplot2")
+
+# or 
+subset(electricity_mix, country \%in\% c("France", "Canada")) \%>\% 
+  vchart() \%>\% 
+  v_bar(aes(country, generation, fill = source)) \%>\% 
+  v_scale_fill_discrete(palette.colors(palette = "ggplot2")[-1])
 }

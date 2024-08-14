@@ -24,3 +24,4 @@ vchart(subset(world_electricity, type == "total")) %>%
 # Percentage Stacked Bar Chart
 vchart(subset(world_electricity, type == "total")) %>% 
   v_bar(aes(year, generation, fill = source), stack = TRUE, percent = TRUE)
+

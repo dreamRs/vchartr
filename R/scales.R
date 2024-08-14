@@ -93,8 +93,6 @@ v_scale_date <- function(vc,
     x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
   }
 
-  if (is.null(date_breaks))
-    date_breaks <- 5
   if (is.null(date_labels))
     date_labels <- "%Y-%m-%d"
 
@@ -123,7 +121,7 @@ v_scale_date <- function(vc,
     }
   }
 
-  tick <- if (!is.null(dates_ticks)) {
+  tick <- if (length(dates_ticks) > 0) {
     list(
       visible = TRUE,
       tickStep = 1,
@@ -135,7 +133,7 @@ v_scale_date <- function(vc,
   }
 
   label <- list()
-  if (!is.null(dates_ticks)) {
+  if (length(dates_ticks) > 0) {
     label$dataFilter <- JS(sprintf(
       "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
       paste(dates_ticks, collapse = ", ")
@@ -153,7 +151,7 @@ v_scale_date <- function(vc,
     label$formatMethod <- JS(
       "function(value) {",
       "var date = new Date(value * 3600 * 24 * 1000);",
-      sprintf("const fun = %s;", d3_format_time(date_labels)),
+      sprintf("const fun = %s;", format_date_dayjs(date_labels)),
       "return fun(date);",
       "}"
     )
@@ -161,7 +159,7 @@ v_scale_date <- function(vc,
   if (length(label) < 1)
     label <- NULL
 
-  grid <- if (!is.null(dates_ticks)) {
+  grid <- if (length(dates_ticks) > 0) {
     list(
       style = JS(sprintf(
         "(value, index, datum) => {var values = [%s]; return {visible: values.includes(value)};}",

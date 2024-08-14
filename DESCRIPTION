@@ -18,7 +18,6 @@ Imports:
     rlang
 Suggests: 
     bslib,
-    cranlogs,
     knitr,
     geojsonio,
     palmerpenguins,

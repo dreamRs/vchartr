@@ -11,11 +11,10 @@
 #' @return a `JS` function.
 #' @export
 #'
-#' @name d3-format
 #'
 #' @importFrom htmlwidgets JS
 #'
-#' @example examples/format.R
+#' @example examples/format-numbers.R
 d3_format <- function(format, prefix = "", suffix = "", locale = "en-US") {
   check_locale_d3(locale)
   path <- system.file(file.path("d3-format-locale", paste0(locale, ".json")), package = "vchartr")
@@ -28,9 +27,6 @@ d3_format <- function(format, prefix = "", suffix = "", locale = "en-US") {
   ))
 }
 
-#' @export
-#'
-#' @rdname d3-format
 d3_format_time <- function(format, prefix = "", suffix = "", locale = "en-US") {
   check_locale_d3(locale, path = "d3-time-format-locale")
   path <- system.file(file.path("d3-time-format-locale", paste0(locale, ".json")), package = "vchartr")
@@ -57,5 +53,22 @@ check_locale_d3 <- function(x, path = "d3-format-locale") {
 
 
 
-
+#' Format date with dayjs JavaScript library
+#'
+#' @param format Format for dates, see [online documentation](https://day.js.org/docs/en/display/format).
+#' @param prefix Character string to append before formatted value.
+#' @param suffix Character string to append after formatted value.
+#' @param locale Localization to use, for example `"fr"` for french,
+#'  see possible values [online](https://cdn.jsdelivr.net/npm/dayjs@1/locale.json).
+#'
+#' @return a `JS` function.
+#' @export
+#'
+#' @example examples/format-dates.R
+format_date_dayjs <- function(format, prefix = "", suffix = "", locale = "en") {
+  JS(sprintf(
+    "function(value) {return '%s' + dayjs(value).locale('%s').format('%s') + '%s';}",
+    prefix, locale, format, suffix
+  ))
+}
 

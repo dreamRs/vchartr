@@ -134,8 +134,6 @@ v_labs <- function(vc, title, subtitle = NULL) {
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-#' @name vc-colors
-#'
 #' @examples
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
@@ -144,29 +142,18 @@ v_labs <- function(vc, title, subtitle = NULL) {
 #'   v_bar(aes(Class, Freq)) %>%
 #'   v_specs_colors("#8FBCBB")
 #'
-#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
-#'   v_bar(aes(Class, Freq, fill = Year)) %>%
-#'   v_specs_colors_manual("2008" = "#88C0D0", "1999" = "#5E81AC")
 v_specs_colors <- function(vc, ...) {
+  args <- list(...)
+  if (length(args) == 1 && is.character(args[[1]]))
+    args <- as.list(args[[1]])
   vc <- .vchart_specs(
     vc,
     "color",
-    list(...)
+    args
   )
   return(vc)
 }
 
-#' @export
-#'
-#' @rdname vc-colors
-v_specs_colors_manual <- function(vc, ...) {
-  vc <- .vchart_specs(
-    vc,
-    "color",
-    list(specified = list(...))
-  )
-  return(vc)
-}
 
 
 

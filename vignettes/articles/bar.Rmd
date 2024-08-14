@@ -46,21 +46,23 @@ electricity_mix %>%
 Colorize bars :
 
 ```{r}
-electricity_mix %>% 
-  filter(country == "South Korea") %>% 
-  arrange(desc(generation)) %>% 
-  vchart() %>% 
+electricity_mix %>%
+  filter(country == "South Korea") %>%
+  arrange(desc(generation)) %>%
+  vchart() %>%
   v_bar(aes(source, generation, fill = source)) %>%
   v_specs(xField = "x") %>% # <- use only 'x' aesthetic on x-axis
   v_specs_legend(visible = FALSE) %>%
-  v_specs_colors_manual(
-    "oil" = "#80549f",
-    "coal" = "#a68832",
-    "solar" = "#d66b0d",
-    "gas" = "#f20809",
-    "wind" = "#72cbb7",
-    "hydro" = "#2672b0",
-    "nuclear" = "#e4a701"
+  v_scale_fill_manual(
+    c(
+      "oil" = "#80549f",
+      "coal" = "#a68832",
+      "solar" = "#d66b0d",
+      "gas" = "#f20809",
+      "wind" = "#72cbb7",
+      "hydro" = "#2672b0",
+      "nuclear" = "#e4a701"
+    )
   )
 ```
 
@@ -155,7 +157,7 @@ world_electricity %>%
   filter(type == "total") %>% 
   vchart() %>% 
   v_bar(aes(year, generation, fill = source), stack = TRUE) %>% 
-  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_scale_color_manual(c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")) %>% 
   v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
@@ -174,7 +176,7 @@ world_electricity %>%
     stack = TRUE, 
     percent = TRUE
   ) %>% 
-  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_scale_color_manual(c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")) %>% 
   v_specs_axes(
     position = "left",
     label = list(

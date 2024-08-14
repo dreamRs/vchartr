@@ -49,10 +49,10 @@ subset(world_electricity, year == 2023 & type == "total") \%>\%
 subset(world_electricity, year == 2023 & type == "total") \%>\%
   vchart() \%>\% 
   v_pie(aes(x = source, y = generation)) \%>\%
-  v_specs_colors_manual(
+  v_scale_color_manual(c(
     "Low carbon" = "#a3be8c",
     "Fossil fuels" = "#4C566A"
-  )
+  ))
 
 # Customize tooltip
 subset(world_electricity, year == 2023 & type == "total") \%>\%

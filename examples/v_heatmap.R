@@ -22,8 +22,8 @@ vchart(co2_emissions) %>%
 # Change colors
 vchart(co2_emissions) %>%
   v_heatmap(aes(x = year, y = country, fill = co2_growth_change)) %>%
-  v_specs_colors_manual(
+  v_scale_fill_manual(c(
     Increase = "firebrick",
     Decrease = "forestgreen"
-  )
+  ))
 

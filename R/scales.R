@@ -714,7 +714,38 @@ v_scale_discrete <- function(vc,
 
 
 
-# Scale colour ----------------------------------------------------------------------
+
+# Color/fill manual -----------------------------------------------------------------
+
+
+#' Manual color scale
+#'
+#' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
+#' @param values A named list with data values as name and color as values
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#' 
+#' @name scale-color-manual
+#' @example examples/scale_color_manual.R
+v_scale_color_manual <- function(vc, values) {
+  stopifnot(
+    "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
+  )
+  colors <- vc$x$specs$color$specified %||% list()
+  colors <- modifyList(colors, as.list(values))
+  vc$x$specs$color$specified <- colors
+  return(vc)
+}
+
+#' @export
+#' 
+#' @rdname scale-color-manual
+v_scale_fill_manual <- v_scale_color_manual
+
+
+
+# Color/fill gradient ---------------------------------------------------------------
 
 
 #' Color scale for continuous data

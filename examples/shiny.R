@@ -83,7 +83,7 @@ server <- function(input, output, session) {
     }
 
     vc %>%
-      v_specs_colors_manual(
+      v_scale_color_manual(c(
         "oil" = "#80549f",
         "coal" = "#a68832",
         "solar" = "#d66b0d",
@@ -91,7 +91,7 @@ server <- function(input, output, session) {
         "wind" = "#72cbb7",
         "hydro" = "#2672b0",
         "nuclear" = "#e4a701"
-      )
+      ))
   })
 
 }

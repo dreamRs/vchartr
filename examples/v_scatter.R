@@ -52,8 +52,8 @@ vchart(penguins) %>%
   v_scatter(
     aes(x = flipper_length_mm, y = body_mass_g, color = species)
   ) %>%
-  v_specs_colors_manual(
+  v_scale_color_manual(c(
     Adelie = "#ffa232",
     Chinstrap = "#33a2a2",
     Gentoo = "#b34df2"
-  )
+  ))

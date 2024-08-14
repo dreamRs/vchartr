@@ -13,6 +13,7 @@ v_scale_x_date(
   name = NULL,
   date_breaks = NULL,
   date_labels = NULL,
+  date_labels_tooltip = date_labels,
   min = NULL,
   max = NULL,
   ...,
@@ -24,6 +25,7 @@ v_scale_y_date(
   name = NULL,
   date_breaks = NULL,
   date_labels = NULL,
+  date_labels_tooltip = date_labels,
   min = NULL,
   max = NULL,
   ...,
@@ -66,7 +68,9 @@ v_scale_y_datetime(
 \item A Date/POSIXct vector giving positions of breaks.
 }}
 
-\item{date_labels}{The format to be applied on Date/POSIXct in the labels.}
+\item{date_labels}{The format to be applied on Date/POSIXct in the labels, see \code{\link[=format_date_dayjs]{format_date_dayjs()}}.}
+
+\item{date_labels_tooltip}{The format to be applied on Date/POSIXct in the tooltip, see \code{\link[=format_date_dayjs]{format_date_dayjs()}}.}
 
 \item{min}{Minimum value on the axis.}
 
@@ -106,12 +110,12 @@ vchart(eco2mix) \%>\%
 # Format labels
 vchart(eco2mix) \%>\%
   v_line(aes(date, solar)) \%>\%
-  v_scale_x_date(date_labels = "\%m-\%Y")
+  v_scale_x_date(date_labels = "MM-YYYY")
 
 # Other format for labels
 vchart(eco2mix) \%>\%
   v_line(aes(date, solar)) \%>\%
-  v_scale_x_date(date_labels = "\%b \%Y")
+  v_scale_x_date(date_labels = "MMM YYYY")
 
 # Format labels with locale
 vchart(eco2mix) \%>\%
@@ -119,4 +123,13 @@ vchart(eco2mix) \%>\%
   v_scale_x_date(
     date_labels = format_date_dayjs("MMMM YY", locale = "fr")
   )
+
+# Different formats in labels and tootlip
+vchart(eco2mix) \%>\%
+  v_line(aes(date, solar)) \%>\%
+  v_scale_x_date(
+    date_labels = "YYYY-MM",
+    date_labels_tooltip = "MMMM YYYY"
+  )
+
 }

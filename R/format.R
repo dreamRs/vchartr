@@ -72,3 +72,21 @@ format_date_dayjs <- function(format, prefix = "", suffix = "", locale = "en") {
   ))
 }
 
+
+
+label_format_date <- function(fmt) {
+  if (!inherits(fmt, c("JS_EVAL", "character"))) {
+    stop("vchart scale date : `date_labels` must either be a character or a JS function.", call. = FALSE)
+  }
+  if (!inherits(fmt, "JS_EVAL"))
+    fmt <- format_date_dayjs(fmt)
+  JS(
+    "function(value) {",
+    "var num = value.hasOwnProperty('x') ? value.x : value;",
+    "var date = new Date(num * 3600 * 24 * 1000);",
+    sprintf("const fun = %s;", fmt),
+    "return fun(date);",
+    "}"
+  )
+}
+

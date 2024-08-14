@@ -2,7 +2,7 @@
 % Please edit documentation in R/format.R
 \name{format_date_dayjs}
 \alias{format_date_dayjs}
-\title{Format date with days JavaScript library}
+\title{Format date with dayjs JavaScript library}
 \usage{
 format_date_dayjs(format, prefix = "", suffix = "", locale = "en")
 }
@@ -20,7 +20,7 @@ see possible values \href{https://cdn.jsdelivr.net/npm/dayjs@1/locale.json}{onli
 a \code{JS} function.
 }
 \description{
-Format date with days JavaScript library
+Format date with dayjs JavaScript library
 }
 \examples{
 

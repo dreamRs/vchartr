@@ -11,7 +11,8 @@
 #'   * A single `numeric` value giving the number of breaks.
 #'   * A string giving the distance between breaks like "2 weeks", or "10 years".
 #'   * A Date/POSIXct vector giving positions of breaks.
-#' @param date_labels The format to be applied on Date/POSIXct in the labels.
+#' @param date_labels The format to be applied on Date/POSIXct in the labels, see [format_date_dayjs()].
+#' @param date_labels_tooltip The format to be applied on Date/POSIXct in the tooltip, see [format_date_dayjs()].
 #' @param min Minimum value on the axis.
 #' @param max Maximum value on the axis.
 #' @param ... Additional parameters for the axis.
@@ -27,6 +28,7 @@ v_scale_x_date <- function(vc,
                            name = NULL,
                            date_breaks = NULL,
                            date_labels = NULL,
+                           date_labels_tooltip = date_labels,
                            min = NULL,
                            max = NULL,
                            ...,
@@ -37,6 +39,7 @@ v_scale_x_date <- function(vc,
     name = name,
     date_breaks = date_breaks,
     date_labels = date_labels,
+    date_labels_tooltip = date_labels_tooltip,
     min = min,
     max = max,
     ...
@@ -50,6 +53,7 @@ v_scale_y_date <- function(vc,
                            name = NULL,
                            date_breaks = NULL,
                            date_labels = NULL,
+                           date_labels_tooltip = date_labels,
                            min = NULL,
                            max = NULL,
                            ...,
@@ -60,6 +64,7 @@ v_scale_y_date <- function(vc,
     name = name,
     date_breaks = date_breaks,
     date_labels = date_labels,
+    date_labels_tooltip = date_labels_tooltip,
     min = min,
     max = max,
     ...
@@ -72,6 +77,7 @@ v_scale_date <- function(vc,
                          name = NULL,
                          date_breaks = NULL,
                          date_labels = NULL,
+                         date_labels_tooltip = date_labels,
                          min = NULL,
                          max = NULL,
                          ...) {
@@ -94,7 +100,9 @@ v_scale_date <- function(vc,
   }
 
   if (is.null(date_labels))
-    date_labels <- "%Y-%m-%d"
+    date_labels <- "YYYY-MM-DD"
+  if (is.null(date_labels_tooltip))
+    date_labels_tooltip <- "YYYY-MM-DD"
 
   date_breaks_min <- if (!is.null(min)) {
     as.Date(min, origin = "1970-01-01")
@@ -139,23 +147,7 @@ v_scale_date <- function(vc,
       paste(dates_ticks, collapse = ", ")
     ))
   }
-  if (inherits(date_labels, "JS_EVAL")) {
-    label$formatMethod <- JS(
-      "function(value) {",
-      "var date = new Date(value * 3600 * 24 * 1000);",
-      sprintf("const fun = %s;", date_labels),
-      "return fun(date);",
-      "}"
-    )
-  } else if (is.character(date_labels)) {
-    label$formatMethod <- JS(
-      "function(value) {",
-      "var date = new Date(value * 3600 * 24 * 1000);",
-      sprintf("const fun = %s;", format_date_dayjs(date_labels)),
-      "return fun(date);",
-      "}"
-    )
-  }
+  label$formatMethod <- label_format_date(date_labels)
   if (length(label) < 1)
     label <- NULL
 
@@ -178,7 +170,7 @@ v_scale_date <- function(vc,
     name
   }
 
-  v_specs_axes(
+  vc <- v_specs_axes(
     vc = vc,
     position = position,
     type = "linear",
@@ -191,6 +183,21 @@ v_scale_date <- function(vc,
     grid = grid,
     title = title,
     ...
+  )
+  
+  v_specs_tooltip(
+    vc = vc,
+    dimension = list(
+      title = list(
+        value = label_format_date(date_labels_tooltip)
+      ),
+      content = list(
+        list(
+          key = JS("datum => datum.hasOwnProperty('colour') ? datum.colour : datum.__VCHART_DEFAULT_DATA_SERIES_FIELD"),
+          value = JS("datum => datum.y")
+        )
+      )
+    )
   )
 }
 

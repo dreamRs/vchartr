@@ -159,9 +159,9 @@ v_line <- function(vc,
   if (identical(scale_x, "discrete")) {
     vc <- v_specs_axes(vc, position = "bottom", type = "band")
   } else if (identical(scale_x, "date")) {
-    vc <- v_scale_x_date(vc = vc)
+    vc <- v_scale_x_date(vc)
   } else {
-    vc <- v_scale_x_continuous(vc = vc)
+    vc <- v_scale_x_continuous(vc)
   }
   if (has_name(mapping, "colour")) {
     vc <- v_specs_legend(vc, visible = TRUE)

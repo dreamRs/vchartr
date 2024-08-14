@@ -270,3 +270,14 @@ rename_list <- function(.list, .names) {
   return(.list)
 }
 
+
+tooltip_key_default <- function() {
+  JS(
+    "datum => {",
+    "if (datum.hasOwnProperty('colour')) return datum.colour;",
+    "if (datum.hasOwnProperty('fill')) return datum.fill;",
+    "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
+    "}"
+  )
+}
+

@@ -193,16 +193,8 @@ v_scale_date <- function(vc,
         value = label_format_date(date_labels_tooltip)
       ),
       content = list(
-        list(
-          key = JS(
-            "datum => {",
-            "if (datum.hasOwnProperty('colour')) return datum.colour;",
-            "if (datum.hasOwnProperty('fill')) return datum.fill;",
-            "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
-            "}"
-          ),
-          value = JS("datum => datum.y")
-        )
+        key = tooltip_key_default(),
+        value = JS("datum => datum.y")
       )
     )
   )
@@ -395,16 +387,8 @@ v_scale_datetime <- function(vc,
         value = label_format_datetime(date_labels_tooltip, tz = tz)
       ),
       content = list(
-        list(
-          key = JS(
-            "datum => {",
-            "if (datum.hasOwnProperty('colour')) return datum.colour;",
-            "if (datum.hasOwnProperty('fill')) return datum.fill;",
-            "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
-            "}"
-          ),
-          value = JS("datum => datum.y")
-        )
+        key = tooltip_key_default(),
+        value = JS("datum => datum.y")
       )
     )
   )
@@ -423,9 +407,9 @@ v_scale_datetime <- function(vc,
 #'   * A single `numeric` value giving the number of breaks.
 #'   * A numeric vector of positions.
 #' @param pretty Use [pretty()] to dertimen breaks if `breaks` is a single numeric value.
-#' @param labels The format to be applied on numeric in the labels. Either:
-#'   * A single character indicationg th D3 format.
-#'   * A `JS` function, such as [d3_format()].
+#' @param labels,labels_tooltip The format to be applied on numeric in the labels/tooltip. Either:
+#'   * A single character indicating the D3 format.
+#'   * A `JS` function, such as [format_num_d3()].
 #' @param zero Force axis to start at 0.
 #' @param min Minimum value on the axis.
 #' @param max Maximum value on the axis.
@@ -443,6 +427,7 @@ v_scale_x_continuous <- function(vc,
                                  breaks = NULL,
                                  pretty = TRUE,
                                  labels = NULL,
+                                 labels_tooltip = labels,
                                  zero = FALSE,
                                  min = NULL,
                                  max = NULL,
@@ -457,6 +442,7 @@ v_scale_x_continuous <- function(vc,
     breaks = breaks,
     pretty = pretty,
     labels = labels,
+    labels_tooltip = labels_tooltip,
     min = min,
     max = max,
     ...
@@ -472,6 +458,7 @@ v_scale_y_continuous <- function(vc,
                                  breaks = NULL,
                                  pretty = TRUE,
                                  labels = NULL,
+                                 labels_tooltip = labels,
                                  zero = FALSE,
                                  min = NULL,
                                  max = NULL,
@@ -488,6 +475,7 @@ v_scale_y_continuous <- function(vc,
     breaks = breaks,
     pretty = pretty,
     labels = labels,
+    labels_tooltip = labels_tooltip,
     min = min,
     max = max,
     ...
@@ -501,6 +489,7 @@ v_scale_continuous <- function(vc,
                                breaks = NULL,
                                pretty = TRUE,
                                labels = NULL,
+                               labels_tooltip = labels,
                                zero = FALSE,
                                min = NULL,
                                max = NULL,
@@ -528,12 +517,6 @@ v_scale_continuous <- function(vc,
   } else {
     x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
   }
-
-  if (is.null(breaks))
-    breaks <- 5
-
-  if (length(x) < 2)
-    breaks <- NULL
 
   breaks_min <- if (!is.null(min)) {
     as.numeric(min)
@@ -576,11 +559,7 @@ v_scale_continuous <- function(vc,
       paste(breaks_ticks, collapse = ", ")
     ))
   }
-  if (inherits(labels, "JS_EVAL")) {
-    label$formatMethod <- labels
-  } else if (is.character(labels)) {
-    label$formatMethod <- d3_format(labels)
-  }
+  label$formatMethod <- label_format_num(labels, aesthetic)
   if (length(label) < 1)
     label <- NULL
 
@@ -606,7 +585,7 @@ v_scale_continuous <- function(vc,
     name
   }
 
-  v_specs_axes(
+  vc <- v_specs_axes(
     vc = vc,
     position = position,
     type = "linear",
@@ -619,6 +598,21 @@ v_scale_continuous <- function(vc,
     grid = grid,
     title = title,
     ...
+  )
+  v_specs_tooltip(
+    vc = vc,
+    dimension = list(
+      content = list_(
+        key = tooltip_key_default(),
+        value = label_format_num(labels_tooltip, aesthetic)
+      )
+    ),
+    mark = list(
+      content = list_(
+        key = tooltip_key_default(),
+        value = label_format_num(labels_tooltip, aesthetic)
+      )
+    )
   )
 }
 

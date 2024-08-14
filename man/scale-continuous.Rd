@@ -12,6 +12,7 @@ v_scale_x_continuous(
   breaks = NULL,
   pretty = TRUE,
   labels = NULL,
+  labels_tooltip = labels,
   zero = FALSE,
   min = NULL,
   max = NULL,
@@ -25,6 +26,7 @@ v_scale_y_continuous(
   breaks = NULL,
   pretty = TRUE,
   labels = NULL,
+  labels_tooltip = labels,
   zero = FALSE,
   min = NULL,
   max = NULL,
@@ -45,10 +47,10 @@ v_scale_y_continuous(
 
 \item{pretty}{Use \code{\link[=pretty]{pretty()}} to dertimen breaks if \code{breaks} is a single numeric value.}
 
-\item{labels}{The format to be applied on numeric in the labels. Either:
+\item{labels, labels_tooltip}{The format to be applied on numeric in the labels/tooltip. Either:
 \itemize{
-\item A single character indicationg th D3 format.
-\item A \code{JS} function, such as \code{\link[=d3_format]{d3_format()}}.
+\item A single character indicating the D3 format.
+\item A \code{JS} function, such as \code{\link[=format_num_d3]{format_num_d3()}}.
 }}
 
 \item{zero}{Force axis to start at 0.}
@@ -71,27 +73,37 @@ Axis scale for continuous data
 
 library(vchartr)
 
+# Add a title to the axis
 vchart(top_generation) \%>\%
   v_bar(aes(country, electricity_generation)) \%>\%
   v_scale_y_continuous(name = "Electricity generation")
 
+vchart(subset(world_electricity, type == "total")) \%>\% 
+  v_bar(aes(year, generation, fill = source)) \%>\%
+  v_scale_y_continuous(name = "Electricity generation")
+
+# Specify number of breaks
 vchart(top_generation) \%>\%
   v_bar(aes(country, electricity_generation)) \%>\%
   v_scale_y_continuous(breaks = 10)
 
-
+# Specify breaks position
 vchart(top_generation) \%>\%
   v_bar(aes(country, electricity_generation)) \%>\%
   v_scale_y_continuous(breaks = c(0, 5000, 10000))
 
-
+# Format labels
 vchart(top_generation) \%>\%
   v_bar(aes(country, electricity_generation)) \%>\%
   v_scale_y_continuous(labels = "~s")
 
-
+# Format labels with options
 vchart(top_generation) \%>\%
   v_bar(aes(country, electricity_generation)) \%>\%
-  v_scale_y_continuous(labels = d3_format(",", suffix = " TWh", locale = "fr-FR"))
+  v_scale_y_continuous(labels = format_num_d3(",", suffix = " TWh", locale = "fr-FR"))
+
+vchart(subset(world_electricity, type == "total")) \%>\% 
+  v_bar(aes(year, generation, fill = source)) \%>\%
+  v_scale_y_continuous(labels = format_num_d3(",", suffix = " TWh", locale = "fr-FR"))
 
 }

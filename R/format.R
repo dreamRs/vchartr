@@ -1,5 +1,5 @@
 
-#' Format numbers and dates with D3
+#' Format numbers with D3
 #'
 #' @param format Format for numbers, currency, percentage, e.g. `".0\%"` for rounded percentage.
 #'  See online documentation : [https://github.com/d3/d3-format](https://github.com/d3/d3-format).
@@ -15,7 +15,7 @@
 #' @importFrom htmlwidgets JS
 #'
 #' @example examples/format-numbers.R
-d3_format <- function(format, prefix = "", suffix = "", locale = "en-US") {
+format_num_d3 <- function(format, prefix = "", suffix = "", locale = "en-US") {
   check_locale_d3(locale)
   path <- system.file(file.path("d3-format-locale", paste0(locale, ".json")), package = "vchartr")
   if (path != "") {
@@ -26,6 +26,27 @@ d3_format <- function(format, prefix = "", suffix = "", locale = "en-US") {
     locale, prefix, format, suffix
   ))
 }
+
+
+label_format_num <- function(fmt, aesthetic) {
+  if (is.null(fmt))
+    return(JS(sprintf("value => value.hasOwnProperty('%1$s') ? value.%1$s : value;", aesthetic)))
+  if (!inherits(fmt, c("JS_EVAL", "character"))) {
+    stop("vchart scale continuous : `labels` must either be a character or a JS function.", call. = FALSE)
+  }
+  if (!inherits(fmt, "JS_EVAL"))
+    fmt <- format_num_d3(fmt)
+  JS(
+    "function(value) {",
+    sprintf("var num = value.hasOwnProperty('%1$s') ? value.%1$s : value;", aesthetic),
+    sprintf("const fun = %s;", fmt),
+    "return fun(num);",
+    "}"
+  )
+}
+
+
+
 
 d3_format_time <- function(format, prefix = "", suffix = "", locale = "en-US") {
   check_locale_d3(locale, path = "d3-time-format-locale")

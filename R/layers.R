@@ -128,8 +128,11 @@ v_line <- function(vc,
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "line")
-  if (is.null(name) & !is.null(mapping$y))
-    name <- rlang::as_label(mapping$y)
+  if (is.null(name)) {
+    if (!is.null(mapping$y)) {
+      name <- rlang::as_label(mapping$y)
+    }
+  }
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
@@ -154,10 +157,9 @@ v_line <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
-  vc <- v_specs_axes(vc, position = "left", type = "linear")
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
-    vc <- v_specs_axes(vc, position = "bottom", type = "band")
+    vc <- v_scale_x_discrete(vc)
   } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc)
   } else {
@@ -166,6 +168,7 @@ v_line <- function(vc,
   if (has_name(mapping, "colour")) {
     vc <- v_specs_legend(vc, visible = TRUE)
   }
+  vc <- v_scale_y_continuous(vc)
   return(vc)
 }
 
@@ -205,8 +208,14 @@ v_area <- function(vc,
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "area")
-  if (is.null(name) & !is.null(mapping$y))
-    name <- rlang::as_label(mapping$y)
+  if (is.null(name)) {
+    if (!is.null(mapping$y)) {
+      name <- rlang::as_label(mapping$y)
+    }
+    if (!is.null(mapping$ymin) & !is.null(mapping$ymax)) {
+      name <- paste(rlang::as_label(mapping$ymin), rlang::as_label(mapping$ymax), sep = "/")
+    }
+  }
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
   vc <- .vchart_specs(
@@ -244,18 +253,19 @@ v_area <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
-  vc <- v_specs_axes(vc, position = "left", type = "linear")
+  
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
-    vc <- v_specs_axes(vc, position = "bottom", type = "band")
+    vc <- v_scale_x_discrete(vc)
   } else if (identical(scale_x, "date")) {
-    vc <- v_scale_x_date(vc = vc)
+    vc <- v_scale_x_date(vc)
   } else {
-    vc <- v_scale_x_continuous(vc = vc)
+    vc <- v_scale_x_continuous(vc)
   }
   if (has_name(mapping, "fill")) {
     vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
+  vc <- v_scale_y_continuous(vc)
   return(vc)
 }
 

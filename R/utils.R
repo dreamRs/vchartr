@@ -274,10 +274,22 @@ rename_list <- function(.list, .names) {
 tooltip_key_default <- function() {
   JS(
     "datum => {",
+    # "console.log(datum);",
     "if (datum.hasOwnProperty('colour')) return datum.colour;",
     "if (datum.hasOwnProperty('fill')) return datum.fill;",
     "return datum.__VCHART_DEFAULT_DATA_SERIES_FIELD;",
     "}"
   )
+}
+
+
+
+get_aes_data <- function(mapdata, aesthetics) {
+  mapaes <- dropNullsOrEmpty(mapdata[aesthetics])
+  if (length(mapaes) > 0) {
+    unlist(mapaes, use.names = FALSE)
+  } else {
+    unlist(lapply(mapdata, get_aes_data, aesthetics))
+  }
 }
 

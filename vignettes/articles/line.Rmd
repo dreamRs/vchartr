@@ -22,3 +22,45 @@ library(dplyr)
 
 ## Line Chart
 
+```{r}
+co2_emissions %>% 
+  filter(country %in% c("China", "United States", "India")) %>% 
+  vchart() %>% 
+  v_line(
+    aes(year, co2, color = country),
+    lineLabel = list(visible = TRUE)
+  ) %>% 
+  v_specs(padding = list(right = 60)) %>% 
+  v_specs_legend(visible = FALSE) %>% 
+  v_scale_y_continuous(name = "measured in million tonnes", labels = ",") %>% 
+  v_labs(
+    title = "Annual CO₂ emissions",
+    subtitle = "Source: Our World In Data"
+  )
+```
+
+
+## Line and area range
+
+```{r}
+vchart(temperatures, aes(date)) %>% 
+  v_area(
+    aes(ymin = low, ymax = high),
+    area_style = list(fill = "#848585", fill_opacity = 0.3)
+  ) %>% 
+  v_line(
+    aes(y = `2024`), 
+    line_style = list(stroke = "firebrick")
+  ) %>%
+  v_scale_x_date(date_breaks = "3 months", date_labels = "MMM") %>% 
+  v_scale_y_continuous(
+    name = "Temperature in degree celsius",
+    labels = format_num_d3(".3r", suffix = "°C")
+  ) %>% 
+  v_labs(
+    title = "Temperatures in France between 2019 and 2023 compared to 2024",
+    subtitle = "Source: Enedis"
+  )
+```
+
+

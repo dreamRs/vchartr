@@ -512,11 +512,7 @@ v_scale_continuous <- function(vc,
   if (position == "gauge")
     position <- "angle"
 
-  if (!is.null(vc$x$mapdata[[aesthetic]])) {
-    x <- vc$x$mapdata[[aesthetic]]
-  } else {
-    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
-  }
+  x <- get_aes_data(vc$x$mapdata, c(aesthetic, paste0(aesthetic, c("min", "max"))))
 
   breaks_min <- if (!is.null(min)) {
     as.numeric(min)

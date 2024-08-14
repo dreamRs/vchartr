@@ -49,7 +49,7 @@ vchart(eco2mix) \%>\%
   v_line(aes(date, solar))
 
 # Two lines
-vchart(eco2mix, aes(date)) \%>\% 
+vchart(tail(eco2mix, 30), aes(date)) \%>\% 
   v_line(aes(y = solar)) \%>\% 
   v_line(aes(y = wind))
 

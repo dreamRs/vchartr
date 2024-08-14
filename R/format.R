@@ -29,8 +29,23 @@ format_num_d3 <- function(format, prefix = "", suffix = "", locale = "en-US") {
 
 
 label_format_num <- function(fmt, aesthetic) {
-  if (is.null(fmt))
-    return(JS(sprintf("value => value.hasOwnProperty('%1$s') ? value.%1$s : value;", aesthetic)))
+  if (is.null(fmt)) {
+    fun <- JS(
+      "value => {",
+      # "console.log(value);",
+      sprintf(
+        "if (value.hasOwnProperty('%1$s')) return value.%1$s;",
+        aesthetic
+      ),
+      sprintf(
+        "if (value.hasOwnProperty('%1$smin') & value.hasOwnProperty('%1$smax')) return value.%1$smin + ' - ' + value.%1$smax;",
+        aesthetic
+      ),
+      "return value;",
+      "}"
+    )
+    return(fun) 
+  }
   if (!inherits(fmt, c("JS_EVAL", "character"))) {
     stop("vchart scale continuous : `labels` must either be a character or a JS function.", call. = FALSE)
   }
@@ -38,9 +53,17 @@ label_format_num <- function(fmt, aesthetic) {
     fmt <- format_num_d3(fmt)
   JS(
     "function(value) {",
-    sprintf("var num = value.hasOwnProperty('%1$s') ? value.%1$s : value;", aesthetic),
     sprintf("const fun = %s;", fmt),
-    "return fun(num);",
+    # sprintf("var num = value.hasOwnProperty('%1$s') ? value.%1$s : value;", aesthetic),
+    sprintf(
+      "if (value.hasOwnProperty('%1$s')) return fun(value.%1$s);",
+      aesthetic
+    ),
+    sprintf(
+      "if (value.hasOwnProperty('%1$smin') & value.hasOwnProperty('%1$smax')) return fun(value.%1$smin) + ' - ' + fun(value.%1$smax);",
+      aesthetic
+    ),
+    "return fun(value);",
     "}"
   )
 }

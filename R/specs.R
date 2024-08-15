@@ -339,3 +339,54 @@ v_specs_custom_mark <- function(vc, ...) {
   )
   return(vc)
 }
+
+
+
+
+#' Add data zoom to a chart
+#'
+#' @param vc A chart created with [vchart()].
+#' @param start,end Formatter for the start/end label, e.g. : `"Start: \{label:%Y-%m-%d\}"`,
+#'  where the part between braces will be replaced by the date with the format specified.
+#' @param ... Additional parameters for dataZoom property,
+#'  see [online documentation](https://www.visactor.io/vchart/option/commonChart#dataZoom).
+#' @param brush Logical, add the ability to brush the chart to zoom in.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/datazoom.R
+v_specs_datazoom <- function(vc,
+                             start = "{label:%Y-%m-%d}",
+                             end = "{label:%Y-%m-%d}",
+                             ...,
+                             brush = TRUE) {
+  stopifnot(
+    "'vc' must be a chart constructed with vline()" = inherits(vc, "vchart")
+  )
+  vc <- v_specs(
+    vc = vc,
+    dataZoom = list(
+      modifyList(
+        list_(
+          orient = "bottom",
+          startText = list_(formatter = start),
+          endText = list_(formatter = end)
+        ),
+        list(...)
+      )
+    )
+  )
+  if (isTRUE(brush)) {
+    vc <- v_specs(
+      vc = vc,
+      brush = list(
+        brushType = "x",
+        zoomAfterBrush = TRUE
+      )
+    )
+  }
+  return(vc)
+}
+
+

@@ -17,7 +17,7 @@ countries <- co2[year == 2022 & iso_code != ""][order(co2, decreasing = TRUE)][1
 #   "Canada", "South Korea", "France", "Germany"
 # )
 
-co2 <- co2[country %in% countries & year >= 1990, list(
+co2 <- co2[country %in% countries & year >= 1950, list(
   country, year,
   co2, co2_per_gdp, co2_per_capita, co2_growth_abs, co2_growth_prct, co2_per_unit_energy,
   consumption_co2, consumption_co2_per_capita, consumption_co2_per_gdp

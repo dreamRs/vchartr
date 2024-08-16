@@ -31,12 +31,51 @@ co2_emissions %>%
     lineLabel = list(visible = TRUE)
   ) %>% 
   v_specs_legend(visible = FALSE) %>% 
-  v_scale_y_continuous(name = "measured in million tonnes", labels = ",") %>% 
+  v_scale_y_continuous(
+    name = "measured in million tonnes", 
+    labels = ","
+  ) %>% 
+    v_scale_x_continuous(
+    expand = list(max = 0.15)
+  ) %>% 
   v_labs(
     title = "Annual CO₂ emissions",
     subtitle = "Source: Our World In Data"
   )
 ```
+
+
+## Line with data zoom
+
+```{r}
+co2_emissions %>% 
+  filter(country %in% c("China", "United States", "India")) %>% 
+  vchart() %>% 
+  v_line(
+    aes(year, co2, color = country)
+  ) %>% 
+  v_specs_datazoom(
+    start = "{label:.0f}",
+    startValue = 2000, 
+    end = "{label:.0f}"
+  ) %>% 
+  v_specs_legend(
+    orient = "top",
+    position = "start",
+    layout = "vertical",
+    layoutType = "absolute",
+    left = 30,
+    top = 20,
+    item = list(
+      shape = list(
+        style = list(
+          symbolType = "roundLine"
+        )
+      )
+    )
+  )
+```
+
 
 
 ## Line and area range

@@ -428,7 +428,7 @@ v_scale_x_continuous <- function(vc,
                                  pretty = TRUE,
                                  labels = NULL,
                                  labels_tooltip = labels,
-                                 zero = FALSE,
+                                 zero = NULL,
                                  min = NULL,
                                  max = NULL,
                                  ...,
@@ -459,7 +459,7 @@ v_scale_y_continuous <- function(vc,
                                  pretty = TRUE,
                                  labels = NULL,
                                  labels_tooltip = labels,
-                                 zero = FALSE,
+                                 zero = NULL,
                                  min = NULL,
                                  max = NULL,
                                  ...,
@@ -490,7 +490,7 @@ v_scale_continuous <- function(vc,
                                pretty = TRUE,
                                labels = NULL,
                                labels_tooltip = labels,
-                               zero = FALSE,
+                               zero = NULL,
                                min = NULL,
                                max = NULL,
                                ...) {
@@ -512,6 +512,12 @@ v_scale_continuous <- function(vc,
   if (position == "gauge")
     position <- "angle"
 
+  if (is.null(zero))
+    zero <- isTRUE("bar" %in% vc$x$type)
+
+  if (aesthetic == "y" & is.null(args$nice))
+    args$nice <- TRUE
+
   x <- get_aes_data(vc$x$mapdata, c(aesthetic, paste0(aesthetic, c("min", "max"))))
 
   breaks_min <- if (!is.null(min)) {
@@ -521,7 +527,7 @@ v_scale_continuous <- function(vc,
   }
 
   breaks_max <- if (!is.null(max)) {
-    as.numeric(max, origin = "1970-01-01")
+    as.numeric(max)
   } else {
     max(as.numeric(x), na.rm = TRUE)
   }
@@ -586,7 +592,8 @@ v_scale_continuous <- function(vc,
     position = position,
     type = "linear",
     zero = zero,
-    sampling = TRUE,
+    sampling = FALSE,
+    nice = args$nice %||% length(tick) > 0,
     softMin = if (!is.null(min)) as.numeric(min),
     softMax = if (!is.null(max)) as.numeric(max),
     tick = tick,

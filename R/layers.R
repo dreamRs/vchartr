@@ -179,7 +179,7 @@ v_line <- function(vc,
 #'
 #' @inheritParams v_line
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
-#' @param area_style Area's styles options, such as curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
+#' @param area Area's options, such as curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
 #' @param line Options for showing lines or not.
 #'
 #' @return A [vchart()] `htmlwidget` object.
@@ -191,10 +191,12 @@ v_area <- function(vc,
                    data = NULL,
                    name = NULL,
                    stack = FALSE,
-                   area_style = list(
-                     curve_type = "linear",
-                     fill = NULL,
-                     fill_opacity = NULL
+                   area = list(
+                     style = list(
+                       curveType = "linear",
+                       fill = NULL,
+                       fillOpacity = NULL
+                     )
                    ),
                    point = list(visible = FALSE),
                    line = list(visible = FALSE),
@@ -247,13 +249,11 @@ v_area <- function(vc,
     stack = isTRUE(stack),
     point = point,
     line = line,
-    area = list(
-      style = style_params(area_style)
-    ),
+    area = area,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
-  
+
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
     vc <- v_scale_x_discrete(vc)

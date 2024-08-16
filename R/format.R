@@ -44,7 +44,7 @@ label_format_num <- function(fmt, aesthetic) {
       "return value;",
       "}"
     )
-    return(fun) 
+    return(fun)
   }
   if (!inherits(fmt, c("JS_EVAL", "character"))) {
     stop("vchart scale continuous : `labels` must either be a character or a JS function.", call. = FALSE)
@@ -108,7 +108,7 @@ check_locale_d3 <- function(x, path = "d3-format-locale") {
 #'
 #' @return a `JS` function.
 #' @export
-#' 
+#'
 #' @name format-date
 #'
 #' @example examples/format-dates.R
@@ -120,7 +120,7 @@ format_date_dayjs <- function(format, prefix = "", suffix = "", locale = "en") {
 }
 
 #' @export
-#' 
+#'
 #' @rdname format-date
 format_datetime_dayjs <- function(format, prefix = "", suffix = "", locale = "en", tz = NULL) {
   if (is.null(tz))
@@ -131,35 +131,39 @@ format_datetime_dayjs <- function(format, prefix = "", suffix = "", locale = "en
   ))
 }
 
-
-label_format_date <- function(fmt) {
-  if (!inherits(fmt, c("JS_EVAL", "character"))) {
+#' @export
+#'
+#' @rdname format-date
+label_format_date <- function(format) {
+  if (!inherits(format, c("JS_EVAL", "character"))) {
     stop("vchart scale date : `date_labels` must either be a character or a JS function.", call. = FALSE)
   }
-  if (!inherits(fmt, "JS_EVAL"))
-    fmt <- format_date_dayjs(fmt)
+  if (!inherits(format, "JS_EVAL"))
+    format <- format_date_dayjs(format)
   JS(
     "function(value) {",
     "var num = value.hasOwnProperty('x') ? value.x : value;",
     "var date = new Date(num * 3600 * 24 * 1000);",
-    sprintf("const fun = %s;", fmt),
+    sprintf("const fun = %s;", format),
     "return fun(date);",
     "}"
   )
 }
 
-
-label_format_datetime <- function(fmt, tz = NULL) {
-  if (!inherits(fmt, c("JS_EVAL", "character"))) {
+#' @export
+#'
+#' @rdname format-date
+label_format_datetime <- function(format, tz = NULL) {
+  if (!inherits(format, c("JS_EVAL", "character"))) {
     stop("vchart scale date : `date_labels` must either be a character or a JS function.", call. = FALSE)
   }
-  if (!inherits(fmt, "JS_EVAL"))
-    fmt <- format_datetime_dayjs(fmt, tz = tz)
+  if (!inherits(format, "JS_EVAL"))
+    format <- format_datetime_dayjs(format, tz = tz)
   JS(
     "function(value) {",
     "var num = value.hasOwnProperty('x') ? value.x : value;",
     "var date = new Date(num * 1000);",
-    sprintf("const fun = %s;", fmt),
+    sprintf("const fun = %s;", format),
     "return fun(date);",
     "}"
   )

@@ -10,7 +10,7 @@ v_area(
   data = NULL,
   name = NULL,
   stack = FALSE,
-  area_style = list(curve_type = "linear", fill = NULL, fill_opacity = NULL),
+  area = list(style = list(curveType = "linear", fill = NULL, fillOpacity = NULL)),
   point = list(visible = FALSE),
   line = list(visible = FALSE),
   ...,
@@ -29,7 +29,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{stack}{Whether to stack the data or not (if \code{fill} aesthetic is provided).}
 
-\item{area_style}{Area's styles options, such as curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
+\item{area}{Area's options, such as curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
 
 \item{point}{Options for showing points on lines or not.}
 
@@ -50,45 +50,58 @@ Create an Area Chart
 library(vchartr)
 
 # Basic Area Chart
-vchart(eco2mix) \%>\% 
+vchart(eco2mix) \%>\%
   v_area(aes(date, solar))
 
 # Two areas
-vchart(eco2mix, aes(date)) \%>\% 
-  v_area(aes(y = solar)) \%>\% 
+vchart(eco2mix, aes(date)) \%>\%
+  v_area(aes(y = solar)) \%>\%
   v_area(aes(y = wind))
 
 # Line chart with discrete x axis
-vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
+vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
   v_area(aes(month, value))
 
-# Fill color 
-vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), area_style = list(fill = "firebrick", fill_opacity = 0.9))
+# Fill color
+vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
+  v_area(
+    aes(month, value),
+    area_style = list(fill = "firebrick", fill_opacity = 0.9)
+  )
 
 # Smooth Area Chart
-vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), area_style = list(curve_type = "monotone"))
+vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
+  v_area(
+    aes(month, value),
+    area_style = list(curve_type = "monotone")
+  )
 
 # Step Area Chart
-vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_area(aes(month, value), area_style = list(curve_type = "stepAfter"))
+vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
+  v_area(
+    aes(month, value),
+    area_style = list(curve_type = "stepAfter")
+  )
 
 # Multiple areas
-vchart(eco2mix_long) \%>\% 
+vchart(eco2mix_long) \%>\%
   v_area(aes(date, production, fill = source))
 
-vchart(eco2mix_long) \%>\% 
-  v_area(aes(date, production, fill = source), stack = TRUE, fill_opacity = 1)
+vchart(eco2mix_long) \%>\%
+  v_area(
+    aes(date, production, fill = source),
+    stack = TRUE,
+    area_style = (fill_opacity = 1)
+  )
 
 
 # Range area chart
-vchart(temperatures, aes(date)) \%>\% 
-  v_area(aes(ymin = low, ymax = high)) \%>\% 
+vchart(temperatures, aes(date)) \%>\%
+  v_area(aes(ymin = low, ymax = high)) \%>\%
   v_line(aes(y = average))
 
-within(temperatures, {difference = `2024` - average}) \%>\% 
-  vchart(aes(date)) \%>\% 
+within(temperatures, {difference = `2024` - average}) \%>\%
+  vchart(aes(date)) \%>\%
   v_area(
     aes(ymin = average, ymax = `2024`, difference = difference),
     area_style = list(
@@ -97,5 +110,5 @@ within(temperatures, {difference = `2024` - average}) \%>\%
       ),
       fill_opacity = 1
     )
-  ) 
+  )
 }

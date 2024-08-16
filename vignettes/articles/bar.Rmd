@@ -176,12 +176,14 @@ world_electricity %>%
     stack = TRUE, 
     percent = TRUE
   ) %>% 
-  v_scale_color_manual(c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")) %>% 
-  v_specs_axes(
-    position = "left",
-    label = list(
-      formatMethod = JS("val => `${val*100}%`")
-    )
+  v_scale_color_manual(
+    c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")
+  ) %>% 
+  v_scale_y_continuous(
+    min = 0, 
+    max = 1,
+    labels = ".0%",
+    labels_tooltip = "~s"
   )
 ```
 

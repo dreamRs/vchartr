@@ -86,7 +86,7 @@ v_scale_date <- function(vc,
   )
 
   args <- list(...)
-  
+
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -280,7 +280,7 @@ v_scale_datetime <- function(vc,
   )
 
   args <- list(...)
-  
+
   aesthetic <- switch(
     position,
     "bottom" = "x",
@@ -586,9 +586,9 @@ v_scale_continuous <- function(vc,
     position = position,
     type = "linear",
     zero = zero,
-    sampling = FALSE,
-    min = if (!is.null(min)) as.numeric(min),
-    max = if (!is.null(max)) as.numeric(max),
+    sampling = TRUE,
+    softMin = if (!is.null(min)) as.numeric(min),
+    softMax = if (!is.null(max)) as.numeric(max),
     tick = tick,
     label = label,
     grid = grid,
@@ -721,9 +721,9 @@ v_scale_discrete <- function(vc,
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#' 
+#'
 #' @importFrom rlang is_list is_named
-#' 
+#'
 #' @name scale-color-manual
 #' @example examples/scale_color_manual.R
 v_scale_color_manual <- function(vc, values) {
@@ -741,7 +741,7 @@ v_scale_color_manual <- function(vc, values) {
 }
 
 #' @export
-#' 
+#'
 #' @rdname scale-color-manual
 v_scale_fill_manual <- v_scale_color_manual
 
@@ -753,10 +753,10 @@ v_scale_fill_manual <- v_scale_color_manual
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#' 
+#'
 #' @importFrom rlang is_list is_named
 #' @importFrom grDevices palette.colors palette.pals
-#' 
+#'
 #' @name scale-color-manual
 #' @example examples/scale_color_discrete.R
 v_scale_color_discrete <- function(vc, palette) {
@@ -771,7 +771,7 @@ v_scale_color_discrete <- function(vc, palette) {
 }
 
 #' @export
-#' 
+#'
 #' @rdname scale-color-manual
 v_scale_fill_discrete <- v_scale_color_discrete
 

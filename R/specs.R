@@ -343,6 +343,26 @@ v_specs_custom_mark <- function(vc, ...) {
 
 
 
+#' Add crosshair to chart
+#'
+#' @param vc An htmlwidget created with [vchart()].
+#' @param ... Options for the legend, see examples or
+#'  [online documentation](https://www.visactor.io/vchart/option/commonChart#crosshair).
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+v_specs_crosshair <- function(vc, ...) {
+  vc <- .vchart_specs2(
+    vc,
+    "crosshair",
+    list(...)
+  )
+  return(vc)
+}
+
+
+
 #' Add data zoom to a chart
 #'
 #' @param vc A chart created with [vchart()].

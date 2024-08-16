@@ -30,7 +30,6 @@ co2_emissions %>%
     aes(year, co2, color = country),
     lineLabel = list(visible = TRUE)
   ) %>% 
-  v_specs(padding = list(right = 60)) %>% 
   v_specs_legend(visible = FALSE) %>% 
   v_scale_y_continuous(name = "measured in million tonnes", labels = ",") %>% 
   v_labs(
@@ -46,13 +45,17 @@ co2_emissions %>%
 vchart(temperatures, aes(date)) %>% 
   v_area(
     aes(ymin = low, ymax = high),
-    area_style = list(fill = "#848585", fill_opacity = 0.3)
+    area = list(style = list(fill = "#848585", fillOpacity = 0.3))
   ) %>% 
   v_line(
     aes(y = `2024`), 
     line_style = list(stroke = "firebrick")
   ) %>%
-  v_scale_x_date(date_breaks = "3 months", date_labels = "MMM") %>% 
+  v_scale_x_date(
+    date_breaks = "3 months", 
+    date_labels = "MMM",
+    date_labels_tooltip = "DD MMMM"
+  ) %>% 
   v_scale_y_continuous(
     name = "Temperature in degree celsius",
     labels = format_num_d3(".3r", suffix = "°C")
@@ -63,4 +66,76 @@ vchart(temperatures, aes(date)) %>%
   )
 ```
 
+
+## Area chart
+
+```{r}
+vchart(eco2mix_long) %>% 
+  v_area(
+    aes(date, production, fill = source),
+    stack = TRUE,
+    # area_style = list(fill_opacity = 1),
+    area = list(
+      style = list(
+        fillOpacity = 0.6
+      )
+    )
+  ) %>%
+  v_scale_x_date(
+    date_labels = "YYYY",
+    date_labels_tooltip = "DD/MM/YYYY",
+    date_breaks = "2 years"
+  ) %>% 
+  v_scale_y_continuous(
+    min = -2000,
+    labels = format_num_d3(",", locale = "fr-FR", suffix = " TWh")
+  ) %>% 
+  v_scale_color_manual(c(
+    "oil" = "#80549f",
+    "coal" = "#a68832",
+    "solar" = "#d66b0d",
+    "gas" = "#f20809",
+    "wind" = "#72cbb7",
+    "hydro" = "#2672b0",
+    "nuclear" = "#e4a701",
+    "pumping" = "#2f5673",
+    "bioenergies" = "#156956"
+  )) %>% 
+  v_specs_legend(
+    orient = "right",
+    position = "middle",
+    item = list(focus = TRUE),
+    title = list(
+      visible = TRUE,
+      text = "Source"
+    )
+  ) %>% 
+  v_specs_crosshair(
+    xField = list(
+      visible = TRUE,
+      label = list(
+        visible = TRUE, 
+        formatMethod = label_format_date("DD/MM/YYYY"),
+        style = list(
+          fill = "#000"
+        ),
+        labelBackground = list(
+          padding = 5,
+          style = list(
+            stroke = "#000",
+            fill = "#19ff00"
+          )
+        )
+      ),
+      line = list(
+        type = "line",
+        width = 5,
+        style = list(
+          stroke = "#19ff00",
+          lineDash = list(0)
+        )
+      )
+    )
+  )
+```
 

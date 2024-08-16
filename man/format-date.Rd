@@ -4,6 +4,8 @@
 \alias{format-date}
 \alias{format_date_dayjs}
 \alias{format_datetime_dayjs}
+\alias{label_format_date}
+\alias{label_format_datetime}
 \title{Format date with dayjs JavaScript library}
 \usage{
 format_date_dayjs(format, prefix = "", suffix = "", locale = "en")
@@ -15,6 +17,10 @@ format_datetime_dayjs(
   locale = "en",
   tz = NULL
 )
+
+label_format_date(format)
+
+label_format_datetime(format, tz = NULL)
 }
 \arguments{
 \item{format}{Format for dates, see \href{https://day.js.org/docs/en/display/format}{online documentation}.}

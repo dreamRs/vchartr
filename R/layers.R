@@ -1056,3 +1056,75 @@ v_gauge <- function(vc,
   return(vc)
 }
 
+
+
+
+
+
+#' Create a Progress Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_progress.R
+v_progress <- function(vc,
+                       mapping = NULL,
+                       data = NULL,
+                       name = NULL,
+                       ...,
+                       dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  if (is.null(mapping$y)) {
+    if (!is.null(name)) {
+      mapping <- c(mapping, aes(y = !!name))
+    } else {
+      mapping <- c(mapping, aes(y = "Progress"))
+    }
+  }
+  mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
+  vc$x$type <- c(vc$x$type, "progress")
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  vc <- v_specs(
+    vc,
+    type = "linearProgress",
+    id = dataserie_id,
+    dataId = dataserie_id,
+    xField = "x",
+    yField = "y",
+    seriesField = "y",
+    direction = "horizontal",
+    ...
+  )
+  # serie <- list_(
+  #   type = "linearProgress",
+  #   id = dataserie_id,
+  #   dataId = dataserie_id,
+  #   xField = "x",
+  #   yField = "y",
+  #   seriesField = "y",
+  #   direction = "horizontal",
+  #   ...
+  # )
+  # vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+

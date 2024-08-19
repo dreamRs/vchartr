@@ -22,7 +22,7 @@ library(dplyr)
 
 ## Line Chart
 
-```{r}
+```{r line}
 co2_emissions %>% 
   filter(country %in% c("China", "United States", "India")) %>% 
   vchart() %>% 
@@ -47,7 +47,7 @@ co2_emissions %>%
 
 ## Line with data zoom
 
-```{r}
+```{r datazoom}
 co2_emissions %>% 
   filter(country %in% c("China", "United States", "India")) %>% 
   vchart() %>% 
@@ -80,7 +80,7 @@ co2_emissions %>%
 
 ## Line and area range
 
-```{r}
+```{r area-range}
 vchart(temperatures, aes(date)) %>% 
   v_area(
     aes(ymin = low, ymax = high),
@@ -108,7 +108,7 @@ vchart(temperatures, aes(date)) %>%
 
 ## Area chart
 
-```{r}
+```{r area}
 vchart(eco2mix_long) %>% 
   v_area(
     aes(date, production, fill = source),
@@ -182,7 +182,7 @@ vchart(eco2mix_long) %>%
 
 ## Line with bar
 
-```{r}
+```{r with-bars}
 vchart(meteo_paris) %>% 
   v_bar(
     aes(month, precipitation),
@@ -214,5 +214,57 @@ vchart(meteo_paris) %>%
     position = "right"
   ) %>% 
   v_labs(title = "Climate in Paris")
+```
+
+
+
+## Left and right axis
+
+```{r two-axis}
+data("economics", package = "ggplot2")
+vchart(economics) %>% 
+  v_line(
+    aes(date, unemploy),
+    dataserie_id = "unemploy",
+    line = list(style = list(stroke = "#E69F00")),
+  )%>% 
+  v_line(
+    aes(date, uempmed),
+    dataserie_id = "uempmed",
+    line = list(style = list(stroke = "#56B4E9")),
+  ) %>% 
+  v_scale_x_date(date_breaks = "10 years", date_labels = "YYYY", nice = FALSE) %>% 
+  v_scale_y_continuous(
+    seriesId = "unemploy",
+    name = list(
+      visible = TRUE,
+      text = "number of unemployed, in thousands",
+      position = "middle",
+      shape = list(
+        visible = TRUE,
+        style = list(
+          symbolType = "rect",
+          fill = "#E69F00"
+        )
+      )
+    )
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "uempmed",
+    name = list(
+      visible = TRUE,
+      text = "median duration of unemployment, in weeks",
+      position = "middle",
+      shape = list(
+        visible = TRUE,
+        style = list(
+          symbolType = "rect",
+          fill = "#56B4E9"
+        )
+      )
+    ),
+    position = "right"
+  ) %>% 
+  v_labs(title = "US economic time series")
 ```
 

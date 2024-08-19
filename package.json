@@ -11,13 +11,12 @@
     "watch": "webpack --config webpack.dev.js -d --watch"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Victor PERRIER",
+  "license": "MIT",
   "devDependencies": {
-    "@visactor/vchart": "^1.11.11",
+    "@visactor/vchart": "^1.12.0",
     "@visactor/vchart-theme": "^1.11.6",
     "d3-format": "^3.1.0",
-    "d3-time-format": "^4.1.0",
     "dayjs": "^1.11.12",
     "dayjs-with-plugins": "^1.0.4",
     "webpack": "^5.93.0",

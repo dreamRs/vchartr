@@ -100,7 +100,7 @@ v_bar <- function(vc,
 #' Create a Line Chart
 #'
 #' @inheritParams v_bar
-#' @param line_style Area's styles options, such as curve interpolation type,
+#' @param line Line's options, such as curve interpolation type,
 #'  see [online documentation](https://www.visactor.io/vchart/option/lineChart#line.style.curveType)
 #' @param point Options for showing points on lines or not.
 #'
@@ -112,10 +112,12 @@ v_line <- function(vc,
                    mapping = NULL,
                    data = NULL,
                    name = NULL,
-                   line_style = list(
-                     curve_type = "linear",
-                     line_dash = 0,
-                     stroke = NULL
+                   line = list(
+                     style = list(
+                       curveType = "linear",
+                       lineDash = 0,
+                       stroke = NULL
+                     )
                    ),
                    point = list(visible = FALSE),
                    ...,
@@ -153,7 +155,7 @@ v_line <- function(vc,
     yField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
     point = point,
-    line = list(style = style_params(line_style)),
+    line = line,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))

@@ -9,7 +9,7 @@ v_line(
   mapping = NULL,
   data = NULL,
   name = NULL,
-  line_style = list(curve_type = "linear", line_dash = 0, stroke = NULL),
+  line = list(style = list(curveType = "linear", lineDash = 0, stroke = NULL)),
   point = list(visible = FALSE),
   ...,
   dataserie_id = NULL
@@ -25,7 +25,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{name}{Name for the serie, only used for single serie (no \code{color}/\code{fill} aesthetic supplied).}
 
-\item{line_style}{Area's styles options, such as curve interpolation type,
+\item{line}{Line's options, such as curve interpolation type,
 see \href{https://www.visactor.io/vchart/option/lineChart#line.style.curveType}{online documentation}}
 
 \item{point}{Options for showing points on lines or not.}
@@ -59,19 +59,31 @@ vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%
 
 # Stroke color 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), line_style = list(stroke = "firebrick"))
+  v_line(
+    aes(month, value),
+    line = list(style = list(stroke = "firebrick"))
+  )
 
 # Smooth Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), line_style = list(curve_type = "monotone"))
+  v_line(
+    aes(month, value), 
+    line = list(style = list(curveType = "monotone"))
+  )
 
 # Step Line Chart
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), line_style = list(curve_type = "stepAfter"))
+  v_line(
+    aes(month, value),
+    line = list(style = list(curveType = "stepAfter"))
+  )
 
 # Dash array 
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\% 
-  v_line(aes(month, value), line_style = list(line_dash = c(10, 10)))
+  v_line(
+    aes(month, value),
+    line = list(style = list(lineDash = c(10, 10)))
+  )
 
 # Multiple lines
 vchart(eco2mix_long) \%>\% 

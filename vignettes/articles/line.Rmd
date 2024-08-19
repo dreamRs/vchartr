@@ -88,7 +88,7 @@ vchart(temperatures, aes(date)) %>%
   ) %>% 
   v_line(
     aes(y = `2024`), 
-    line_style = list(stroke = "firebrick")
+    line = list(style = list(stroke = "firebrick")),
   ) %>%
   v_scale_x_date(
     date_breaks = "3 months", 
@@ -176,5 +176,43 @@ vchart(eco2mix_long) %>%
       )
     )
   )
+```
+
+
+
+## Line with bar
+
+```{r}
+vchart(meteo_paris) %>% 
+  v_bar(
+    aes(month, precipitation),
+    dataserie_id = "precipitation",
+    name = "Precipitation (mm)",
+    bar = list(style = list(fill = "steelblue"))
+  ) %>% 
+  v_line(
+    aes(month, temperature_avg),
+    dataserie_id = "temperature", 
+    point = list(
+      visible = TRUE,
+      style = list(fill = "firebrick")
+    ),
+    name = "Average temperature (°C)",
+    line = list(style = list(stroke = "firebrick")),
+    label = list(
+      visible = TRUE,
+      style = list(fill = "firebrick", strokeOpacity = 0)
+    )
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "temperature",
+    name = "Average temperature (°C)"
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "precipitation",
+    name = "Precipitation (mm)",
+    position = "right"
+  ) %>% 
+  v_labs(title = "Climate in Paris")
 ```
 

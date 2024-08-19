@@ -393,6 +393,13 @@ v_scatter <- function(vc,
       )
     )
   )
+  shapeField <- NULL
+  if (has_name(mapping, "shape"))
+    shapeField <- "shape"
+  if (identical(mapping$colour, mapping$shape))
+    shapeField <- "colour"
+  shape <- if (!is.null(shapeField))
+     list(type = "ordinal")
   serie <- list_(
     type = "scatter",
     id = dataserie_id,
@@ -401,7 +408,8 @@ v_scatter <- function(vc,
     yField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
     sizeField = if (has_name(mapping, "size")) "size",
-    shapeField = if (has_name(mapping, "shape")) "shape",
+    shapeField = shapeField,
+    shape = shape,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))

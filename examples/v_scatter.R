@@ -27,7 +27,7 @@ vchart(penguins) %>%
     size = body_mass_g
   ))
 
-
+# With shapes
 vchart(penguins) %>%
   v_scatter(
     aes(
@@ -35,15 +35,7 @@ vchart(penguins) %>%
       y = bill_depth_mm,
       color = species,
       shape = species
-    ),
-    dataserie_id = "id"
-  ) %>%
-  v_specs(
-    shape = list(
-      type = "ordinal",
-      range = c("circle", "square", "triangle")
-    ),
-    dataserie_id = "id"
+    )
   )
 
 

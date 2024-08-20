@@ -47,9 +47,9 @@ get_mapping <- function(vc, mapping) {
 }
 
 get_data <- function(vc, data) {
-  if (!is.null(vc$x$data))
-    return(as.data.frame(vc$x$data))
-  return(as.data.frame(data))
+  if (!is.null(data))
+    return(as.data.frame(data))
+  return(as.data.frame(vc$x$data))
 }
 
 create_values <- function(data, .names = NULL) {

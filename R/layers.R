@@ -176,6 +176,77 @@ v_line <- function(vc,
 
 
 
+#' Create an Smooth Line Chart
+#'
+#' @inheritParams v_bar
+#' @inheritParams ggplot2::stat_smooth
+#' @param ... Additional parameters for lines.
+#' @param args_area Arguments for area.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @importFrom rlang sym exec
+#'
+#' @example examples/v_smooth.R
+v_smooth <- function(vc,
+                     mapping = NULL,
+                     data = NULL,
+                     name = NULL,
+                     method = NULL,
+                     formula = NULL,
+                     se = TRUE,
+                     n = 80,
+                     span = 0.75,
+                     ...,
+                     args_area = NULL,
+                     dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  p <- ggplot2::ggplot(data = data, mapping = mapping)
+  p <- p + ggplot2::geom_smooth(
+    method = method,
+    formula = formula,
+    se = se,
+    n = n,
+    span = span
+  ) +
+    ggplot2::scale_color_identity()
+  mapdata <- ggplot2::layer_data(p, i = 1L)
+  # vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
+  # vc$x$type <- c(vc$x$type, "smooth")
+  vc$x$mapping <- NULL
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  if (isTRUE(se)) {
+    mapping_area <- aes(x = !!sym("x"), ymin = !!sym("ymin"), ymax = !!sym("ymax"))
+    if (has_name(mapping, "colour"))
+      mapping_area <- c(mapping_area, aes(fill = !!sym("colour")))
+    args_area <- args_area %||% list()
+    args_area$vc <- vc
+    args_area$mapping <- mapping_area
+    args_area$data <- mapdata
+    if (is.null(args_area$area$style$fill) & is.null(mapping$fill))
+      args_area$area$style$fill <- "grey60"
+    if (is.null(args_area$area$style$fillOpacity))
+      args_area$area$style$fillOpacity <- 0.3
+    vc <- rlang::exec(v_area, !!!args_area)
+  }
+  args_line <- list(...)
+  args_line$vc <- vc
+  mapping_line <- aes(x = !!sym("x"), y = !!sym("y"))
+  if (has_name(mapping, "colour"))
+    mapping_line <- c(mapping_line, aes(colour = !!sym("colour")))
+  args_line$mapping <- mapping_line
+  args_line$data <- mapdata
+  if (is.null(args_line$line$style$curveType))
+    args_line$line$style$curveType <- "monotone"
+  vc <- rlang::exec(v_line, !!!args_line)
+  return(vc)
+}
 
 
 

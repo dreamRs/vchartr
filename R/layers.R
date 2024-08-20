@@ -177,6 +177,9 @@ v_line <- function(vc,
 
 
 
+
+
+
 #' Create an Area Chart
 #'
 #' @inheritParams v_line
@@ -277,7 +280,7 @@ v_area <- function(vc,
 #'
 #' @inheritParams v_bar
 #' @inheritParams ggplot2::stat_bin
-#' @param bar_style Style properties for histogram bars.
+#' @param ... Additional properties for histogram bars.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -290,7 +293,7 @@ v_hist <- function(vc,
                    stack = FALSE,
                    bins = 30,
                    binwidth = NULL,
-                   bar_style = NULL,
+                   ...,
                    dataserie_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -322,7 +325,7 @@ v_hist <- function(vc,
     yField = "count",
     seriesField = if (has_name(mapping, "fill")) "fill",
     stack = stack,
-    bar = list_(style = style_params(bar_style))
+    ...
   )
   vc <- v_specs_axes(vc, position = "left", type = "linear")
   vc <- v_specs_axes(vc, position = "bottom", type = "linear", zero = FALSE)

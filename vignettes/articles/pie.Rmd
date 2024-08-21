@@ -1,0 +1,76 @@
+---
+title: "pie"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pie}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(vchartr)
+library(dplyr)
+```
+
+
+
+## Pie
+
+```{r}
+electricity_mix %>% 
+  filter(country == "France") %>%
+  arrange(desc(generation)) %>% 
+  vchart() %>% 
+  v_pie(aes(x = source, y = generation)) %>%
+  v_scale_color_manual(c(
+    "oil" = "#80549f",
+    "coal" = "#a68832",
+    "solar" = "#d66b0d",
+    "gas" = "#f20809",
+    "wind" = "#72cbb7",
+    "hydro" = "#2672b0",
+    "nuclear" = "#e4a701"
+  )) %>% 
+  v_specs_legend(
+    orient = "right",
+    data = JS(
+      "items => {",
+      sprintf(
+        "var data = %s;", 
+        electricity_mix %>%
+          filter(country == "France") %>%
+          arrange(desc(generation)) %>% 
+          mutate(
+            value = paste0(round(generation / sum(generation) * 100, 1), "%"),
+            label = source
+          ) %>%
+          select(label, value) %>% 
+          with(setNames(as.list(value), label)) %>% 
+          jsonlite::toJSON(auto_unbox = TRUE)
+      ),
+      "return items.map(item => {
+        item.value = data[item.label];
+        return item;
+      });",
+      "}"
+    ),
+    item = list(
+      width = "20%",
+      value = list(
+        alignRight = TRUE,
+        style = list(
+          fill = "#333",
+          fillOpacity = 1
+        )
+      )
+    )
+  )
+```
+

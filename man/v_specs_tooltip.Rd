@@ -4,13 +4,15 @@
 \alias{v_specs_tooltip}
 \title{Set tooltip options}
 \usage{
-v_specs_tooltip(vc, ...)
+v_specs_tooltip(vc, ..., .reset = FALSE)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{Options for the tooltip, see examples or
 \href{https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip}{online documentation}.}
+
+\item{.reset}{Reset previous tooltip configuration before updating.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

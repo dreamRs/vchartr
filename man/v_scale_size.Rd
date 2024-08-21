@@ -8,6 +8,7 @@ v_scale_size(
   vc,
   name = NULL,
   range = c(5, 30),
+  ...,
   position = c("right", "bottom", "left", "top"),
   align = c("middle", "start", "end")
 )
@@ -18,6 +19,8 @@ v_scale_size(
 \item{name}{Title for the legend.}
 
 \item{range}{Range of sizes for the points plotted.}
+
+\item{...}{Additional parameters for the legend.}
 
 \item{position}{Position of the legend.}
 

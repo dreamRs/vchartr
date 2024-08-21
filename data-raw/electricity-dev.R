@@ -5,7 +5,15 @@ co2 <- fread("data-raw/owid-co2-data.csv")
 
 
 
-electricity[country == "France" & year == 2023, .SD, .SDcols = grep("electricity$", x = names(electricity), value = TRUE)]
+electricity[country == "France" & year == 2023, .SD, .SDcols = grep("_share_elec", x = names(electricity), value = TRUE)]
+
+
+elec_share <- electricity[year == 2023 & iso_code != "", .SD, .SDcols = c(
+  "country", "biofuel_share_elec", "coal_share_elec", "gas_share_elec", "hydro_share_elec",
+  "nuclear_share_elec", "oil_share_elec", "other_renewables_share_elec_exc_biofuel",
+  "solar_share_elec", "wind_share_elec"
+)]
+rowSums(elec_share[, !c("country")], na.rm = FALSE)
 
 
 electricity[country == "France" & year == 2023, list(electricity_generation, renewables_electricity, low_carbon_electricity, fossil_electricity)]

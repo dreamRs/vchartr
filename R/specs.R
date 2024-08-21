@@ -200,6 +200,7 @@ v_specs_legend <- function(vc, ..., add = FALSE) {
 #' @param vc An htmlwidget created with [vchart()].
 #' @param ... Options for the tooltip, see examples or
 #'  [online documentation](https://www.visactor.io/vchart/guide/tutorial_docs/Chart_Concepts/Tooltip).
+#' @param .reset Reset previous tooltip configuration before updating.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -213,7 +214,9 @@ v_specs_legend <- function(vc, ..., add = FALSE) {
 #'   v_specs_tooltip(
 #'     visible = FALSE
 #'   )
-v_specs_tooltip <- function(vc, ...) {
+v_specs_tooltip <- function(vc, ..., .reset = FALSE) {
+  if (isTRUE(.reset))
+    vc$x$specs$tooltip <- NULL
   vc <- .vchart_specs(
     vc,
     "tooltip",

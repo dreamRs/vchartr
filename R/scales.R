@@ -484,6 +484,7 @@ v_scale_y_continuous <- function(vc,
 
 #' @importFrom rlang %||%
 v_scale_continuous <- function(vc,
+                               type = "linear",
                                position,
                                name = NULL,
                                breaks = NULL,
@@ -543,14 +544,18 @@ v_scale_continuous <- function(vc,
     breaks_ticks <- as.numeric(breaks)
   }
 
-  tick <- if (length(breaks_ticks) > 0) {
-    list(
-      visible = TRUE,
-      tickStep = 1,
-      dataFilter = JS(sprintf(
-        "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
-        paste(breaks_ticks, collapse = ", ")
-      ))
+  tick <- args$tick %||% list()
+  if (length(breaks_ticks) > 0) {
+    tick <- modifyList(
+      x = tick,
+      val = list(
+        visible = TRUE,
+        tickStep = 1,
+        dataFilter = JS(sprintf(
+          "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
+          paste(breaks_ticks, collapse = ", ")
+        ))
+      )
     )
   }
 
@@ -590,7 +595,7 @@ v_scale_continuous <- function(vc,
   vc <- v_specs_axes(
     vc = vc,
     position = position,
-    type = "linear",
+    type = type,
     zero = zero,
     sampling = FALSE,
     nice = args$nice %||% length(tick) > 0,
@@ -620,6 +625,76 @@ v_scale_continuous <- function(vc,
 }
 
 
+
+
+
+# Log ---------------------------------------------------------------------
+
+
+#' @export
+#'
+#' @rdname scale-continuous
+v_scale_x_log <- function(vc,
+                          name = NULL,
+                          breaks = NULL,
+                          pretty = TRUE,
+                          labels = NULL,
+                          labels_tooltip = labels,
+                          zero = NULL,
+                          min = NULL,
+                          max = NULL,
+                          ...,
+                          position = "bottom") {
+  if ("radar" %in% vc$x$type)
+    position <- "angle"
+  v_scale_continuous(
+    vc = vc,
+    type = "log",
+    position = position,
+    name = name,
+    breaks = breaks,
+    pretty = pretty,
+    labels = labels,
+    labels_tooltip = labels_tooltip,
+    min = min,
+    max = max,
+    ...
+  )
+}
+
+
+#' @export
+#'
+#' @rdname scale-continuous
+v_scale_y_log <- function(vc,
+                          name = NULL,
+                          breaks = NULL,
+                          pretty = TRUE,
+                          labels = NULL,
+                          labels_tooltip = labels,
+                          zero = NULL,
+                          min = NULL,
+                          max = NULL,
+                          ...,
+                          position = "left") {
+  if ("radar" %in% vc$x$type)
+    position <- "radius"
+  if ("gauge" %in% vc$x$type)
+    position <- "gauge"
+  v_scale_continuous(
+    vc = vc,
+    type = "log",
+    position = position,
+    name = name,
+    breaks = breaks,
+    pretty = pretty,
+    labels = labels,
+    labels_tooltip = labels_tooltip,
+    min = min,
+    max = max,
+    ...
+  )
+}
 
 
 # Discrete ----------------------------------------------------------------
@@ -911,6 +986,7 @@ v_scale_gradient <- function(vc,
 #' @param vc An htmlwidget created with [vchart()] or specific chart's type function.
 #' @param name Title for the legend.
 #' @param range Range of sizes for the points plotted.
+#' @param ... Additional parameters for the legend.
 #' @param position Position of the legend.
 #' @param align Alignment of the legend.
 #'
@@ -921,6 +997,7 @@ v_scale_gradient <- function(vc,
 v_scale_size <- function(vc,
                          name = NULL,
                          range = c(5, 30),
+                         ...,
                          position = c("right", "bottom", "left", "top"),
                          align = c("middle", "start", "end")) {
   position <- match.arg(position)
@@ -960,14 +1037,19 @@ v_scale_size <- function(vc,
     ),
     dataserie_id = dataserie_id
   )
+  i <- vapply(vc$x$specs$legends, function(x) identical(x$type, "size"), logical(1))
+  vc$x$specs$legends[i] <- NULL
   vc <- .vchart_specs(
-    vc, "legends",
+    vc,
+    "legends",
     list(dropNulls(list(
       visible = TRUE,
       type = "size",
       field = "size",
       orient = position,
-      position = align
+      position = align,
+      title = title,
+      ...
     )))
   )
   return(vc)

@@ -4,6 +4,8 @@
 \alias{scale-continuous}
 \alias{v_scale_x_continuous}
 \alias{v_scale_y_continuous}
+\alias{v_scale_x_log}
+\alias{v_scale_y_log}
 \title{Axis scale for continuous data}
 \usage{
 v_scale_x_continuous(
@@ -21,6 +23,34 @@ v_scale_x_continuous(
 )
 
 v_scale_y_continuous(
+  vc,
+  name = NULL,
+  breaks = NULL,
+  pretty = TRUE,
+  labels = NULL,
+  labels_tooltip = labels,
+  zero = NULL,
+  min = NULL,
+  max = NULL,
+  ...,
+  position = "left"
+)
+
+v_scale_x_log(
+  vc,
+  name = NULL,
+  breaks = NULL,
+  pretty = TRUE,
+  labels = NULL,
+  labels_tooltip = labels,
+  zero = NULL,
+  min = NULL,
+  max = NULL,
+  ...,
+  position = "bottom"
+)
+
+v_scale_y_log(
   vc,
   name = NULL,
   breaks = NULL,

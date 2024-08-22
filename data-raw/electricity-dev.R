@@ -3,7 +3,7 @@ library(data.table)
 electricity <- fread("data-raw/owid-energy-data.csv")
 co2 <- fread("data-raw/owid-co2-data.csv")
 
-
+electricity[country == "France" & year > 2000, list(year, wind_cons_change_twh)]
 
 electricity[country == "France" & year == 2023, .SD, .SDcols = grep("_share_elec", x = names(electricity), value = TRUE)]
 

@@ -7,7 +7,7 @@
   if (is.null(vc$x$specs[[name]])) {
     vc$x$specs[[name]] <- dropNulls(options)
   } else {
-    if (name %in% c("data", "series", "legends")) {
+    if (name %in% c("data", "series", "legends", "markLine")) {
       vc$x$specs[[name]] <- c(
         vc$x$specs[[name]],
         options

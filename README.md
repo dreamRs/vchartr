@@ -1,6 +1,6 @@
 # vchartr
 
-> R Htmlwidget for [VChart](https://github.com/VisActor/VChart) : VChart is a charting component library in VisActor visualization system.. See the [online documentation](https://www.visactor.io/vchart) for examples.
+> R Htmlwidget for [VChart](https://github.com/VisActor/VChart) : VChart is a charting component library in VisActor visualization system. See the [online documentation](https://www.visactor.io/vchart) for examples.
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -66,4 +66,26 @@ vchart(penguins) %>%
     )
   )
 ```
+
+
+
+
+## Development
+
+This package use [{packer}](https://github.com/JohnCoene/packer) to manage JavaScript assets, see packer's [documentation](https://packer.john-coene.com/#/) for more.
+
+Install nodes modules with:
+
+```r
+packer::npm_install()
+```
+
+Modify `srcjs/widgets/vchart.js`, then run:
+
+```r
+packer::bundle()
+```
+
+Re-install R package and try `vchart()` function.
+
 

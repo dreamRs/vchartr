@@ -129,10 +129,11 @@ eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
   scale_colour <- get_scale(mapdata$colour)
   scale_fill <- get_scale(mapdata$fill)
   scale_size <- get_scale(mapdata$size)
-  if (inherits(mapdata$x, "Date")) {
+  if (inherits(mapdata$x, c("Date", "POSIXt"))) {
     mapdata$x <- as.numeric(mapdata$x)
-  } else if (inherits(mapdata$x, "POSIXt")) {
-    mapdata$x <- as.numeric(mapdata$x)
+  }
+  if (inherits(mapdata$y, c("Date", "POSIXt"))) {
+    mapdata$y <- as.numeric(mapdata$y)
   }
   if (has_name(mapdata, "player")) {
     mapdata <- lapply(

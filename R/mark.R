@@ -2,7 +2,7 @@
 #' Add an horizontal or vertical line to a chart
 #'
 #' @param vc An htmlwidget created with [vchart()].
-#' @param x,y Target position for the line.
+#' @param x,y,xend,yend Target position for the line.
 #' @param ... Additional parameters for the line,
 #'  see [online documentation](https://www.visactor.io/vchart/option/commonChart#markLine) for more.
 #' @param .line.style.stroke Stroke color.
@@ -32,7 +32,7 @@ v_mark_vline <- function(vc,
                          .endSymbol.style.visible = FALSE,
                          .startSymbol.style.visible = FALSE) {
   v_mark_line(
-    vc = vc, 
+    vc = vc,
     value = x,
     name = "x",
     ...,
@@ -64,9 +64,59 @@ v_mark_hline <- function(vc,
                          .endSymbol.style.visible = FALSE,
                          .startSymbol.style.visible = FALSE) {
   v_mark_line(
-    vc = vc, 
+    vc = vc,
     value = y,
     name = "y",
+    ...,
+    .line.style.stroke = .line.style.stroke,
+    .line.style.lineDash = .line.style.lineDash,
+    .label.text = .label.text,
+    .label.position = .label.position,
+    .label.refY = .label.refY,
+    .label.refX = .label.refX,
+    .endSymbol.style.visible = .endSymbol.style.visible,
+    .startSymbol.style.visible = .startSymbol.style.visible
+  )
+}
+
+
+#' @export
+#'
+#' @rdname mark-line
+#'
+v_mark_segment <- function(vc,
+                           x,
+                           xend,
+                           y,
+                           yend,
+                           ...,
+                           .line.style.stroke = "#000",
+                           .line.style.lineDash = list(8, 8),
+                           .label.text = NULL,
+                           .label.position = "insideEndBottom",
+                           .label.refY = -10,
+                           .label.refX = 0,
+                           .endSymbol.style.visible = FALSE,
+                           .startSymbol.style.visible = FALSE) {
+  if (inherits(x, c("Date", "POSIXt"))) {
+    x <- as.numeric(x)
+  }
+  if (inherits(y, c("Date", "POSIXt"))) {
+    y <- as.numeric(y)
+  }
+  if (inherits(xend, c("Date", "POSIXt"))) {
+    xend <- as.numeric(xend)
+  }
+  if (inherits(yend, c("Date", "POSIXt"))) {
+    yend <- as.numeric(yend)
+  }
+  v_mark_line(
+    vc = vc,
+    value = list(
+      list(x = x, y = y),
+      list(x = xend, y = yend)
+    ),
+    name = "coordinates",
     ...,
     .line.style.stroke = .line.style.stroke,
     .line.style.lineDash = .line.style.lineDash,
@@ -93,9 +143,12 @@ v_mark_line <- function(vc,
                         .endSymbol.style.visible = FALSE,
                         .startSymbol.style.visible = FALSE) {
   config <- list(...)
+  if (inherits(value, c("Date", "POSIXt"))) {
+    value <- as.numeric(value)
+  }
   config[[name]] <- value
   unconfig <- unlist(config)
-  
+
   if (is.na(unconfig["line.style.stroke"]))
     config$line$style$stroke <- .line.style.stroke
   if (is.na(unconfig["line.style.lineDash"]))
@@ -112,18 +165,18 @@ v_mark_line <- function(vc,
     config$endSymbol$style$visible <- .endSymbol.style.visible
   if (is.na(unconfig["startSymbol.style.visible"]))
     config$startSymbol$style$visible <- .startSymbol.style.visible
-  
+
   len <- length(value)
   config <- rapply(
-    object = config, 
-    f = rep_len, 
-    length.out = len, 
+    object = config,
+    f = rep_len,
+    length.out = len,
     how = "replace"
   )
   extract <- function(el, index) {
     `[`(el, index)
   }
-  
+
   .vchart_specs(
     vc,
     "markLine",
@@ -131,9 +184,9 @@ v_mark_line <- function(vc,
       X = seq_len(len),
       FUN = function(i) {
         rapply(
-          object = config, 
+          object = config,
           f = extract,
-          index = i, 
+          index = i,
           how = "list"
         )
       }

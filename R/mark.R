@@ -200,7 +200,8 @@ v_mark_line <- function(vc,
 #' Add a rectangle annotation to a chart
 #'
 #' @param vc An htmlwidget created with [vchart()].
-#' @param xmin,xmax,ymin,ymax Target position for the line.
+#' @param xmin,xmax,ymin,ymax Target position for the rectangle. Use `NULL`
+#'  to target chart's limits. You can also use relative values, e.g. `"50%"`.
 #' @param .area.style.fill Fill color.
 #' @param .area.style.fillOpacity Fill opacity.
 #' @inheritParams mark-line
@@ -241,6 +242,34 @@ v_mark_rect <- function(vc,
     y = ymin,
     y1 = ymax,
     .len = max(lengths(list(xmin, xmax, ymin, ymax))),
+    .area.style.fill = .area.style.fill,
+    .area.style.fillOpacity = .area.style.fillOpacity,
+    .label.text = .label.text,
+    .label.position = .label.position,
+    .label.refY = .label.refY,
+    .label.refX = .label.refX
+  )
+}
+
+#' @param coords A `data.frame` (or something that can be converted to `data.frame`)
+#'  with two columns, first will be used as `x` coordinates, second as `y`.
+#' @export
+#'
+#' @rdname mark-area
+v_mark_polygon <- function(vc,
+                           coords,
+                           .area.style.fill = "grey35",
+                           .area.style.fillOpacity = 0.3,
+                           .label.text = NULL,
+                           .label.position = "insideTop",
+                           .label.refY = 0,
+                           .label.refX = 0) {
+  coords <- as.data.frame(coords)
+  stopifnot("v_mark_polygon(): `coords` must have at least two columns" = ncol(coords) >= 2)
+  v_mark_area(
+    vc = vc,
+    coordinates = create_values(coords),
+    .len = 1,
     .area.style.fill = .area.style.fill,
     .area.style.fillOpacity = .area.style.fillOpacity,
     .label.text = .label.text,

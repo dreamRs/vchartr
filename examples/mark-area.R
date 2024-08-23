@@ -26,6 +26,16 @@ vchart(cars) %>%
   )
 
 
+vchart(cars) %>%
+  v_scatter(aes(speed, dist)) %>%
+  v_mark_rect(
+    xmin = "50%",
+    xmax = "100%", # from right to left
+    ymin = "50%",
+    ymax = "100%" # note that for y it's from top to bottom
+  )
+
+
 # Whith date scale
 vchart(temperatures) %>%
   v_line(aes(date, average)) %>%
@@ -34,3 +44,15 @@ vchart(temperatures) %>%
     xmax = as.Date("2024-09-22"),
     .label.text = "Summer"
   )
+
+
+# Draw a polygon
+vchart(cars) %>%
+  v_scatter(aes(speed, dist)) %>%
+  v_mark_polygon(
+    coords = list(
+      x = c(7, 22, 15),
+      y = c(10, 50, 80)
+    )
+  )
+

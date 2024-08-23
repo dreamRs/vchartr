@@ -3,6 +3,7 @@
 \name{mark-area}
 \alias{mark-area}
 \alias{v_mark_rect}
+\alias{v_mark_polygon}
 \title{Add a rectangle annotation to a chart}
 \usage{
 v_mark_rect(
@@ -18,11 +19,23 @@ v_mark_rect(
   .label.refY = 0,
   .label.refX = 0
 )
+
+v_mark_polygon(
+  vc,
+  coords,
+  .area.style.fill = "grey35",
+  .area.style.fillOpacity = 0.3,
+  .label.text = NULL,
+  .label.position = "insideTop",
+  .label.refY = 0,
+  .label.refX = 0
+)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
-\item{xmin, xmax, ymin, ymax}{Target position for the line.}
+\item{xmin, xmax, ymin, ymax}{Target position for the rectangle. Use \code{NULL}
+to target chart's limits. You can also use relative values, e.g. \code{"50\%"}.}
 
 \item{.area.style.fill}{Fill color.}
 
@@ -34,6 +47,9 @@ v_mark_rect(
 See \href{https://www.visactor.io/vchart/option/commonChart#markLine.label.position}{online documentation} for options.}
 
 \item{.label.refY, .label.refX}{The offset in the vertical direction of the reference line.}
+
+\item{coords}{A \code{data.frame} (or something that can be converted to \code{data.frame})
+with two columns, first will be used as \code{x} coordinates, second as \code{y}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
@@ -70,6 +86,16 @@ vchart(cars) \%>\%
   )
 
 
+vchart(cars) \%>\%
+  v_scatter(aes(speed, dist)) \%>\%
+  v_mark_rect(
+    xmin = "50\%",
+    xmax = "100\%", # from right to left
+    ymin = "50\%",
+    ymax = "100\%" # note that for y it's from top to bottom
+  )
+
+
 # Whith date scale
 vchart(temperatures) \%>\%
   v_line(aes(date, average)) \%>\%
@@ -78,4 +104,16 @@ vchart(temperatures) \%>\%
     xmax = as.Date("2024-09-22"),
     .label.text = "Summer"
   )
+
+
+# Draw a polygon
+vchart(cars) \%>\%
+  v_scatter(aes(speed, dist)) \%>\%
+  v_mark_polygon(
+    coords = list(
+      x = c(7, 22, 15),
+      y = c(10, 50, 80)
+    )
+  )
+
 }

@@ -84,7 +84,8 @@ co2_emissions %>%
 vchart(temperatures, aes(date)) %>% 
   v_area(
     aes(ymin = low, ymax = high),
-    area = list(style = list(fill = "#848585", fillOpacity = 0.3))
+    area = list(style = list(fill = "#848585", fillOpacity = 0.3)),
+    name = "Low/high between 2019 and 2023"
   ) %>% 
   v_line(
     aes(y = `2024`), 
@@ -100,8 +101,13 @@ vchart(temperatures, aes(date)) %>%
     labels = format_num_d3(".3r", suffix = "°C")
   ) %>% 
   v_labs(
-    title = "Temperatures in France between 2019 and 2023 compared to 2024",
+    title = "Temperatures in France in 2024 compared with previous years",
     subtitle = "Source: Enedis"
+  ) %>% 
+  v_specs_legend(
+    visible = TRUE,
+    orient = "top",
+    position = "left"
   )
 ```
 

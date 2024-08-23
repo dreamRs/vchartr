@@ -68,6 +68,42 @@ vchart(penguins) %>%
 ```
 
 
+A line chart with area range:
+
+![](man/figures/line.png)
+
+
+```r
+vchart(temperatures, aes(date)) %>% 
+  v_area(
+    aes(ymin = low, ymax = high),
+    area = list(style = list(fill = "#848585", fillOpacity = 0.3)),
+    name = "Low/high between 2019 and 2023"
+  ) %>% 
+  v_line(
+    aes(y = `2024`), 
+    line = list(style = list(stroke = "firebrick")),
+  ) %>%
+  v_scale_x_date(
+    date_breaks = "2 months", 
+    date_labels = "MMMM",
+    date_labels_tooltip = "DD MMMM"
+  ) %>% 
+  v_scale_y_continuous(
+    name = "Temperature in degree celsius",
+    labels = format_num_d3(".3r", suffix = "°C")
+  ) %>% 
+  v_labs(
+    title = "Temperatures in France in 2024 compared with previous years",
+    subtitle = "Source: Enedis"
+  ) %>% 
+  v_specs_legend(
+    visible = TRUE,
+    orient = "top",
+    position = "left"
+  )
+
+```
 
 
 ## Development

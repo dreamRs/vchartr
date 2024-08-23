@@ -91,7 +91,8 @@ vchart(temperatures, aes(date)) %>%
   ) %>% 
   v_scale_y_continuous(
     name = "Temperature in degree celsius",
-    labels = format_num_d3(".3r", suffix = "°C")
+    labels = format_num_d3(".0f", suffix = "°C"),
+    labels_tooltip = format_num_d3(".3r", suffix = "°C")
   ) %>% 
   v_labs(
     title = "Temperatures in France in 2024 compared with previous years",
@@ -102,7 +103,6 @@ vchart(temperatures, aes(date)) %>%
     orient = "top",
     position = "left"
   )
-
 ```
 
 

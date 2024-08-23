@@ -194,3 +194,112 @@ v_mark_line <- function(vc,
   )
 }
 
+
+
+
+#' Add a rectangle annotation to a chart
+#'
+#' @param vc An htmlwidget created with [vchart()].
+#' @param xmin,xmax,ymin,ymax Target position for the line.
+#' @param .area.style.fill Fill color.
+#' @param .area.style.fillOpacity Fill opacity.
+#' @inheritParams mark-line
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @name mark-area
+#'
+#' @example examples/mark-area.R
+v_mark_rect <- function(vc,
+                        xmin = NULL,
+                        xmax = NULL,
+                        ymin = NULL,
+                        ymax = NULL,
+                        .area.style.fill = "grey35",
+                        .area.style.fillOpacity = 0.3,
+                        .label.text = NULL,
+                        .label.position = "insideTop",
+                        .label.refY = 0,
+                        .label.refX = 0) {
+  if (inherits(xmin, c("Date", "POSIXt"))) {
+    xmin <- as.numeric(xmin)
+  }
+  if (inherits(xmax, c("Date", "POSIXt"))) {
+    xmax <- as.numeric(xmax)
+  }
+  if (inherits(ymin, c("Date", "POSIXt"))) {
+    ymin <- as.numeric(ymin)
+  }
+  if (inherits(xmin, c("Date", "POSIXt"))) {
+    ymax <- as.numeric(ymax)
+  }
+  v_mark_area(
+    vc = vc,
+    x = xmin,
+    x1 = xmax,
+    y = ymin,
+    y1 = ymax,
+    .len = max(lengths(list(xmin, xmax, ymin, ymax))),
+    .area.style.fill = .area.style.fill,
+    .area.style.fillOpacity = .area.style.fillOpacity,
+    .label.text = .label.text,
+    .label.position = .label.position,
+    .label.refY = .label.refY,
+    .label.refX = .label.refX
+  )
+}
+
+
+
+v_mark_area <- function(vc,
+                        ...,
+                        .len = 1,
+                        .area.style.fill = "grey35",
+                        .area.style.fillOpacity = 0.3,
+                        .label.text = NULL,
+                        .label.position = "insideTop",
+                        .label.refY = 0,
+                        .label.refX = 0) {
+  config <- dropNulls(list(...))
+  unconfig <- unlist(config)
+
+  if (is.na(unconfig["area.style.fill"]))
+    config$area$style$fill <- .area.style.fill
+  if (is.na(unconfig["area.style.fillOpacity"]))
+    config$area$style$fillOpacity <- .area.style.fillOpacity
+  if (is.na(unconfig["label.text"]))
+    config$label$text <- .label.text
+  if (is.na(unconfig["label.position"]))
+    config$label$position <- .label.position
+  if (is.na(unconfig["label.refY"]))
+    config$label$refY <- .label.refY
+  if (is.na(unconfig["label.refX"]))
+    config$label$refX <- .label.refX
+
+  config <- rapply(
+    object = config,
+    f = rep_len,
+    length.out = .len,
+    how = "replace"
+  )
+  extract <- function(el, index) {
+    `[`(el, index)
+  }
+
+  .vchart_specs(
+    vc,
+    "markArea",
+    lapply(
+      X = seq_len(.len),
+      FUN = function(i) {
+        rapply(
+          object = config,
+          f = extract,
+          index = i,
+          how = "list"
+        )
+      }
+    )
+  )
+}

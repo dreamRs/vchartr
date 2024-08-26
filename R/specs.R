@@ -97,6 +97,7 @@ v_specs <- function(vc, ..., dataserie_id = NULL) {
 #' @param vc An htmlwidget created with [vchart()].
 #' @param title Title for the chart.
 #' @param subtitle Subtitle for the chart.
+#' @param x,y Axes titles.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -111,7 +112,7 @@ v_specs <- function(vc, ..., dataserie_id = NULL) {
 #'     title = "Title for the chart",
 #'     subtitle = "A subtitle to be placed under the title"
 #'   )
-v_labs <- function(vc, title, subtitle = NULL) {
+v_labs <- function(vc, title = NULL, subtitle = NULL, x = NULL, y = NULL) {
   vc <- .vchart_specs(
     vc,
     "title",
@@ -120,6 +121,56 @@ v_labs <- function(vc, title, subtitle = NULL) {
       subtext = subtitle
     )
   )
+  if (!is.null(x)) {
+    x <- if (is.character(x) & length(x) == 1) {
+      list(
+        visible = TRUE,
+        text = x,
+        position = "middle"
+      )
+    }
+    index_top <- get_axes_index(vc, "top")
+    if (length(index_top) > 0) {
+      vc <- v_specs_axes(
+        vc = vc,
+        position = "top",
+        title = x
+      )
+    }
+    index_bottom <- get_axes_index(vc, "bottom")
+    if (length(index_bottom) > 0 | length(index_top) < 1) {
+      vc <- v_specs_axes(
+        vc = vc,
+        position = "bottom",
+        title = x
+      )
+    }
+  }
+  if (!is.null(y)) {
+    y <- if (is.character(y) & length(y) == 1) {
+      list(
+        visible = TRUE,
+        text = y,
+        position = "middle"
+      )
+    }
+    index_right <- get_axes_index(vc, "right")
+    if (length(index_right) > 0) {
+      vc <- v_specs_axes(
+        vc = vc,
+        position = "right",
+        title = y
+      )
+    }
+    index_left <- get_axes_index(vc, "left")
+    if (length(index_left) > 0 | length(index_right) < 1) {
+      vc <- v_specs_axes(
+        vc = vc,
+        position = "left",
+        title = y
+      )
+    }
+  }
   return(vc)
 }
 

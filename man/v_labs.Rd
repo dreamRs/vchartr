@@ -4,7 +4,7 @@
 \alias{v_labs}
 \title{Set chart title and subtitle}
 \usage{
-v_labs(vc, title, subtitle = NULL)
+v_labs(vc, title = NULL, subtitle = NULL, x = NULL, y = NULL)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
@@ -12,6 +12,8 @@ v_labs(vc, title, subtitle = NULL)
 \item{title}{Title for the chart.}
 
 \item{subtitle}{Subtitle for the chart.}
+
+\item{x, y}{Axes titles.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

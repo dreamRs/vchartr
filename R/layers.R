@@ -549,8 +549,8 @@ v_jitter <- function(vc,
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
-  data <- vchartr:::get_data(vc, data)
-  mapping <- vchartr:::get_mapping(vc, mapping)
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
   p <- ggplot2::ggplot(data = data, mapping = mapping) + 
     ggplot2::geom_jitter(width = width, height = height) +
     ggplot2::scale_color_identity()
@@ -1245,4 +1245,107 @@ v_progress <- function(vc,
   # vc <- .vchart_specs(vc, "series", list(serie))
   return(vc)
 }
+
+
+
+
+
+
+
+v_boxplot <- function(vc,
+                      mapping = NULL,
+                      data = NULL,
+                      name = NULL,
+                      ...,
+                      outliers = TRUE,
+                      args_points = NULL,
+                      dataserie_id = NULL) {
+  args <- list(...)
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  p <- ggplot2::ggplot(data = data, mapping = mapping) +
+    ggplot2::geom_boxplot() +
+    ggplot2::scale_color_identity()
+  mapdata <- ggplot2::layer_data(p, i = 1L)
+  vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
+  vc$x$type <- c(vc$x$type, "boxplot")
+  if (is.null(dataserie_id))
+    dataserie_id <- paste0("serie_", genId(4))
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = dataserie_id,
+        values = create_values(mapdata)
+      )
+    )
+  )
+  boxPlot <- args$boxPlot %||% list()
+  # boxPlot$style$boxWidth <- boxPlot$style$boxWidth %||% 
+  #   JS(sprintf("(datum, ctx) => { console.log(ctx); return ctx.getRegion().getLayoutRect().width / %s; }", max(c(6, nrow(mapdata) * 2))))
+  boxPlot$style$boxWidth <- boxPlot$style$boxWidth %||%
+    JS(sprintf("(datum, ctx) => { return ctx.valueToX(%s); }", mapdata$xmax[1] - mapdata$xmin[1]))
+  boxPlot$style$shaftWidth <- boxPlot$style$shaftWidth %||% 30
+  boxPlot$style$shaftShape <- boxPlot$style$shaftShape %||% "line"
+  boxPlot$style$lineWidth <- boxPlot$style$lineWidth %||% 1
+  serie <- list_(
+    name = name,
+    id = dataserie_id,
+    dataId = dataserie_id,
+    type = "boxPlot",
+    xField = "x",
+    minField = "ymin",
+    q1Field = "lower",
+    medianField = "middle",
+    q3Field = "upper",
+    maxField = "ymax",
+    seriesField = if (has_name(mapping, "colour")) "colour",
+    direction = "vertical",
+    boxPlot = boxPlot,
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  if (isTRUE(outliers)) {
+    outliers <- data.frame(
+      x = rep(mapdata$x, lengths(mapdata$outliers)),
+      y = unlist(mapdata$outliers),
+      colour = rep(mapdata$colour, lengths(mapdata$outliers))
+    )
+    mapping_outliers <- aes(!!sym("x"), !!sym("y"))
+    if (has_name(mapping, "colour"))
+      mapping_outliers <- c(mapping_outliers, aes(colour = !!sym("colour")))
+    vc <- v_scatter(vc, mapping_outliers, data = outliers)
+  }
+  pscales <- layer_scales(p)
+  vc <- v_scale_x_continuous(
+    vc, 
+    zero = FALSE, 
+    softMin = 0,
+    softMax = max(mapdata$x) + 1,
+    tick = list(
+      visible = TRUE,
+      tickStep = 1,
+      dataFilter = JS(sprintf(
+        "axisData => axisData.filter((x) => {var values = [%s]; return values.includes(x.rawValue);})",
+        paste(mapdata$x, collapse = ", ")
+      ))
+    ),
+    labels = JS(
+      "function(value) {",
+      sprintf("var labels = ['%s'];", paste(pscales$x$get_limits(), collapse = "', '")),
+      "return labels[value - 1];",
+      "}"
+    )
+  )
+  vc <- v_scale_y_continuous(
+    vc, 
+    zero = FALSE,
+    range = setNames(as.list(pscales$y$get_limits()), c("min", "max"))
+  )
+  return(vc)
+}
+
 

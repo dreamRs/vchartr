@@ -529,6 +529,40 @@ v_scatter <- function(vc,
 }
 
 
+#' Create Jittered Points Scatter Chart
+#'
+#' @inheritParams v_scatter
+#' @inheritParams ggplot2::geom_jitter
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_jitter.R
+v_jitter <- function(vc, 
+                     mapping = NULL,
+                     data = NULL,
+                     name = NULL,
+                     width = NULL,
+                     height = NULL,
+                     ...,
+                     dataserie_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- vchartr:::get_data(vc, data)
+  mapping <- vchartr:::get_mapping(vc, mapping)
+  p <- ggplot2::ggplot(data = data, mapping = mapping) + 
+    ggplot2::geom_jitter(width = width, height = height) +
+    ggplot2::scale_color_identity()
+  v_scatter(
+    vc = vc,
+    mapping = aes(!!!syms(setNames(names(mapping), names(mapping)))),
+    data = ggplot2::layer_data(p, i = 1L),
+    name = name,
+    ...
+  )
+}
+
 
 #' Create a Pie Chart
 #'

@@ -1252,34 +1252,60 @@ v_progress <- function(vc,
 
 
 
+#' Create a BoxPlot
+#'
+#' @inheritParams v_scatter
+#' @param ... Arguments passed to [JavaScript methods](https://www.visactor.io/vchart/option/boxPlotChart).
+#' @param outliers Display or not outliers.
+#' @param args_outliers Arguments passed to [v_scatter()].
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_boxplot.R
 v_boxplot <- function(vc,
                       mapping = NULL,
                       data = NULL,
                       name = NULL,
                       ...,
                       outliers = TRUE,
-                      args_points = NULL,
+                      args_outliers = NULL,
                       dataserie_id = NULL) {
   args <- list(...)
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
-  data <- get_data(vc, data)
-  mapping <- get_mapping(vc, mapping)
+  data <- vchartr:::get_data(vc, data)
+  mapping <- vchartr:::get_mapping(vc, mapping)
   p <- ggplot2::ggplot(data = data, mapping = mapping) +
     ggplot2::geom_boxplot() +
     ggplot2::scale_color_identity()
   mapdata <- ggplot2::layer_data(p, i = 1L)
+  if (isTRUE(outliers)) {
+    outliers <- data.frame(
+      x = rep(mapdata$x, lengths(mapdata$outliers)),
+      y = unlist(mapdata$outliers),
+      colour = rep(mapdata$colour, lengths(mapdata$outliers))
+    )
+    mapping_outliers <- aes(!!sym("x"), !!sym("y"))
+    if (has_name(mapping, "colour"))
+      mapping_outliers <- c(mapping_outliers, aes(colour = !!sym("colour")))
+    args_outliers <- args_outliers %||% list()
+    args_outliers$vc <- vc
+    args_outliers$mapping <- mapping_outliers
+    args_outliers$data <- outliers
+    vc <- rlang::exec(v_scatter, !!!args_outliers)
+  }
   vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
   vc$x$type <- c(vc$x$type, "boxplot")
   if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
-  vc <- .vchart_specs(
+    dataserie_id <- paste0("serie_", vchartr:::genId(4))
+  vc <- vchartr:::.vchart_specs(
     vc, "data",
     list(
       list(
         id = dataserie_id,
-        values = create_values(mapdata)
+        values = vchartr:::create_values(mapdata)
       )
     )
   )
@@ -1291,7 +1317,7 @@ v_boxplot <- function(vc,
   boxPlot$style$shaftWidth <- boxPlot$style$shaftWidth %||% 30
   boxPlot$style$shaftShape <- boxPlot$style$shaftShape %||% "line"
   boxPlot$style$lineWidth <- boxPlot$style$lineWidth %||% 1
-  serie <- list_(
+  serie <- vchartr:::list_(
     name = name,
     id = dataserie_id,
     dataId = dataserie_id,
@@ -1307,18 +1333,7 @@ v_boxplot <- function(vc,
     boxPlot = boxPlot,
     ...
   )
-  vc <- .vchart_specs(vc, "series", list(serie))
-  if (isTRUE(outliers)) {
-    outliers <- data.frame(
-      x = rep(mapdata$x, lengths(mapdata$outliers)),
-      y = unlist(mapdata$outliers),
-      colour = rep(mapdata$colour, lengths(mapdata$outliers))
-    )
-    mapping_outliers <- aes(!!sym("x"), !!sym("y"))
-    if (has_name(mapping, "colour"))
-      mapping_outliers <- c(mapping_outliers, aes(colour = !!sym("colour")))
-    vc <- v_scatter(vc, mapping_outliers, data = outliers)
-  }
+  vc <- vchartr:::.vchart_specs(vc, "series", list(serie))
   pscales <- layer_scales(p)
   vc <- v_scale_x_continuous(
     vc, 
@@ -1347,5 +1362,4 @@ v_boxplot <- function(vc,
   )
   return(vc)
 }
-
 

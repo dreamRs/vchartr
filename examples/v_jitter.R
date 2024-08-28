@@ -1,8 +1,16 @@
 
 library(vchartr)
 
+data("mpg", package = "ggplot2")
+data("penguins", package = "palmerpenguins")
+
+# With continuous x
 vchart(mpg) %>% 
   v_jitter(aes(cyl, hwy))
+
+# with discrete x
+vchart(penguins) %>%  
+  v_jitter(aes(species, bill_length_mm))
 
 # Colour points
 vchart(mpg) %>% 

@@ -14,7 +14,8 @@ v_area(
   point = list(visible = FALSE),
   line = list(visible = FALSE),
   ...,
-  dataserie_id = NULL
+  serie_id = NULL,
+  data_id = NULL
 )
 }
 \arguments{
@@ -37,7 +38,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{...}{Additional parameters for the serie.}
 
-\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{data_id, serie_id}{ID for the data/serie, can be used to further customize the chart with \code{\link[=v_specs]{v_specs()}}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
@@ -55,8 +56,8 @@ vchart(eco2mix) \%>\%
 
 # Two areas
 vchart(eco2mix, aes(date)) \%>\%
-  v_area(aes(y = solar)) \%>\%
-  v_area(aes(y = wind))
+  v_area(aes(y = wind)) \%>\%
+  v_area(aes(y = solar))
 
 # Line chart with discrete x axis
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) \%>\%

@@ -808,7 +808,7 @@ v_scale_discrete <- function(vc,
 #'
 #' @name scale-color-manual
 #' @example examples/scale_color_manual.R
-v_scale_color_manual <- function(vc, values) {
+v_scale_color_manual <- function(vc, values) { # , na.value = "#A4A4A4"
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
@@ -818,7 +818,9 @@ v_scale_color_manual <- function(vc, values) {
   specified <- vc$x$specs$color$specified %||% list()
   specified <- modifyList(specified, as.list(values))
   vc$x$specs$color$specified <- specified
-  vc <- v_specs_legend(vc, visible = TRUE)
+  # vc$x$specs$color$domain <- c(names(values), "null")
+  # vc$x$specs$color$range <- c(unname(values), na.value)
+  # vc <- v_specs_legend(vc, visible = TRUE)
   return(vc)
 }
 
@@ -966,7 +968,6 @@ v_scale_gradient <- function(vc,
       type = "color",
       field = aesthetic,
       title = title,
-      # serieId = dataserie_id,
       orient = position,
       position = align
     )))
@@ -1027,7 +1028,7 @@ v_scale_size <- function(vc,
     FUN = function(x) has_name(x, "sizeField"),
     FUN.VALUE = logical(1)
   )
-  dataserie_id <- vc$x$specs$series[index][[1]]$id
+  serie_id <- vc$x$specs$series[index][[1]]$id
   vc <- v_specs(
     vc,
     size = list(
@@ -1035,7 +1036,7 @@ v_scale_size <- function(vc,
       # domain = c(2000, 7000),
       range = range
     ),
-    dataserie_id = dataserie_id
+    serie_id = serie_id
   )
   i <- vapply(vc$x$specs$legends, function(x) identical(x$type, "size"), logical(1))
   vc$x$specs$legends[i] <- NULL

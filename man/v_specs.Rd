@@ -4,14 +4,14 @@
 \alias{v_specs}
 \title{Specify configuration options for a \code{\link[=vchart]{vchart()}}.}
 \usage{
-v_specs(vc, ..., dataserie_id = NULL)
+v_specs(vc, ..., serie_id = NULL)
 }
 \arguments{
 \item{vc}{An htmlwidget created with \code{\link[=vchart]{vchart()}}.}
 
 \item{...}{List of options to specify for the chart, see \url{https://www.visactor.io/vchart/option/}.}
 
-\item{dataserie_id}{Used to set or modify options for a chart where there are multiple series. You can use :
+\item{serie_id}{Used to set or modify options for a chart where there are multiple series. You can use :
 \itemize{
 \item a \code{numeric} to target the position of the serie in the order where it's added to the chart
 \item a \code{character} to refer to a \code{serie_id} set when the serie was added to the plot.

@@ -10,7 +10,8 @@ v_wordcloud(
   data = NULL,
   name = NULL,
   ...,
-  dataserie_id = NULL
+  serie_id = NULL,
+  data_id = NULL
 )
 }
 \arguments{
@@ -25,7 +26,7 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{...}{Additional parameters for the serie.}
 
-\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{data_id, serie_id}{ID for the data/serie, can be used to further customize the chart with \code{\link[=v_specs]{v_specs()}}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

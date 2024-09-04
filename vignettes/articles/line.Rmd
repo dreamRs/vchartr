@@ -120,7 +120,6 @@ vchart(eco2mix_long) %>%
   v_area(
     aes(date, production, fill = source),
     stack = TRUE,
-    # area_style = list(fill_opacity = 1),
     area = list(
       style = list(
         fillOpacity = 0.6
@@ -193,13 +192,13 @@ vchart(eco2mix_long) %>%
 vchart(meteo_paris) %>% 
   v_bar(
     aes(month, precipitation),
-    dataserie_id = "precipitation",
+    serie_id = "precipitation",
     name = "Precipitation (mm)",
     bar = list(style = list(fill = "steelblue"))
   ) %>% 
   v_line(
     aes(month, temperature_avg),
-    dataserie_id = "temperature", 
+    serie_id = "temperature", 
     point = list(
       visible = TRUE,
       style = list(fill = "firebrick")
@@ -232,12 +231,12 @@ data("economics", package = "ggplot2")
 vchart(economics) %>% 
   v_line(
     aes(date, unemploy),
-    dataserie_id = "unemploy",
+    serie_id = "unemploy",
     line = list(style = list(stroke = "#E69F00")),
   )%>% 
   v_line(
     aes(date, uempmed),
-    dataserie_id = "uempmed",
+    serie_id = "uempmed",
     line = list(style = list(stroke = "#56B4E9")),
   ) %>% 
   v_scale_x_date(date_breaks = "10 years", date_labels = "YYYY", nice = FALSE) %>% 

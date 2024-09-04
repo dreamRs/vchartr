@@ -13,7 +13,8 @@ v_hist(
   bins = 30,
   binwidth = NULL,
   ...,
-  dataserie_id = NULL
+  serie_id = NULL,
+  data_id = NULL
 )
 }
 \arguments{
@@ -45,7 +46,7 @@ bin width of a time variable is the number of seconds.}
 
 \item{...}{Additional properties for histogram bars.}
 
-\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{data_id, serie_id}{ID for the data/serie, can be used to further customize the chart with \code{\link[=v_specs]{v_specs()}}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
@@ -91,6 +92,10 @@ vchart(penguins) \%>\%
       style = list(opacity = 0.5)
     )
   ) \%>\%
-  v_specs_colors("#ffa232", "#b34df2", "#33a2a2")
+  v_scale_color_manual(c(
+    Adelie = "#ffa232",
+    Chinstrap = "#33a2a2",
+    Gentoo = "#b34df2"
+  ))
 
 }

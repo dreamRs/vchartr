@@ -30,13 +30,8 @@ electricity_mix %>%
   arrange(desc(generation)) %>% 
   vchart() %>% 
   v_bar(aes(source, generation)) %>% 
-  v_colors("#5E81AC") %>% 
-  v_axes(
-    position = "left",
-    label = list(
-      formatMethod = JS("val => `${val} TWh`")
-    )
-  ) %>% 
+  v_specs_colors("#5E81AC") %>% 
+  v_scale_y_continuous(labels = format_num_d3(",", suffix = " TWh")) %>% 
   v_labs(
     title = "South Korea electricity mix"
   )
@@ -50,8 +45,8 @@ electricity_mix %>%
   filter(country == "South Korea") %>%
   arrange(desc(generation)) %>%
   vchart() %>%
-  v_bar(aes(source, generation, fill = source)) %>%
-  v_specs(xField = "x") %>% # <- use only 'x' aesthetic on x-axis
+  v_bar(aes(source, generation, fill = source), serie_id = "bar") %>%
+  v_specs(xField = "x", serie_id = "bar") %>% # <- use only 'x' aesthetic on x-axis
   v_specs_legend(visible = FALSE) %>%
   v_scale_fill_manual(
     c(
@@ -141,7 +136,10 @@ world_electricity %>%
   filter(type == "total") %>% 
   vchart() %>% 
   v_bar(aes(year, generation, fill = source)) %>% 
-  v_specs_colors_manual("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A") %>% 
+  v_scale_color_manual(c(
+    "Low carbon" = "#A3BE8C", 
+    "Fossil fuels" = "#4C566A"
+  )) %>% 
   v_specs_legend(
     title = list(text = "Source of electricity", visible = TRUE),
     orient = "right",
@@ -199,7 +197,7 @@ electricity_mix %>%
   v_bar(
     aes(country, generation),
     direction = "horizontal",
-    dataserie_id = "myid",
+    data_id = "mydataid",
     bar = list(
       style = list(cornerRadius = c(5, 5, 5, 5), height = 10)
     ),
@@ -228,7 +226,7 @@ electricity_mix %>%
     extensionMark = list(
       list(
         type = "text",
-        dataId = "myid",
+        dataId = "mydataid",
         visible = TRUE,
         style = list(
           text = JS("datum => Math.round(datum.y)"),

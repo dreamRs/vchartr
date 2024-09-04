@@ -35,5 +35,9 @@ vchart(penguins) %>%
       style = list(opacity = 0.5)
     )
   ) %>%
-  v_specs_colors("#ffa232", "#b34df2", "#33a2a2")
+  v_scale_color_manual(c(
+    Adelie = "#ffa232",
+    Chinstrap = "#33a2a2",
+    Gentoo = "#b34df2"
+  ))
 

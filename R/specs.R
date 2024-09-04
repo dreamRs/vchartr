@@ -41,7 +41,7 @@
 #'
 #' @param vc An htmlwidget created with [vchart()].
 #' @param ... List of options to specify for the chart, see [https://www.visactor.io/vchart/option/](https://www.visactor.io/vchart/option/).
-#' @param dataserie_id Used to set or modify options for a chart where there are multiple series. You can use :
+#' @param serie_id Used to set or modify options for a chart where there are multiple series. You can use :
 #'   * a `numeric` to target the position of the serie in the order where it's added to the chart
 #'   * a `character` to refer to a `serie_id` set when the serie was added to the plot.
 #'
@@ -58,24 +58,24 @@
 #'     label = list(visible = TRUE),
 #'     color = list("firebrick")
 #'   )
-v_specs <- function(vc, ..., dataserie_id = NULL) {
+v_specs <- function(vc, ..., serie_id = NULL) {
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
-  if (is.null(dataserie_id)) {
+  if (is.null(serie_id)) {
     vc$x$specs <- modifyList(
       x = vc$x$specs,
       val = list(...),
       keep.null = TRUE
     )
-  } else if (is.numeric(dataserie_id)) {
-    vc$x$specs$series[[dataserie_id]] <- dropNulls(modifyList(
-      x = vc$x$specs$series[[dataserie_id]],
+  } else if (is.numeric(serie_id)) {
+    vc$x$specs$series[[serie_id]] <- dropNulls(modifyList(
+      x = vc$x$specs$series[[serie_id]],
       val = list(...),
       keep.null = TRUE
     ))
-  } else if (is.character(dataserie_id)) {
-    serie <- get_serie_index(vc, dataserie_id)
+  } else if (is.character(serie_id)) {
+    serie <- get_serie_index(vc, serie_id)
     if (length(serie) == 1) {
       vc$x$specs$series[[serie]] <- dropNulls(modifyList(
         x = vc$x$specs$series[[serie]],
@@ -185,6 +185,8 @@ v_labs <- function(vc, title = NULL, subtitle = NULL, x = NULL, y = NULL) {
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
+#' @importFrom rlang is_named
+#'
 #' @examples
 #' library(vchartr)
 #' data("mpg", package = "ggplot2")
@@ -195,7 +197,7 @@ v_labs <- function(vc, title = NULL, subtitle = NULL, x = NULL, y = NULL) {
 #'
 v_specs_colors <- function(vc, ...) {
   args <- list(...)
-  if (length(args) == 1 && is.character(args[[1]]))
+  if (length(args) == 1 && is.character(args[[1]]) && !is_named(args))
     args <- as.list(args[[1]])
   vc <- .vchart_specs(
     vc,
@@ -348,7 +350,7 @@ v_specs_player <- function(vc, ...) {
 
 v_default_player <- function(vc,
                              mapdata,
-                             dataserie_id,
+                             data_id,
                              fun_values = create_values,
                              ...) {
   v_specs_player(
@@ -365,7 +367,7 @@ v_default_player <- function(vc,
       FUN = function(dat) {
         list(
           data = list(
-            id = dataserie_id,
+            id = data_id,
             values = fun_values(dat, ...)
           )
         )

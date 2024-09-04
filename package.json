@@ -14,7 +14,7 @@
   "author": "Victor PERRIER",
   "license": "MIT",
   "devDependencies": {
-    "@visactor/vchart": "^1.12.0",
+    "@visactor/vchart": "^1.12.1",
     "@visactor/vchart-theme": "^1.11.6",
     "d3-format": "^3.1.0",
     "dayjs": "^1.11.12",

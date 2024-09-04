@@ -10,7 +10,7 @@
 #' @param percent Whether to display the data as a percentage.
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
 #' @param ... Additional parameters for the serie.
-#' @param dataserie_id ID for the serie, can be used to customize the serie with [v_specs()].
+#' @param data_id,serie_id ID for the data/serie, can be used to further customize the chart with [v_specs()].
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -26,7 +26,8 @@ v_bar <- function(vc,
                   percent = FALSE,
                   direction = c("vertical", "horizontal"),
                   ...,
-                  dataserie_id = NULL) {
+                  serie_id = NULL,
+                  data_id = NULL) {
   direction <- match.arg(direction)
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -36,21 +37,21 @@ v_bar <- function(vc,
   mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "bar")
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "bar",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     seriesField = if (has_name(mapping, "fill")) "fill",
     stack = stack,
@@ -89,7 +90,7 @@ v_bar <- function(vc,
     vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
   if (has_player(mapdata)) {
-    vc <- v_default_player(vc, mapdata, dataserie_id)
+    vc <- v_default_player(vc, mapdata, data_id)
   }
   return(vc)
 }
@@ -121,7 +122,8 @@ v_line <- function(vc,
                    ),
                    point = list(visible = FALSE),
                    ...,
-                   dataserie_id = NULL) {
+                   serie_id = NULL,      
+                   data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -135,22 +137,22 @@ v_line <- function(vc,
       name <- rlang::as_label(mapping$y)
     }
   }
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "line",
     name = name,
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     xField = "x",
     yField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
@@ -201,7 +203,8 @@ v_smooth <- function(vc,
                      span = 0.75,
                      ...,
                      args_area = NULL,
-                     dataserie_id = NULL) {
+                     serie_id = NULL,        
+                     data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -220,8 +223,8 @@ v_smooth <- function(vc,
   vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
   vc$x$type <- c(vc$x$type, "smooth")
   vc$x$mapping <- NULL
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   if (isTRUE(se)) {
     mapping_area <- aes(x = !!sym("x"), ymin = !!sym("ymin"), ymax = !!sym("ymax"))
     if (has_name(mapping, "colour"))
@@ -243,6 +246,8 @@ v_smooth <- function(vc,
     mapping_line <- c(mapping_line, aes(colour = !!sym("colour")))
   args_line$mapping <- mapping_line
   args_line$data <- mapdata
+  args_line$data_id <- data_id
+  args_line$serie_id <- serie_id
   if (is.null(args_line$line$style$curveType))
     args_line$line$style$curveType <- "monotone"
   vc <- rlang::exec(v_line, !!!args_line)
@@ -278,7 +283,8 @@ v_area <- function(vc,
                    point = list(visible = FALSE),
                    line = list(visible = FALSE),
                    ...,
-                   dataserie_id = NULL) {
+                   serie_id = NULL,         
+                   data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -295,14 +301,14 @@ v_area <- function(vc,
       name <- paste(rlang::as_label(mapping$ymin), rlang::as_label(mapping$ymax), sep = "/")
     }
   }
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
@@ -318,8 +324,8 @@ v_area <- function(vc,
   serie <- list_(
     type = type,
     name = name,
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     xField = "x",
     yField = yField,
     seriesField = if (has_name(mapping, "fill")) "fill",
@@ -330,7 +336,6 @@ v_area <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
-  
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
     vc <- v_scale_x_discrete(vc)
@@ -366,7 +371,8 @@ v_hist <- function(vc,
                    bins = 30,
                    binwidth = NULL,
                    ...,
-                   dataserie_id = NULL) {
+                   serie_id = NULL,         
+                   data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -378,19 +384,19 @@ v_hist <- function(vc,
   mapdata <- ggplot2::layer_data(p, i = 1L)
   vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
   vc$x$type <- c(vc$x$type, "hist")
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- v_specs(
     vc = vc,
     data = list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata[, c("xmin", "xmax", "count", "fill")])
+        id = data_id,
+        values = mapdata
       )
     ),
     type = "histogram",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     xField = "xmin",
     x2Field = "xmax",
@@ -446,7 +452,8 @@ v_scatter <- function(vc,
                       data = NULL,
                       name = NULL,
                       ...,
-                      dataserie_id = NULL) {
+                      serie_id = NULL,      
+                      data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -457,14 +464,14 @@ v_scatter <- function(vc,
   vc$x$type <- c(vc$x$type, "scatter")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
@@ -477,8 +484,8 @@ v_scatter <- function(vc,
     list(type = "ordinal")
   serie <- list_(
     type = "scatter",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     xField = "x",
     yField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
@@ -549,7 +556,8 @@ v_jitter <- function(vc,
                      width = NULL,
                      height = NULL,
                      ...,
-                     dataserie_id = NULL) {
+                     serie_id = NULL,      
+                     data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -566,7 +574,9 @@ v_jitter <- function(vc,
     mapping = aes(!!!syms(set_names(names(mapping), names(mapping)))),
     data = ldata,
     name = name,
-    ...
+    ...,
+    data_id = data_id,
+    serie_id = serie_id
   )
   if (identical(attr(mapdata, "scale_x"), "discrete")) {
     vc <- v_scale_x_continuous(
@@ -602,7 +612,8 @@ v_pie <- function(vc,
                   name = NULL,
                   label = list(visible = TRUE),
                   ...,
-                  dataserie_id = NULL) {
+                  serie_id = NULL,            
+                  data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -613,21 +624,21 @@ v_pie <- function(vc,
   vc$x$type <- c(vc$x$type, "pie")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "pie",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     seriesField = "x",
     valueField = "y",
     label = label,
@@ -635,7 +646,7 @@ v_pie <- function(vc,
   )
   vc <- .vchart_specs(vc, "series", list(serie))
   if (has_player(mapdata)) {
-    vc <- v_default_player(vc, mapdata, dataserie_id)
+    vc <- v_default_player(vc, mapdata, data_id)
   }
   return(vc)
 }
@@ -656,7 +667,8 @@ v_radar <- function(vc,
                     data = NULL,
                     name = NULL,
                     ...,
-                    dataserie_id = NULL) {
+                    serie_id = NULL,       
+                    data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -667,21 +679,21 @@ v_radar <- function(vc,
   vc$x$type <- c(vc$x$type, "radar")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "radar",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     categoryField = "x",
     valueField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
@@ -721,7 +733,8 @@ v_circlepacking <- function(vc,
                             fill_opacity = JS("d => d.isLeaf ? 0.75 : 0.25;"),
                             label_visible = JS("d => d.depth === 1;"),
                             ...,
-                            dataserie_id = NULL) {
+                            serie_id = NULL,   
+                            data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -732,8 +745,8 @@ v_circlepacking <- function(vc,
   vc$x$type <- c(vc$x$type, "circlepacking")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapping), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {
@@ -759,15 +772,15 @@ v_circlepacking <- function(vc,
     vc, "data",
     list(
       list(
-        id = dataserie_id,
+        id = data_id,
         values = values
       )
     )
   )
   serie <- list_(
     type = "circlePacking",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     categoryField = "name",
     valueField = "value",
@@ -784,13 +797,17 @@ v_circlepacking <- function(vc,
   if (has_player(mapdata)) {
     if (length(lvl_vars) > 1) {
       vc <- v_default_player(
-        vc, mapdata, dataserie_id,
+        vc,
+        mapdata,
+        data_id,
         levels = lvl_vars,
         value = "value"
       )
     } else {
       vc <- v_default_player(
-        vc, mapdata, dataserie_id,
+        vc, 
+        mapdata,
+        data_id,
         fun_values = create_values,
         .names = list(name = "x", value = "y")
       )
@@ -819,7 +836,8 @@ v_treemap <- function(vc,
                       name = NULL,
                       drill = TRUE,
                       ...,
-                      dataserie_id = NULL) {
+                      serie_id = NULL,      
+                      data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -830,8 +848,8 @@ v_treemap <- function(vc,
   vc$x$type <- c(vc$x$type, "treemap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapping), value = TRUE)
   lvl_vars <- sort(lvl_vars)
   if (length(lvl_vars) > 1) {
@@ -847,15 +865,15 @@ v_treemap <- function(vc,
     vc, "data",
     list(
       list(
-        id = dataserie_id,
+        id = data_id,
         values = values
       )
     )
   )
   serie <- list_(
     type = "treemap",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     categoryField = "name",
     valueField = "value",
@@ -866,13 +884,13 @@ v_treemap <- function(vc,
   if (has_player(mapdata)) {
     if (length(lvl_vars) > 1) {
       vc <- v_default_player(
-        vc, mapdata, dataserie_id,
+        vc, mapdata, data_id,
         levels = lvl_vars,
         value = "value"
       )
     } else {
       vc <- v_default_player(
-        vc, mapdata, dataserie_id,
+        vc, mapdata, data_id,
         fun_values = create_values,
         .names = list(name = "x", value = "y")
       )
@@ -898,19 +916,20 @@ v_heatmap <- function(vc,
                       data = NULL,
                       name = NULL,
                       ...,
-                      dataserie_id = NULL) {
+                      serie_id = NULL,     
+                      data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-  mapdata <- eval_mapping(data, mapping)
+  mapdata <- eval_mapping_(data, mapping)
   vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "heatmap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   if (is.numeric(mapdata$fill)) {
     color <- list(
       type = "linear",
@@ -923,7 +942,8 @@ v_heatmap <- function(vc,
     legend <- list(
       visible = TRUE,
       type = "color",
-      field = "fill"
+      field = "fill",
+      seriesId = serie_id
     )
   } else if (is.character(mapdata$fill)) {
     color <- list(
@@ -933,7 +953,8 @@ v_heatmap <- function(vc,
       visible = TRUE,
       type = "discrete",
       field = "fill",
-      scaleName = "color"
+      scale = "color",
+      seriesId = serie_id
     )
   } else {
     stop(
@@ -945,15 +966,15 @@ v_heatmap <- function(vc,
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "heatmap",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     xField = "x",
     yField = "y",
@@ -1000,7 +1021,8 @@ v_wordcloud <- function(vc,
                         data = NULL,
                         name = NULL,
                         ...,
-                        dataserie_id = NULL) {
+                        serie_id = NULL,     
+                        data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -1011,21 +1033,21 @@ v_wordcloud <- function(vc,
   vc$x$type <- c(vc$x$type, "wordcloud")
   if (is.null(name) & !is.null(mapping$word))
     name <- rlang::as_label(mapping$word)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   serie <- list_(
     type = "wordCloud",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     name = name,
     nameField = "word",
     valueField = "count",
@@ -1054,7 +1076,8 @@ v_sankey <- function(vc,
                      data = NULL,
                      name = NULL,
                      ...,
-                     dataserie_id = NULL) {
+                     serie_id = NULL,      
+                     data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -1063,9 +1086,8 @@ v_sankey <- function(vc,
   vc$x$type <- c(vc$x$type, "sankey")
   if (is.null(name) & !is.null(mapping$x))
     name <- rlang::as_label(mapping$word)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
-  
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   specs <- list(
     type = "sankey",
     label = list(
@@ -1074,9 +1096,7 @@ v_sankey <- function(vc,
     ),
     ...
   )
-  
   mapdata <- NULL
-  
   if (!is.null(data) & length(mapping) > 0) {
     if (has_name(mapping, "lvl1") & has_name(mapping, "value")) {
       mapdata <- eval_mapping(data, mapping)
@@ -1085,7 +1105,7 @@ v_sankey <- function(vc,
       specs$data <- list(
         list(
           name = name,
-          id = dataserie_id,
+          id = data_id,
           values = list(
             list(
               nodes = create_tree(as.data.frame(mapdata), lvl_vars, value = "value")
@@ -1101,11 +1121,11 @@ v_sankey <- function(vc,
       specs$data <- list(
         list(
           name = name,
-          id = dataserie_id,
+          id = data_id,
           values = list(
             list(
-              nodes = create_values(sankey_dat$nodes),
-              links = create_values(sankey_dat$links)
+              nodes = sankey_dat$nodes,
+              links = sankey_dat$links
             )
           )
         )
@@ -1118,11 +1138,11 @@ v_sankey <- function(vc,
   } else if (is.list(data) & !is.null(data$nodes) & !is.null(data$links)) {
     specs$data <- list(
       list(
-        id = dataserie_id,
+        id = data_id,
         values = list(
           list(
-            nodes = create_values(data$nodes),
-            links = create_values(data$links)
+            nodes = data$nodes,
+            links = data$links
           )
         )
       )
@@ -1161,7 +1181,8 @@ v_gauge <- function(vc,
                     startAngle = -240,
                     endAngle = 60,
                     ...,
-                    dataserie_id = NULL) {
+                    serie_id = NULL,        
+                    data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -1172,15 +1193,15 @@ v_gauge <- function(vc,
   vc$x$type <- "gauge"
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc$x$specs$type <- "gauge"
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
@@ -1215,7 +1236,8 @@ v_progress <- function(vc,
                        data = NULL,
                        name = NULL,
                        ...,
-                       dataserie_id = NULL) {
+                       serie_id = NULL,     
+                       data_id = NULL) {
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
   )
@@ -1233,39 +1255,28 @@ v_progress <- function(vc,
   vc$x$type <- c(vc$x$type, "progress")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
   vc <- v_specs(
     vc,
     type = "linearProgress",
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     xField = "x",
     yField = "y",
     seriesField = "y",
     direction = "horizontal",
     ...
   )
-  # serie <- list_(
-  #   type = "linearProgress",
-  #   id = dataserie_id,
-  #   dataId = dataserie_id,
-  #   xField = "x",
-  #   yField = "y",
-  #   seriesField = "y",
-  #   direction = "horizontal",
-  #   ...
-  # )
-  # vc <- .vchart_specs(vc, "series", list(serie))
   return(vc)
 }
 
@@ -1296,7 +1307,8 @@ v_boxplot <- function(vc,
                       ...,
                       outliers = TRUE,
                       args_outliers = NULL,
-                      dataserie_id = NULL) {
+                      serie_id = NULL,     
+                      data_id = NULL) {
   args <- list(...)
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -1322,16 +1334,17 @@ v_boxplot <- function(vc,
     args_outliers$data <- outliers
     vc <- rlang::exec(v_scatter, !!!args_outliers)
   }
-  vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
+  mapdata <- dropColumns(mapdata)
+  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "boxplot")
-  if (is.null(dataserie_id))
-    dataserie_id <- paste0("serie_", genId(4))
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
     list(
       list(
-        id = dataserie_id,
-        values = create_values(mapdata)
+        id = data_id,
+        values = mapdata
       )
     )
   )
@@ -1345,8 +1358,8 @@ v_boxplot <- function(vc,
   boxPlot$style$lineWidth <- boxPlot$style$lineWidth %||% 1
   serie <- list_(
     name = name,
-    id = dataserie_id,
-    dataId = dataserie_id,
+    id = serie_id,
+    dataId = data_id,
     type = "boxPlot",
     xField = "x",
     minField = "ymin",

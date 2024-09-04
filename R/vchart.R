@@ -41,6 +41,7 @@ vchart <- function(data = NULL,
       specs = list(data = data, ...)
     )
   }
+  attr(x, "TOJSON_ARGS") <- list(dataframe = "rows")
   createWidget(
     name = "vchart",
     x = x,

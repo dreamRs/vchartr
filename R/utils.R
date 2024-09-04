@@ -15,6 +15,30 @@ dropNullsOrEmpty <- function(x) {
   x[!vapply(x, null_or_empty, FUN.VALUE = logical(1))]
 }
 
+dropColumns <- function(x) {
+  x <- dropListColumns(x)
+  x <- dropArrayColumns(x)
+  return(x)
+}
+dropListColumns <- function(x) {
+  type_col <- vapply(
+    X = x, 
+    FUN = typeof, 
+    FUN.VALUE = character(1), 
+    USE.NAMES = FALSE
+  )
+  x[, type_col != "list", drop = FALSE]
+}
+dropArrayColumns <- function(x) {
+  cols_array <- vapply(
+    X = x, 
+    FUN = is.array, 
+    FUN.VALUE = logical(1), 
+    USE.NAMES = FALSE
+  )
+  x[, !cols_array, drop = FALSE]
+}
+
 list1 <- function(x){
   if (length(x) == 1) {
     list(x)
@@ -27,6 +51,14 @@ genId <- function(bytes = 12) {
   paste(format(as.hexmode(
     sample(256, bytes, replace = TRUE) -  1
   ), width = 2), collapse = "")
+}
+
+genSerieId <- function() {
+  paste0("serie_", genId(4))
+}
+
+genDataId <- function() {
+  paste0("data_", genId(4))
 }
 
 to_camel_case <- function(x) {
@@ -112,9 +144,9 @@ eval_mapping <- function(data, mapping, convert_date = FALSE) {
 #' @importFrom stats complete.cases
 eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
   mapdata <- lapply(mapping, eval_tidy, data = data)
+  mapdata <- as.data.frame(mapdata, check.names = FALSE)
   if (na_rm) {
-    index <- complete.cases(mapdata)
-    mapdata <- lapply(mapdata, `[`, index)
+    mapdata <- mapdata[complete.cases(mapdata), , drop = FALSE]
   }
   if (inherits(mapdata$x, "factor"))
     mapdata$x <- as.character(mapdata$x)
@@ -286,8 +318,9 @@ tooltip_key_default <- function() {
 
 
 get_aes_data <- function(mapdata, aesthetics) {
-  mapaes <- dropNullsOrEmpty(mapdata[aesthetics])
-  if (length(mapaes) > 0) {
+  mapdata <- as.list(mapdata)
+  if (is_named(mapdata)) {
+    mapaes <- dropNullsOrEmpty(mapdata[aesthetics])
     unlist(mapaes, use.names = FALSE)
   } else {
     unlist(lapply(mapdata, get_aes_data, aesthetics))

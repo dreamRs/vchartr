@@ -7,8 +7,8 @@ vchart(eco2mix) %>%
 
 # Two areas
 vchart(eco2mix, aes(date)) %>%
-  v_area(aes(y = solar)) %>%
-  v_area(aes(y = wind))
+  v_area(aes(y = wind)) %>%
+  v_area(aes(y = solar))
 
 # Line chart with discrete x axis
 vchart(data.frame(month = month.abb, value = sample(1:50, 12))) %>%

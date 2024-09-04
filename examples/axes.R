@@ -64,8 +64,8 @@ vchart() %>%
 
 # Use secondary axes
 vchart() %>%
-  v_line(aes(x = month.name, y = sample(5:25, 12)), dataserie_id = "serie_left") %>%
-  v_line(aes(x = month.name, y = sample(5:25 * 100, 12)), dataserie_id = "serie_right") %>%
+  v_line(aes(x = month.name, y = sample(5:25, 12)), serie_id = "serie_left") %>%
+  v_line(aes(x = month.name, y = sample(5:25 * 100, 12)), serie_id = "serie_right") %>%
   v_specs_axes(position = "left", seriesId = "serie_left") %>%
   v_specs_axes(position = "right", type = "linear", seriesId = "serie_right")
 

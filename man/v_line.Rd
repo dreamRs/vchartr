@@ -12,7 +12,8 @@ v_line(
   line = list(style = list(curveType = "linear", lineDash = 0, stroke = NULL)),
   point = list(visible = FALSE),
   ...,
-  dataserie_id = NULL
+  serie_id = NULL,
+  data_id = NULL
 )
 }
 \arguments{
@@ -32,7 +33,7 @@ see \href{https://www.visactor.io/vchart/option/lineChart#line.style.curveType}{
 
 \item{...}{Additional parameters for the serie.}
 
-\item{dataserie_id}{ID for the serie, can be used to customize the serie with \code{\link[=v_specs]{v_specs()}}.}
+\item{data_id, serie_id}{ID for the data/serie, can be used to further customize the chart with \code{\link[=v_specs]{v_specs()}}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

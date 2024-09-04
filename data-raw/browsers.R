@@ -9,7 +9,7 @@ head(browsers)
 
 
 vchart(browsers) %>%
-  v_pie(aes(browserName, value, player = date), dataserie_id = "my_id") %>%
+  v_pie(aes(browserName, value, player = date), serie_id = "my_id") %>%
   v_specs(
     customMark = list(
       list(
@@ -77,7 +77,7 @@ vchart(subset(browsers, date == 2010)) %>%
   v_pie(aes(browserName, value, player = date))
 
 vchart(subset(browsers, date == 2010)) %>%
-  v_pie(aes(browserName, value), dataserie_id = "browser") %>%
+  v_pie(aes(browserName, value), serie_id = "browser") %>%
   v_specs(
     player = list(
       auto = FALSE,

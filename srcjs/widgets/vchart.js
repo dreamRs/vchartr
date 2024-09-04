@@ -187,7 +187,7 @@ HTMLWidgets.widget({
         //  VChart.ThemeManager.registerTheme(name, theme);
         //});
         //VChart.ThemeManager.setCurrentTheme("vScreenVolcanoBlue");
-
+        console.log(x.specs);
         if (typeof vchart == "undefined") {
           vchart = new VChart(x.specs, { dom: el.id });
           vchart.renderAsync();

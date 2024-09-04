@@ -39,7 +39,14 @@ v_facet_wrap <- function(vc,
     ncol = dims$ncol,
     byrow = TRUE
   )
-  vc$x$specs$layout <- create_layout(dims$ncol, dims$nrow, title = !is.null(vc$title))
+  no_axes <- c("pie", "treemap", "circlepacking", "sankey", "wordcloud", "radar")
+  vc$x$specs$layout <- create_layout(
+    ncol = dims$ncol,
+    nrow = dims$nrow,
+    title = !is.null(vc$title), 
+    axe_x = !any(no_axes %in% vc$x$type), 
+    axe_y = !any(no_axes %in% vc$x$type)
+  )
   vc$x$specs$region <- create_region(n)
   vc$x$specs$indicator <- create_indicator(facets_values, label_fun = labeller)
   vc$x$specs$data <- create_facet_data(vc, facet = facets_values)
@@ -55,7 +62,11 @@ v_facet_wrap <- function(vc,
 
 
 
-create_layout <- function(ncol, nrow, title = FALSE) {
+create_layout <- function(ncol,
+                          nrow,
+                          title = FALSE,
+                          axe_x = TRUE,
+                          axe_y = TRUE) {
   
   create_matrix <- function(data, byrow) {
     matrix(data = data, nrow = nrow, ncol = ncol, byrow = byrow)
@@ -68,17 +79,17 @@ create_layout <- function(ncol, nrow, title = FALSE) {
   mat_axe_y_row <- create_matrix(rep(1 + ((seq_len(nrow) - 1) * 3), rep = ncol), FALSE) + title
   mat_axe_x_col <- create_matrix(rep(1 + ((seq_len(ncol) - 1) * 2), rep = nrow), TRUE)
   mat_axe_x_row <- create_matrix(rep(2 + ((seq_len(nrow) - 1) * 3), rep = ncol), FALSE) + title
-  mat_chart_col <- create_matrix(rep(1 + ((seq_len(ncol) - 1) * 2), rep = nrow), TRUE)
-  mat_chart_row <- create_matrix(rep(1 + ((seq_len(nrow) - 1) * 3), rep = ncol), FALSE) + title
-  mat_ind_col <- create_matrix(rep(0 + ((seq_len(ncol) - 1) * 2), rep = nrow), TRUE)
-  mat_ind_row <- create_matrix(rep(0 + ((seq_len(nrow) - 1) * 3), rep = ncol), FALSE) + title
+  mat_chart_col <- create_matrix(rep(axe_x + ((seq_len(ncol) - 1) * (1 + axe_y)), rep = nrow), TRUE)
+  mat_chart_row <- create_matrix(rep(1 + ((seq_len(nrow) - 1) * (2 + axe_x)), rep = ncol), FALSE) + title
+  mat_ind_col <- create_matrix(rep(0 + ((seq_len(ncol) - 1) * (1 + axe_y)), rep = nrow), TRUE)
+  mat_ind_row <- create_matrix(rep(0 + ((seq_len(nrow) - 1) * (2 + axe_x)), rep = ncol), FALSE) + title
   
   list(
     type = "grid",
-    col = ncol * 2,
-    row = nrow * 3 + title,
+    col = ncol + ncol * axe_x,
+    row = nrow * 2 + nrow * axe_y + title,
     rowHeight = lapply(
-      X = title + (seq_len(nrow) - 1) * 3,
+      X = title + (seq_len(nrow) - 1) * (2 + axe_x),
       FUN = function(index) {
         list(index = index, size = 30)
       }
@@ -87,32 +98,36 @@ create_layout <- function(ncol, nrow, title = FALSE) {
       if (title) {
         list(list(modelId = "title", col = 0, row = 0, colSpan = ncol * 2))
       },
-      lapply(
-        X = seq_len(n),
-        FUN = function(num) {
-          mat_num <- which(mat == num, arr.ind = TRUE, useNames = FALSE)
-          i <- mat_num[1, 1]
-          j <- mat_num[1, 2]
-          list(
-            modelId = paste0("axe_y_", num),
-            col = mat_axe_y_col[i, j],
-            row = mat_axe_y_row[i, j]
-          )
-        }
-      ),
-      lapply(
-        X = seq_len(n),
-        FUN = function(num) {
-          mat_num <- which(mat == num, arr.ind = TRUE, useNames = FALSE)
-          i <- mat_num[1, 1]
-          j <- mat_num[1, 2]
-          list(
-            modelId = paste0("axe_x_", num),
-            col = mat_axe_x_col[i, j],
-            row = mat_axe_x_row[i, j]
-          )
-        }
-      ),
+      if (isTRUE(axe_y)) {
+        lapply(
+          X = seq_len(n),
+          FUN = function(num) {
+            mat_num <- which(mat == num, arr.ind = TRUE, useNames = FALSE)
+            i <- mat_num[1, 1]
+            j <- mat_num[1, 2]
+            list(
+              modelId = paste0("axe_y_", num),
+              col = mat_axe_y_col[i, j],
+              row = mat_axe_y_row[i, j]
+            )
+          }
+        )
+      },
+      if (isTRUE(axe_x)) {
+        lapply(
+          X = seq_len(n),
+          FUN = function(num) {
+            mat_num <- which(mat == num, arr.ind = TRUE, useNames = FALSE)
+            i <- mat_num[1, 1]
+            j <- mat_num[1, 2]
+            list(
+              modelId = paste0("axe_x_", num),
+              col = mat_axe_x_col[i, j],
+              row = mat_axe_x_row[i, j]
+            )
+          }
+        )
+      },
       lapply(
         X = seq_len(n),
         FUN = function(num) {
@@ -136,7 +151,7 @@ create_layout <- function(ncol, nrow, title = FALSE) {
             modelId = paste0("indicator_", num),
             col = mat_ind_col[i, j],
             row = mat_ind_row[i, j],
-            colSpan = 2
+            colSpan = 1 + axe_y
           )
         }
       )
@@ -242,7 +257,7 @@ create_axis_x <- function(vc, x, facet, free = TRUE, last_row = numeric(0)) {
       this <- axe_x
       this$id <- paste0("axe_x_", id)
       this$regionId <- paste0("chart_", id)
-      if (identical(this$type, "linear") & isFALSE(free)) {
+      if (is.numeric(x) & isFALSE(free)) {
         valrange <-  scales::expand_range(
           range = range(x, na.rm = TRUE),
           mul = 0.05,
@@ -271,7 +286,7 @@ create_axis_y <- function(vc, y, facet, free = TRUE, first_col = numeric(0)) {
       this <- axe_y
       this$id <- paste0("axe_y_", id)
       this$regionId <- paste0("chart_", id)
-      if (identical(this$type, "linear") & isFALSE(free)) {
+      if (is.numeric(y) & isFALSE(free)) {
         valrange <-  scales::expand_range(
           range = range(y, na.rm = TRUE),
           mul = 0.05,
@@ -310,12 +325,10 @@ get_facets_dims <- function(n, nrow = NULL, ncol = NULL) {
 
 #' @importFrom rlang as_label
 get_facets_values <- function(data, facets) {
-  all_values <- eval_mapping_(data, facets)
-  all_values <- as.data.frame(all_values, col.names = lapply(facets, as_label))
-  # all_values <- all_values[do.call(order, unname(all_values)), , drop = FALSE]
-  unique_values <- unique(all_values)
-  unique_values$facet_id <- seq_along(unique_values[[1]])
-  merge(x = all_values, y = unique_values, sort = FALSE)
+  facet_data <- eval_mapping_(data, facets)
+  names(facet_data) <- vapply(facets, as_label, FUN.VALUE = character(1))
+  facet_data$facet_id <- as.numeric(interaction(facet_data, drop = TRUE))
+  return(facet_data)
 }
 
 #' @importFrom utils head

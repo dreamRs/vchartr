@@ -1,16 +1,46 @@
 
+
 pkgload::load_all()
 
-str(.Last.value$x$specs)
 
 library(dplyr)
 library(ggplot2)
+library(rlang)
+
+str(.Last.value$x$specs)
+
 vc <- vchart(mpg) %>%
   v_scatter(aes(displ, cty))
 
-vc$x$specs$series
+vc$x$specs$axes
 
-split(vc$x$specs$data[[1]]$values, f = as.character(mpg$cyl))[[2]]
+
+mat <- matrix(data = seq_len(2 * 2), nrow = 2, ncol = 2, byrow = TRUE)
+
+create_axis_x(vc, x = mpg %>% pull(displ), facet = mpg$cyl, free = FALSE, last_row = c(3, 4))
+
+
+facets_values <- get_facets_values(mpg, vars(cyl))
+create_indicator(facets_values, label_fun = ggplot2::label_value)
+
+ggplot2::label_value(c(8, "totot"), multi_line = TRUE)
+
+vc <- vchart(mpg) %>%
+  v_scatter(aes(displ, cty)) %>%
+  v_facet_wrap(vars(cyl))
+
+
+vchart(mpg) %>%
+  v_scatter(aes(displ, cty)) %>%
+  v_facet_wrap(vars(cyl, year))
+
+
+
+vc$x$specs$indicator
+
+ggplot(mpg) +
+  geom_point(aes(displ, cty)) +
+  facet_wrap(vars(cyl), scales = "fixed")
 
 
 str(create_layout(2, 2))
@@ -20,121 +50,29 @@ create_facet_series(vc, facet = as.character(mpg$cyl))
 
 vchart(
   type = "common",
-  layout = create_layout(2, 2),
+  # title = list(text = "Title", id = "title"),
+  layout = create_layout(2, 2, title = FALSE),
   region = create_region(2, 2),
   indicator = create_indicator(as.character(mpg$cyl)),
   data = create_facet_data(vc, facet = as.character(mpg$cyl)),
   series = create_facet_series(vc, facet = as.character(mpg$cyl)),
-  axes = list(
-    list(
-      id = "axe_y_1",
-      orient = "left",
-      regionId = paste0("chart_", 1),
-      type = "linear",
-      domainLine = list(visible = TRUE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minWidth = 20
-    ),
-    list(
-      id = "axe_y_2",
-      orient = "left",
-      regionId = paste0("chart_", 2),
-      type = "linear",
-      label = list(visible = FALSE),
-      domainLine = list(visible = FALSE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minWidth = 20
-    ),
-    list(
-      id = "axe_y_3",
-      orient = "left",
-      regionId = paste0("chart_", 3),
-      type = "linear",
-      domainLine = list(visible = TRUE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minWidth = 20
-    ),
-    list(
-      id = "axe_y_4",
-      orient = "left",
-      regionId = paste0("chart_", 4),
-      type = "linear",
-      label = list(visible = FALSE),
-      domainLine = list(visible = FALSE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(y) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minWidth = 20
-    ),
-    list(
-      id = "axe_x_1",
-      orient = "bottom",
-      regionId = paste0("chart_", 1),
-      type = "linear",
-      visible = TRUE,
-      label = list(visible = FALSE),
-      domainLine = list(visible = FALSE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minHeight = 20
-    ),
-    list(
-      id = "axe_x_2",
-      orient = "bottom",
-      regionId = paste0("chart_", 2),
-      type = "linear",
-      visible = TRUE,
-      label = list(visible = FALSE),
-      domainLine = list(visible = FALSE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minHeight = 20
-    ),
-    list(
-      id = "axe_x_3",
-      orient = "bottom",
-      regionId = paste0("chart_", 3),
-      type = "linear",
-      domainLine = list(visible = TRUE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minHeight = 20
-    ),
-    list(
-      id = "axe_x_4",
-      orient = "bottom",
-      regionId = paste0("chart_", 4),
-      type = "linear",
-      domainLine = list(visible = TRUE),
-      zero = FALSE,
-      # seriesId = paste0("serie_", 1:4),
-      softMin = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% min(na.rm = TRUE),
-      softMax = mpg %>% select(x = displ, y = cty) %>% pull(x) %>% max(na.rm = TRUE),
-      expand = list(min = 0.2, max = 0.2),
-      minHeight = 20
-    )
+  axes = c(
+    create_axis_x(vc, x = mpg %>% pull(displ), facet = mpg$cyl, free = TRUE, last_row = c(3, 4)),
+    create_axis_y(vc, y = mpg %>% pull(cty), facet = mpg$cyl, free = TRUE, first_col = c(1, 3))
   )
 )
+
+
+facets <- eval_mapping_(mpg, vars(year, drv))
+unique(as.data.frame(facets, col.names = lapply(vars(year, drv), as_label)))
+
+
+n_facet(facets)
+
+get_facets_dims(6)
+
+
+get_facets_values(mpg, vars(year, drv))
+
+split(mpg, f = get_facets_values(mpg, vars(year, drv))$facet_id)
+

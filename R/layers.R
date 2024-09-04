@@ -187,6 +187,7 @@ v_line <- function(vc,
 #' @export
 #'
 #' @importFrom rlang sym exec
+#' @importFrom ggplot2 ggplot geom_smooth scale_color_identity layer_data
 #'
 #' @example examples/v_smooth.R
 v_smooth <- function(vc,
@@ -206,18 +207,18 @@ v_smooth <- function(vc,
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-  p <- ggplot2::ggplot(data = data, mapping = mapping)
-  p <- p + ggplot2::geom_smooth(
-    method = method,
-    formula = formula,
-    se = se,
-    n = n,
-    span = span
-  ) +
-    ggplot2::scale_color_identity()
-  mapdata <- ggplot2::layer_data(p, i = 1L)
-  # vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
-  # vc$x$type <- c(vc$x$type, "smooth")
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_smooth(
+      method = method,
+      formula = formula,
+      se = se,
+      n = n,
+      span = span
+    ) +
+    scale_color_identity()
+  mapdata <- layer_data(p, i = 1L)
+  vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
+  vc$x$type <- c(vc$x$type, "smooth")
   vc$x$mapping <- NULL
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
@@ -329,7 +330,7 @@ v_area <- function(vc,
     ...
   )
   vc <- .vchart_specs(vc, "series", list(serie))
-
+  
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
     vc <- v_scale_x_discrete(vc)
@@ -473,7 +474,7 @@ v_scatter <- function(vc,
   if (identical(mapping$colour, mapping$shape))
     shapeField <- "colour"
   shape <- if (!is.null(shapeField))
-     list(type = "ordinal")
+    list(type = "ordinal")
   serie <- list_(
     type = "scatter",
     id = dataserie_id,
@@ -501,7 +502,7 @@ v_scatter <- function(vc,
   )
   vc <- .vchart_specs(
     vc, "crosshair",
-     list(
+    list(
       xField = list(
         visible = TRUE,
         line = list(visible = TRUE, type= "line"),
@@ -536,12 +537,12 @@ v_scatter <- function(vc,
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#' 
+#'
 #' @importFrom rlang syms set_names
 #' @importFrom ggplot2 ggplot geom_jitter scale_color_identity layer_data layer_scales
 #'
 #' @example examples/v_jitter.R
-v_jitter <- function(vc, 
+v_jitter <- function(vc,
                      mapping = NULL,
                      data = NULL,
                      name = NULL,
@@ -555,7 +556,7 @@ v_jitter <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  p <- ggplot(data = data, mapping = mapping) + 
+  p <- ggplot(data = data, mapping = mapping) +
     geom_jitter(width = width, height = height) +
     scale_color_identity()
   ldata <- layer_data(p, i = 1L)
@@ -569,8 +570,8 @@ v_jitter <- function(vc,
   )
   if (identical(attr(mapdata, "scale_x"), "discrete")) {
     vc <- v_scale_x_continuous(
-      vc, 
-      zero = FALSE, 
+      vc,
+      zero = FALSE,
       softMin = 0,
       softMax = max(ldata$group) + 1,
       breaks = ldata$group,
@@ -1064,7 +1065,7 @@ v_sankey <- function(vc,
     name <- rlang::as_label(mapping$word)
   if (is.null(dataserie_id))
     dataserie_id <- paste0("serie_", genId(4))
-
+  
   specs <- list(
     type = "sankey",
     label = list(
@@ -1073,9 +1074,9 @@ v_sankey <- function(vc,
     ),
     ...
   )
-
+  
   mapdata <- NULL
-
+  
   if (!is.null(data) & length(mapping) > 0) {
     if (has_name(mapping, "lvl1") & has_name(mapping, "value")) {
       mapdata <- eval_mapping(data, mapping)
@@ -1283,7 +1284,7 @@ v_progress <- function(vc,
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#' 
+#'
 #' @importFrom rlang exec set_names
 #' @importFrom ggplot2 ggplot geom_boxplot scale_color_identity layer_data layer_scales
 #'
@@ -1335,7 +1336,7 @@ v_boxplot <- function(vc,
     )
   )
   boxPlot <- args$boxPlot %||% list()
-  # boxPlot$style$boxWidth <- boxPlot$style$boxWidth %||% 
+  # boxPlot$style$boxWidth <- boxPlot$style$boxWidth %||%
   #   JS(sprintf("(datum, ctx) => { console.log(ctx); return ctx.getRegion().getLayoutRect().width / %s; }", max(c(6, nrow(mapdata) * 2))))
   boxPlot$style$boxWidth <- boxPlot$style$boxWidth %||%
     JS(sprintf("(datum, ctx) => { return ctx.valueToX(%s); }", mapdata$xmax[1] - mapdata$xmin[1]))
@@ -1361,8 +1362,8 @@ v_boxplot <- function(vc,
   vc <- .vchart_specs(vc, "series", list(serie))
   pscales <- layer_scales(p)
   vc <- v_scale_x_continuous(
-    vc, 
-    zero = FALSE, 
+    vc,
+    zero = FALSE,
     softMin = 0,
     softMax = max(mapdata$x) + 1,
     tick = list(
@@ -1381,10 +1382,9 @@ v_boxplot <- function(vc,
     )
   )
   vc <- v_scale_y_continuous(
-    vc, 
+    vc,
     zero = FALSE,
     range = set_names(as.list(pscales$y$get_limits()), c("min", "max"))
   )
   return(vc)
 }
-

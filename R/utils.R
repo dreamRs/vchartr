@@ -327,3 +327,15 @@ get_aes_data <- function(mapdata, aesthetics) {
   }
 }
 
+
+
+extract_data <- function(vc) {
+  lapply(
+    X = vc$x$specs$data,
+    FUN = function(x) {
+      x$values
+    }
+  )
+}
+
+

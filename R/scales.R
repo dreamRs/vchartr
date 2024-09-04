@@ -95,12 +95,8 @@ v_scale_date <- function(vc,
     "left" = "y"
   )
 
-  if (!is.null(vc$x$mapdata[[aesthetic]])) {
-    x <- vc$x$mapdata[[aesthetic]]
-  } else {
-    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
-  }
-
+  x <- get_aes_data(extract_data(vc), aesthetic)
+  
   if (is.null(date_labels))
     date_labels <- "YYYY-MM-DD"
   if (is.null(date_labels_tooltip))
@@ -289,11 +285,7 @@ v_scale_datetime <- function(vc,
     "left" = "y"
   )
 
-  if (!is.null(vc$x$mapdata[[aesthetic]])) {
-    x <- vc$x$mapdata[[aesthetic]]
-  } else {
-    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
-  }
+  x <- get_aes_data(extract_data(vc), aesthetic)
 
   if (is.null(date_labels))
     date_labels <- "YYYY-MM-DD HH:mm"
@@ -519,7 +511,7 @@ v_scale_continuous <- function(vc,
   if (aesthetic == "y" & is.null(args$nice))
     args$nice <- TRUE
 
-  x <- get_aes_data(vc$x$mapdata, c(aesthetic, paste0(aesthetic, c("min", "max"))))
+  x <- get_aes_data(extract_data(vc), c(aesthetic, paste0(aesthetic, c("min", "max"))))
 
   breaks_min <- if (!is.null(min)) {
     as.numeric(min)

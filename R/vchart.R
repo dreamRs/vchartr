@@ -31,11 +31,8 @@ vchart <- function(data = NULL,
       specs = list(type = "common"),
       data = data,
       mapping = mapping,
-      mapdata = list(),
       ...
     )
-    if (!is.null(mapping) & !is.null(data))
-      x$mapdata <- c(x$mapdata, list(eval_mapping_(as.data.frame(data), mapping)))
   } else {
     x <- list(
       specs = list(data = data, ...)

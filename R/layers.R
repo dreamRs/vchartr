@@ -35,7 +35,6 @@ v_bar <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "bar")
   serie_id <- serie_id %||% genSerieId()
   data_id <- data_id %||% genDataId()
@@ -130,7 +129,6 @@ v_line <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "line")
   if (is.null(name)) {
     if (!is.null(mapping$y)) {
@@ -220,7 +218,6 @@ v_smooth <- function(vc,
     ) +
     scale_color_identity()
   mapdata <- layer_data(p, i = 1L)
-  vc$x$mapdata <- c(vc$x$mapdata, list(as.list(mapdata)))
   vc$x$type <- c(vc$x$type, "smooth")
   vc$x$mapping <- NULL
   serie_id <- serie_id %||% genSerieId()
@@ -291,7 +288,6 @@ v_area <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "area")
   if (is.null(name)) {
     if (!is.null(mapping$y)) {
@@ -382,7 +378,6 @@ v_hist <- function(vc,
   p <- p + ggplot2::geom_histogram(bins = bins, binwidth = binwidth) +
     ggplot2::scale_fill_identity()
   mapdata <- ggplot2::layer_data(p, i = 1L)
-  vc$x$mapdata <- c(vc$x$mapdata, as.list(mapdata))
   vc$x$type <- c(vc$x$type, "hist")
   serie_id <- serie_id %||% genSerieId()
   data_id <- data_id %||% genDataId()
@@ -460,7 +455,6 @@ v_scatter <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "scatter")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -620,7 +614,6 @@ v_pie <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "pie")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -675,7 +668,6 @@ v_radar <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "radar")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -741,7 +733,6 @@ v_circlepacking <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "circlepacking")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -844,7 +835,6 @@ v_treemap <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "treemap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -924,7 +914,6 @@ v_heatmap <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "heatmap")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -1029,7 +1018,6 @@ v_wordcloud <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "wordcloud")
   if (is.null(name) & !is.null(mapping$word))
     name <- rlang::as_label(mapping$word)
@@ -1189,7 +1177,6 @@ v_gauge <- function(vc,
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- "gauge"
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -1251,7 +1238,6 @@ v_progress <- function(vc,
     }
   }
   mapdata <- eval_mapping_(data, mapping, na_rm = TRUE)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "progress")
   if (is.null(name) & !is.null(mapping$y))
     name <- rlang::as_label(mapping$y)
@@ -1335,7 +1321,6 @@ v_boxplot <- function(vc,
     vc <- rlang::exec(v_scatter, !!!args_outliers)
   }
   mapdata <- dropColumns(mapdata)
-  vc$x$mapdata <- c(vc$x$mapdata, list(mapdata))
   vc$x$type <- c(vc$x$type, "boxplot")
   serie_id <- serie_id %||% genSerieId()
   data_id <- data_id %||% genDataId()

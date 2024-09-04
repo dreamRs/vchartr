@@ -44,8 +44,8 @@ v_facet_wrap <- function(vc,
   vc$x$specs$indicator <- create_indicator(facets_values, label_fun = labeller)
   vc$x$specs$data <- create_facet_data(vc, facet = facets_values)
   vc$x$specs$series <- create_facet_series(vc, facet = facets_values)
-  x <- get_aes_data(vc$x$mapdata, c("x", "xmin", "xmax"))
-  y <- get_aes_data(vc$x$mapdata, c("y", "ymin", "ymax"))
+  x <- get_aes_data(extract_data(vc), c("x", "xmin", "xmax"))
+  y <- get_aes_data(extract_data(vc), c("y", "ymin", "ymax"))
   vc$x$specs$axes <- c(
     create_axis_x(vc, x = x, facet = facets_values, free = scales %in% c("free", "free_x"), last_row = get_last_row(mat)),
     create_axis_y(vc, y = y, facet = facets_values, free = scales %in% c("free", "free_y"), first_col = mat[, 1])

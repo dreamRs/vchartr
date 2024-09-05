@@ -1017,7 +1017,7 @@ v_wordcloud <- function(vc,
   )
   data <- get_data(vc, data)
   mapping <- get_mapping(vc, mapping)
-  mapdata <- eval_mapping(data, rename_aes_lvl(mapping))
+  mapdata <- eval_mapping_(data, rename_aes_lvl(mapping))
   vc$x$type <- c(vc$x$type, "wordcloud")
   if (is.null(name) & !is.null(mapping$word))
     name <- rlang::as_label(mapping$word)

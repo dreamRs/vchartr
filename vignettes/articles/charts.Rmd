@@ -1,0 +1,217 @@
+---
+title: "charts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{charts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(vchartr)
+```
+
+
+## Bar Chart
+
+Create bar charts with `v_bar()`:
+
+```{r bar}
+electricity_mix %>% 
+  subset(country %in% c("France", "South Korea")) %>% 
+  vchart() %>% 
+  v_bar(aes(country, generation, fill = source)) %>%
+  v_scale_color_manual(c(
+    "oil" = "#80549f",
+    "coal" = "#a68832",
+    "solar" = "#d66b0d",
+    "gas" = "#f20809",
+    "wind" = "#72cbb7",
+    "hydro" = "#2672b0",
+    "nuclear" = "#e4a701"
+  ))
+```
+
+
+
+## Line Chart
+
+Create line charts with `v_line()`:
+
+```{r line}
+vchart(eco2mix) %>% 
+  v_line(aes(date, solar)) %>% 
+  v_specs_datazoom()
+```
+
+
+
+## Area Chart
+
+Create area charts with `v_area()`:
+
+```{r area}
+vchart(eco2mix_long) %>%
+  v_area(aes(date, production, fill = source), stack = TRUE) %>% 
+  v_scale_y_continuous(min = -2000)
+```
+
+
+Create area range charts with `v_area()` and providing `ymin` and `ymax` aesthetics:
+
+```{r area_range}
+vchart(temperatures, aes(date)) %>%
+  v_area(aes(ymin = low, ymax = high))
+```
+
+
+
+## Pie Chart
+
+Create pie or donut charts with `v_pie()`:
+
+```{r pie}
+subset(world_electricity, year == 2023 & type == "total") %>%
+  vchart() %>% 
+  v_pie(aes(x = source, y = generation))
+```
+
+
+
+## Histogram Chart
+
+Create histograms wioth `v_hist()`:
+
+```{r hist}
+vchart(palmerpenguins::penguins) %>%
+  v_hist(
+    aes(flipper_length_mm),
+    bar = list(
+      style = list(
+        stroke = "white",
+        line_width = 1,
+        fill = "forestgreen"
+      )
+    )
+  )
+```
+
+
+
+## Scatter Chart
+
+Create scatter charts with `v_scatter()`:
+
+```{r scatter}
+vchart(palmerpenguins::penguins) %>%
+  v_scatter(
+    aes(x = flipper_length_mm, y = body_mass_g, color = species)
+  )
+```
+
+
+
+## Smooth Chart
+
+Create smooth charts with `v_smooth()`:
+
+```{r smooth}
+vchart(palmerpenguins::penguins) %>%
+  v_smooth(
+    aes(x = flipper_length_mm, y = body_mass_g, color = species)
+  )
+```
+
+
+
+## Boxplot
+
+Create boxplots with ``v_boxplot()`:
+
+```{r boxplot}
+vchart(palmerpenguins::penguins) %>%
+  v_boxplot(
+    aes(x = species, y = body_mass_g)
+  )
+```
+
+
+
+## Jittered points
+
+Create jittered points chart with `v_jitter()`:
+
+```{r jitter}
+vchart(palmerpenguins::penguins) %>%  
+  v_jitter(aes(species, bill_length_mm))
+```
+
+
+
+## Heatmap
+
+Create heatmaps with `v_heatmap()`:
+
+```{r heatmap}
+vchart(co2_emissions) %>%
+  v_heatmap(aes(x = year, y = country, fill = co2_per_capita))
+```
+
+
+
+## Treemap
+
+Create treemaps with `v_treemap()`:
+
+```{r treemap}
+vchart(countries_gdp) %>%
+  v_treemap(
+    aes(lvl1 = REGION_UN, lvl2 = ADMIN, value = GDP_MD),
+    label = list(visible = TRUE),
+    nonLeaf = list(visible = TRUE),
+    nonLeafLabel = list(visible = TRUE, position = "top")
+  )
+```
+
+
+
+## Circlepacking
+
+Create circlepacking charts with `v_circlepacking()`:
+
+```{r circlepacking}
+vchart(countries_gdp) %>%
+  v_circlepacking(
+    aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD)
+  )
+```
+
+
+
+## Sankey Chart
+
+Create sankey charts with `v_sankey()`:
+
+```{r sankey}
+vchart(energy_sankey) %>%
+  v_sankey(aes(target, source, value = value))
+```
+
+
+
+## WordCloud
+
+Create wordclouds with `v_wordcloud()`:
+
+```{r wordcloud}
+vchart(top_cran_downloads) %>%
+  v_wordcloud(aes(word = package, count = count, color = package))
+```
+

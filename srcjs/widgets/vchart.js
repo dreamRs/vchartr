@@ -2,6 +2,9 @@ import "widgets";
 import VChart from "@visactor/vchart";
 import { allThemeMap } from "@visactor/vchart-theme";
 
+import { registerVennChart } from '@visactor/vchart';
+registerVennChart();
+
 import * as dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";

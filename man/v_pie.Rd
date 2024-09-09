@@ -41,7 +41,7 @@ Create a Pie Chart
 
 library(vchartr)
 
-# Bvasic Pie Chart
+# Basic Pie Chart
 subset(world_electricity, year == 2023 & type == "total") \%>\%
   vchart() \%>\% 
   v_pie(aes(x = source, y = generation))

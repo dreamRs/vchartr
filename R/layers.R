@@ -1386,3 +1386,94 @@ v_boxplot <- function(vc,
   )
   return(vc)
 }
+
+
+
+
+#' Create a Venn Diagram
+#'
+#' @inheritParams v_bar
+#' @param sets_sep Sets separator.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#' 
+#' @importFrom stats aggregate
+#'
+#' @example examples/v_venn.R
+v_venn <- function(vc,
+                   mapping = NULL,
+                   data = NULL,
+                   name = NULL,
+                   sets_sep = ",",
+                   ...,
+                   serie_id = NULL,     
+                   data_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping)
+  vc$x$type <- c(vc$x$type, "venn")
+  
+  if (has_name(mapping, "category") & has_name(mapping, "values")) {
+    venndata <- as.data.frame(table(mapdata), responseName = "n")
+    venndata <- venndata[venndata$n > 0, ]
+    sets1 <- aggregate(n ~ category, data = venndata, sum)
+    names(sets1) <- c("sets", "value")
+    sets1$length <- 1
+    venndata <- data.frame(
+      sets = unname(tapply(venndata$category, venndata$values, paste, collapse = sets_sep)),
+      length = unname(tapply(venndata$category, venndata$values, length)),
+      value = unname(tapply(venndata$n, venndata$values, sum))
+    )
+    venndata <- aggregate(value ~ sets + length, data = venndata, sum)
+    venndata <- rbind(sets1, venndata[venndata$length > 1, ])
+  } else if (has_name(mapping, "sets") & has_name(mapping, "value")) {
+    venndata <- mapdata
+  }
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      id = data_id,
+      values = lapply(
+        X = seq_len(nrow(venndata)),
+        FUN = function(i) {
+          values <- lapply(venndata, `[`, i)
+          sets <- as.character(values$sets)
+          values$sets <- list1(unlist(strsplit(sets, split = sets_sep)))
+          return(values)
+        }
+      )
+    )
+  )
+  # vc <- v_specs(
+  #   vc = vc,
+  #   type = "venn",
+  #   # id = serie_id,
+  #   # dataId = data_id,
+  #   # name = name,
+  #   categoryField = "sets",
+  #   valueField = "value",
+  #   # seriesField = if (has_name(mapping, "colour")) "colour",
+  #   seriesField = "sets",
+  #   ...,
+  #   drop_nulls = TRUE
+  # )
+  serie <- list_(
+    type = "venn",
+    id = serie_id,
+    dataId = data_id,
+    name = name,
+    categoryField = "sets",
+    valueField = "value",
+    seriesField = if (has_name(mapping, "colour")) "colour",
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  return(vc)
+}
+

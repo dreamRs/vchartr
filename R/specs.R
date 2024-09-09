@@ -44,6 +44,7 @@
 #' @param serie_id Used to set or modify options for a chart where there are multiple series. You can use :
 #'   * a `numeric` to target the position of the serie in the order where it's added to the chart
 #'   * a `character` to refer to a `serie_id` set when the serie was added to the plot.
+#' @param drop_nulls Drom NULL elements from the options.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -58,20 +59,23 @@
 #'     label = list(visible = TRUE),
 #'     color = list("firebrick")
 #'   )
-v_specs <- function(vc, ..., serie_id = NULL) {
+v_specs <- function(vc, ..., serie_id = NULL, drop_nulls = FALSE) {
   stopifnot(
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
+  val <- list(...)
+  if (drop_nulls)
+    val <- dropNulls(val)
   if (is.null(serie_id)) {
     vc$x$specs <- modifyList(
       x = vc$x$specs,
-      val = list(...),
+      val = val,
       keep.null = TRUE
     )
   } else if (is.numeric(serie_id)) {
     vc$x$specs$series[[serie_id]] <- dropNulls(modifyList(
       x = vc$x$specs$series[[serie_id]],
-      val = list(...),
+      val = val,
       keep.null = TRUE
     ))
   } else if (is.character(serie_id)) {
@@ -79,7 +83,7 @@ v_specs <- function(vc, ..., serie_id = NULL) {
     if (length(serie) == 1) {
       vc$x$specs$series[[serie]] <- dropNulls(modifyList(
         x = vc$x$specs$series[[serie]],
-        val = list(...),
+        val = val,
         keep.null = TRUE
       ))
     }

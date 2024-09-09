@@ -437,6 +437,7 @@ v_scale_x_continuous <- function(vc,
     labels_tooltip = labels_tooltip,
     min = min,
     max = max,
+    zero = zero,
     ...
   )
 }
@@ -470,6 +471,7 @@ v_scale_y_continuous <- function(vc,
     labels_tooltip = labels_tooltip,
     min = min,
     max = max,
+    zero = zero,
     ...
   )
 }

@@ -1477,3 +1477,67 @@ v_venn <- function(vc,
   return(vc)
 }
 
+
+
+
+#' Create a Waterfall Chart
+#'
+#' @inheritParams v_bar
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#' 
+#'
+#' @example examples/v_waterfall.R
+v_waterfall <- function(vc,
+                   mapping = NULL,
+                   data = NULL,
+                   name = NULL,
+                   ...,
+                   serie_id = NULL,     
+                   data_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping)
+  vc$x$type <- c(vc$x$type, "waterfall")
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = data_id,
+        values = mapdata
+      )
+    )
+  )
+  serie <- list_(
+    type = "waterfall",
+    id = serie_id,
+    dataId = data_id,
+    name = name,
+    xField = "x",
+    yField = "y",
+    total = list(
+      type = "field",
+      tagField = "total",
+      valueField = "y"
+    ),
+    seriesField = if (has_name(mapping, "colour")) "colour",
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  scale_x <- attr(mapdata, "scale_x")
+  if (identical(scale_x, "discrete")) {
+    vc <- v_scale_x_discrete(vc)
+  } else if (identical(scale_x, "date")) {
+    vc <- v_scale_x_date(vc)
+  } else if (identical(scale_x, "continuous")) {
+    vc <- v_scale_x_continuous(vc)
+  }
+  vc <- v_scale_y_continuous(vc, zero = TRUE)
+  return(vc)
+}

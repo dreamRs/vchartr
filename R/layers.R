@@ -1541,3 +1541,95 @@ v_waterfall <- function(vc,
   vc <- v_scale_y_continuous(vc, zero = TRUE)
   return(vc)
 }
+
+
+
+
+
+
+
+#' Create a Sunburst Chart
+#'
+#' @inheritParams v_bar
+#' @param drill Drill-down function switch.
+#' @param gap Layer gap, supports passing an array to configure layer gaps layer by layer.
+#'
+#' @return A [vchart()] `htmlwidget` object.
+#' @export
+#'
+#' @example examples/v_sunburst.R
+v_sunburst <- function(vc,
+                       mapping = NULL,
+                       data = NULL,
+                       name = NULL,
+                       drill = TRUE,
+                       gap = 5,
+                       ...,
+                       serie_id = NULL,   
+                       data_id = NULL) {
+  stopifnot(
+    "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
+  )
+  data <- get_data(vc, data)
+  mapping <- get_mapping(vc, mapping)
+  mapdata <- eval_mapping_(data, mapping)
+  vc$x$type <- c(vc$x$type, "sunburst")
+  if (is.null(name) & !is.null(mapping$y))
+    name <- rlang::as_label(mapping$y)
+  serie_id <- serie_id %||% genSerieId()
+  data_id <- data_id %||% genDataId()
+  lvl_vars <- grep(pattern = "lvl\\d*", x = names(mapping), value = TRUE)
+  lvl_vars <- sort(lvl_vars)
+  if (length(lvl_vars) > 1) {
+    values <- create_tree(
+      data = mapdata,
+      levels = lvl_vars,
+      value = "value"
+    )
+  } else {
+    values <- create_values(mapdata, .names = list(name = "x", value = "y"))
+  }
+  vc <- .vchart_specs(
+    vc, "data",
+    list(
+      list(
+        id = data_id,
+        values = values
+      )
+    )
+  )
+  serie <- list_(
+    type = "sunburst",
+    id = serie_id,
+    dataId = data_id,
+    name = name,
+    categoryField = "name",
+    valueField = "value",
+    drill = drill,
+    gap = gap,
+    ...
+  )
+  vc <- .vchart_specs(vc, "series", list(serie))
+  if (has_player(mapdata)) {
+    if (length(lvl_vars) > 1) {
+      vc <- v_default_player(
+        vc,
+        mapdata,
+        data_id,
+        levels = lvl_vars,
+        value = "value"
+      )
+    } else {
+      vc <- v_default_player(
+        vc, 
+        mapdata,
+        data_id,
+        fun_values = create_values,
+        .names = list(name = "x", value = "y")
+      )
+    }
+  }
+  return(vc)
+}
+
+

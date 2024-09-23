@@ -873,7 +873,7 @@ v_scale_fill_discrete <- v_scale_color_discrete
 #'
 #' @name scale-gradient
 #'
-# @examples
+#' @example examples/scale_gradient.R
 v_scale_colour_gradient <- function(vc,
                                     name = NULL,
                                     low = "#132B43",
@@ -929,11 +929,7 @@ v_scale_gradient <- function(vc,
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
 
-  if (!is.null(vc$x$mapdata[[aesthetic]])) {
-    x <- vc$x$mapdata[[aesthetic]]
-  } else {
-    x <- unlist(lapply(vc$x$mapdata, `[[`, aesthetic))
-  }
+  x <- get_aes_data(extract_data(vc), c(aesthetic))
 
   if (is.null(limits))
     limits <- range(pretty(range(x, na.rm = TRUE)))
@@ -955,6 +951,8 @@ v_scale_gradient <- function(vc,
       range = c(low, high)
     )
   )
+  i <- vapply(vc$x$specs$legends, function(x) identical(x$type, "color"), logical(1))
+  vc$x$specs$legends[i] <- NULL
   vc <- .vchart_specs(
     vc, "legends",
     list(dropNulls(list(
@@ -1001,11 +999,7 @@ v_scale_size <- function(vc,
     "'vc' must be a 'vchart' htmlwidget object" = inherits(vc, "vchart")
   )
 
-  if (!is.null(vc$x$mapdata$size)) {
-    x <- vc$x$mapdata$size
-  } else {
-    x <- unlist(lapply(vc$x$mapdata, `[[`, "size"))
-  }
+  x <- get_aes_data(extract_data(vc), "size")
 
 
   title <- if (is.character(name) & length(name) == 1) {

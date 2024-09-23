@@ -12,6 +12,8 @@
 #' @export
 #'
 #' @importFrom htmlwidgets shinyWidgetOutput
+#' 
+#' @return An output or render function that enables the use of the widget within Shiny applications.
 #'
 #' @example examples/shiny.R
 vchartOutput <- function(outputId, width = "100%", height = "400px"){

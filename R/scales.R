@@ -986,7 +986,7 @@ v_scale_gradient <- function(vc,
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-# @examples
+#' @example examples/scale_size.R
 v_scale_size <- function(vc,
                          name = NULL,
                          range = c(5, 30),

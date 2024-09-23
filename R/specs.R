@@ -411,7 +411,8 @@ v_specs_custom_mark <- function(vc, ...) {
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#'
+#' 
+#' @example examples/crosshair.R
 v_specs_crosshair <- function(vc, ...) {
   vc <- .vchart_specs2(
     vc,
@@ -431,7 +432,8 @@ v_specs_crosshair <- function(vc, ...) {
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#'
+#' 
+#' @example examples/indicator.R
 v_specs_indicator <- function(vc, ...) {
   vc <- .vchart_specs2(
     vc,

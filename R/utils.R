@@ -100,6 +100,13 @@ create_values <- function(data, .names = NULL) {
 has_player <- function(x) {
   isTRUE(attr(x, "player"))
 }
+filter_player_value <- function(mapdata) {
+  if (has_player(mapdata)) {
+    player1 <- mapdata$player[1]
+    mapdata <- mapdata[mapdata$player == player1, , drop = FALSE]
+  }
+  return(mapdata)
+}
 
 create_chart <- function(type,
                          specs,
@@ -168,10 +175,6 @@ eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
     mapdata$y <- as.numeric(mapdata$y)
   }
   if (has_name(mapdata, "player")) {
-    mapdata <- lapply(
-      X = unname(split(as.data.frame(mapdata), as.character(mapdata$player))),
-      FUN = as.list
-    )
     attr(mapdata, "player") <- TRUE
   }
   attr(mapdata, "scale_x") <- scale_x

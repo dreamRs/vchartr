@@ -333,15 +333,7 @@ v_specs_axes <- function(vc,
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
 #'
-#' @examples
-#' library(vchartr)
-#' data("mpg", package = "ggplot2")
-#'
-#' vchart(table(Class = mpg$class, Year = mpg$year)) %>%
-#'   v_bar(aes(Class, Freq, fill = Year)) %>%
-#'   v_specs_tooltip(
-#'     visible = FALSE
-#'   )
+#' @example examples/player.R
 v_specs_player <- function(vc, ...) {
   vc <- .vchart_specs(
     vc,
@@ -355,8 +347,9 @@ v_specs_player <- function(vc, ...) {
 v_default_player <- function(vc,
                              mapdata,
                              data_id,
-                             fun_values = create_values,
+                             fun_values = identity,
                              ...) {
+  mapdata <- split(mapdata, as.character(mapdata$player))
   v_specs_player(
     vc,
     auto = FALSE,
@@ -367,7 +360,7 @@ v_default_player <- function(vc,
     position = "middle",
     type = "discrete",
     specs = lapply(
-      X = mapdata,
+      X = unname(mapdata),
       FUN = function(dat) {
         list(
           data = list(
@@ -390,7 +383,8 @@ v_default_player <- function(vc,
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
-#'
+#' 
+#' @example examples/custom_mark.R
 v_specs_custom_mark <- function(vc, ...) {
   vc <- .vchart_specs2(
     vc,

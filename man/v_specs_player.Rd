@@ -19,12 +19,15 @@ A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.
 Set player options
 }
 \examples{
-library(vchartr)
-data("mpg", package = "ggplot2")
 
-vchart(table(Class = mpg$class, Year = mpg$year)) \%>\%
-  v_bar(aes(Class, Freq, fill = Year)) \%>\%
-  v_specs_tooltip(
-    visible = FALSE
+library(vchartr)
+
+world_electricity \%>\% 
+  subset(type == "detail") \%>\% 
+  vchart() \%>\%
+  v_bar(
+    aes(source, generation, player = year)
   )
+
+
 }

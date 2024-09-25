@@ -9,8 +9,8 @@ A data frame with 495 observations and 11 variables:
 \itemize{
 \item \code{iso_code} : ISO code A3 for country.
 \item \code{name} : Name of country.
-\item \code{co2} : Annual CO₂ emissions - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in million tonnes.
-\item \code{co2_per_capita} : Annual CO₂ emissions (per capita) - Annual total emissions of carbon dioxide (CO₂), excluding land-use change, measured in tonnes per person.
+\item \code{co2} : Annual CO2 emissions - Annual total emissions of carbon dioxide (CO2), excluding land-use change, measured in million tonnes.
+\item \code{co2_per_capita} : Annual CO2 emissions (per capita) - Annual total emissions of carbon dioxide (CO2), excluding land-use change, measured in tonnes per person.
 \item \code{geometry} : Geographical attributes.
 }
 }

@@ -100,10 +100,17 @@ create_values <- function(data, .names = NULL) {
 has_player <- function(x) {
   isTRUE(attr(x, "player"))
 }
-filter_player_value <- function(mapdata) {
+has_select <- function(x) {
+  isTRUE(attr(x, "select"))
+}
+filter_values <- function(mapdata) {
   if (has_player(mapdata)) {
     player1 <- mapdata$player[1]
     mapdata <- mapdata[mapdata$player == player1, , drop = FALSE]
+  }
+  if (has_select(mapdata)) {
+    select1 <- mapdata$select[1]
+    mapdata <- mapdata[mapdata$select == select1, , drop = FALSE]
   }
   return(mapdata)
 }
@@ -176,6 +183,9 @@ eval_mapping_ <- function(data, mapping, na_rm = FALSE) {
   }
   if (has_name(mapdata, "player")) {
     attr(mapdata, "player") <- TRUE
+  }
+  if (has_name(mapdata, "select")) {
+    attr(mapdata, "select") <- TRUE
   }
   attr(mapdata, "scale_x") <- scale_x
   attr(mapdata, "scale_y") <- scale_y

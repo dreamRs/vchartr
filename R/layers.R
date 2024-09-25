@@ -40,7 +40,7 @@ v_bar <- function(vc,
   data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
-    list(list(id = data_id, values = filter_player_value(mapdata)))
+    list(list(id = data_id, values = filter_values(mapdata)))
   )
   serie <- list_(
     type = "bar",
@@ -85,6 +85,9 @@ v_bar <- function(vc,
   }
   if (has_player(mapdata)) {
     vc <- v_default_player(vc, mapdata, data_id)
+  }
+  if (has_select(mapdata)) {
+    vc <- v_default_select(vc, mapdata, data_id)
   }
   return(vc)
 }
@@ -134,12 +137,7 @@ v_line <- function(vc,
   data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
-    list(
-      list(
-        id = data_id,
-        values = mapdata
-      )
-    )
+    list(list(id = data_id, values = filter_values(mapdata)))
   )
   serie <- list_(
     type = "line",
@@ -166,6 +164,9 @@ v_line <- function(vc,
     vc <- v_specs_legend(vc, visible = TRUE)
   }
   vc <- v_scale_y_continuous(vc)
+  if (has_select(mapdata)) {
+    vc <- v_default_select(vc, mapdata, data_id)
+  }
   return(vc)
 }
 
@@ -457,7 +458,7 @@ v_scatter <- function(vc,
   data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
-    list(list(id = data_id, values = filter_player_value(mapdata)))
+    list(list(id = data_id, values = filter_values(mapdata)))
   )
   shapeField <- NULL
   if (has_name(mapping, "shape"))
@@ -614,7 +615,7 @@ v_pie <- function(vc,
   data_id <- data_id %||% genDataId()
   vc <- .vchart_specs(
     vc, "data",
-    list(list(id = data_id, values = filter_player_value(mapdata)))
+    list(list(id = data_id, values = filter_values(mapdata)))
   )
   serie <- list_(
     type = "pie",

@@ -45,7 +45,7 @@ ui <- page_fluid(
     radioButtons(
       inputId = "data",
       label = "Show:",
-      choiceNames = c("electricity mix by country", "coutries generation by sources"),
+      choiceNames = c("electricity mix by country", "countries generation by sources"),
       choiceValues = c("mix", "sources"),
       inline = TRUE
     ),

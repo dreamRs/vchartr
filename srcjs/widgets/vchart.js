@@ -5,6 +5,9 @@ import { allThemeMap } from "@visactor/vchart-theme";
 import { registerVennChart } from '@visactor/vchart';
 registerVennChart();
 
+import SlimSelect from "slim-select";
+import "slim-select/styles";
+
 import * as dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -177,6 +180,21 @@ HTMLWidgets.widget({
     return {
 
       renderValue: function(x) {
+        
+        var element = document.getElementById(el.id);
+        element.style.display = "flex";
+        element.style.flexDirection = "column";
+        //element.style.alignItems = "stretch";
+        
+        if (x.hasOwnProperty("select")) {
+          const selectContainer = document.createElement("select");
+          selectContainer.id = el.id + "_select";
+          element.appendChild(selectContainer);
+        }
+        
+        const chartContainer = document.createElement("div");
+        chartContainer.style.flex = "1 1 auto";
+        element.appendChild(chartContainer);
 
         if (x.hasOwnProperty("map")) {
           VChart.registerMap(x.map.name, x.map.topojson, {
@@ -190,9 +208,10 @@ HTMLWidgets.widget({
         //  VChart.ThemeManager.registerTheme(name, theme);
         //});
         //VChart.ThemeManager.setCurrentTheme("vScreenVolcanoBlue");
-        console.log(x.specs);
+        
+        //console.log(x.specs);
         if (typeof vchart == "undefined") {
-          vchart = new VChart(x.specs, { dom: el.id });
+          vchart = new VChart(x.specs, { dom: chartContainer });
           vchart.renderAsync();
         } else {
           vchart.updateSpec(x.specs);
@@ -200,6 +219,19 @@ HTMLWidgets.widget({
 
         if (x.hasOwnProperty("theme")) {
           //vchart.setCurrentTheme(x.theme);
+        }
+        
+        if (x.hasOwnProperty("select")) {
+          var selectConfig = x.select.config;
+          selectConfig.select = "#" + el.id + "_select";
+          selectConfig.events = {};
+          console.log(x.select);
+          selectConfig.events.afterChange = (newVal) => {
+            console.log(newVal);
+            console.log(x.select.data[newVal.value]);
+            vchart.updateData(x.select.dataId, x.select.data[newVal[0].value])
+          }
+          new SlimSelect(selectConfig);
         }
 
       },

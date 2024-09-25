@@ -215,3 +215,56 @@ vchart(top_cran_downloads) %>%
   v_wordcloud(aes(word = package, count = count, color = package))
 ```
 
+
+
+## Venn Diagram
+
+Create venn diagrams with `v_venn`:
+
+```{r venn}
+data.frame(
+  sets = c("A", "B", "C", "A,B", "A,C", "B,C", "A,B,C"),
+  value = c(8, 10, 12, 4, 4, 4, 2)
+) %>% 
+  vchart() %>% 
+  v_venn(aes(sets = sets, value = value))
+```
+
+
+
+## Waterfall Chart
+
+Create waterfall charts with `v_waterfall`:
+
+```{r waterfall}
+data.frame(
+  desc = c("Starting Cash",
+           "Sales", "Refunds", "Payouts", "Court Losses",
+           "Court Wins", "Contracts", "End Cash"),
+  amount = c(2000, 3400, -1100, -100, -6600, 3800, 1400, 2800)
+) %>% 
+  vchart() %>% 
+  v_waterfall(aes(x = desc, y = amount))
+```
+
+
+
+## Sunburst Chart
+
+Create sunburst charts with `v_sunburst`:
+
+```{r sunburst}
+vchart(countries_gdp) %>%
+  v_sunburst(
+    aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD),
+    gap = 10,
+    labelAutoVisible = list(
+      enable = TRUE
+    ),
+    labelLayout = list(
+      align = "center",
+      rotate = "radial"
+    )
+  )
+```
+

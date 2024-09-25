@@ -38,6 +38,8 @@ The following graphs (and more) can be produced:
 
 See the [JavaScript library website](https://www.visactor.io/vchart) for more examples and documentation.
 
+Interactive examples are available here: [https://dreamrs.github.io/vchartr/articles/charts.html](https://dreamrs.github.io/vchartr/articles/charts.html).
+
 
 ## Usage
 

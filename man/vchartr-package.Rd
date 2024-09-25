@@ -10,6 +10,13 @@ VChart javascript chart library}
 This package allow you to use VChart.js (\url{https://www.visactor.io/vchart}),
 to create interactive charts.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://dreamrs.github.io/vchartr/}
+}
+
+}
 \author{
 Victor Perrier (@dreamRs_fr)
 }

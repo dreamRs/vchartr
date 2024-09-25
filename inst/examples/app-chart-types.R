@@ -16,7 +16,8 @@ ui <- page_fluid(
       X = c(
         "bar", "line", "area", "area_range", "pie", "hist", 
         "scatter", "smooth", "boxplot", "jitter", "heatmap",
-        "treemap", "circlepacking", "sankey", "wordcloud"
+        "treemap", "circlepacking", "sankey", "wordcloud",
+        "venn", "waterfall", "sunburst"
       ),
       FUN = function(type) {
         tags$div(
@@ -36,6 +37,18 @@ ui <- page_fluid(
 
 server <- function(input, output, session) {
   
+  my_theme <- function(vc) {
+    vc %>% 
+      v_theme(token = list(
+        fontSize = 12,
+        l1FontSize = 16,
+        l2FontSize = 14, 
+        l3FontSize = 12, 
+        l4FontSize = 10,
+        l5FontSize = 8
+      ))
+  }
+  
   output$bar <- renderVchart({
     electricity_mix %>% 
       subset(country %in% c("France", "South Korea")) %>% 
@@ -49,30 +62,35 @@ server <- function(input, output, session) {
         "wind" = "#72cbb7",
         "hydro" = "#2672b0",
         "nuclear" = "#e4a701"
-      ))
+      )) %>% 
+      my_theme()
   })
   
   output$line <- renderVchart({
     vchart(eco2mix) %>% 
       v_line(aes(date, solar)) %>% 
-      v_specs_datazoom()
+      v_specs_datazoom() %>% 
+      my_theme()
   })
   
   output$area <- renderVchart({
     vchart(eco2mix_long) %>%
       v_area(aes(date, production, fill = source), stack = TRUE) %>% 
-      v_scale_y_continuous(min = -2000)
+      v_scale_y_continuous(min = -2000) %>% 
+      my_theme()
   })
   
   output$area_range <- renderVchart({
     vchart(temperatures, aes(date)) %>%
-      v_area(aes(ymin = low, ymax = high))
+      v_area(aes(ymin = low, ymax = high)) %>% 
+      my_theme()
   })
   
   output$pie <- renderVchart({
     subset(world_electricity, year == 2023 & type == "total") %>%
       vchart() %>% 
-      v_pie(aes(x = source, y = generation))
+      v_pie(aes(x = source, y = generation)) %>% 
+      my_theme()
   })
   
   output$hist <- renderVchart({
@@ -86,38 +104,45 @@ server <- function(input, output, session) {
             fill = "forestgreen"
           )
         )
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$scatter <- renderVchart({
     vchart(palmerpenguins::penguins) %>%
       v_scatter(
         aes(x = flipper_length_mm, y = body_mass_g, color = species)
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$smooth <- renderVchart({
     vchart(palmerpenguins::penguins) %>%
       v_smooth(
         aes(x = flipper_length_mm, y = body_mass_g, color = species)
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$boxplot <- renderVchart({
     vchart(palmerpenguins::penguins) %>%
       v_boxplot(
         aes(x = species, y = body_mass_g)
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$jitter <- renderVchart({
     vchart(palmerpenguins::penguins) %>%  
-      v_jitter(aes(species, bill_length_mm))
+      v_jitter(aes(species, bill_length_mm)) %>% 
+      my_theme()
   })
   
   output$heatmap <- renderVchart({
     vchart(co2_emissions) %>%
-      v_heatmap(aes(x = year, y = country, fill = co2_per_capita))
+      v_heatmap(aes(x = year, y = country, fill = co2_per_capita)) %>% 
+      v_specs_legend(visible = FALSE) %>% 
+      my_theme()
   })
   
   output$treemap <- renderVchart({
@@ -127,7 +152,8 @@ server <- function(input, output, session) {
         label = list(visible = FALSE),
         nonLeaf = list(visible = TRUE),
         nonLeafLabel = list(visible = TRUE, position = "top")
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$circlepacking <- renderVchart({
@@ -135,12 +161,14 @@ server <- function(input, output, session) {
       v_circlepacking(
         aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD), 
         label_visible = FALSE
-      )
+      ) %>% 
+      my_theme()
   })
   
   output$sankey <- renderVchart({
     vchart(energy_sankey) %>%
-      v_sankey(aes(target, source, value = value))
+      v_sankey(aes(target, source, value = value)) %>% 
+      my_theme()
   })
   
   output$wordcloud <- renderVchart({
@@ -153,7 +181,46 @@ server <- function(input, output, session) {
             fontSizeLimitMin = 7
           )
         )
-      )
+      ) %>% 
+      my_theme()
+  })
+  
+  output$venn <- renderVchart({
+    data.frame(
+      sets = c("A", "B", "C", "A,B", "A,C", "B,C", "A,B,C"),
+      value = c(8, 10, 12, 4, 4, 4, 2)
+    ) %>% 
+      vchart() %>% 
+      v_venn(aes(sets = sets, value = value)) %>% 
+      my_theme()
+  })
+  
+  output$waterfall <- renderVchart({
+    data.frame(
+      desc = c("Starting Cash",
+               "Sales", "Refunds", "Payouts", "Court Losses",
+               "Court Wins", "Contracts", "End Cash"),
+      amount = c(2000, 3400, -1100, -100, -6600, 3800, 1400, 2800)
+    ) %>% 
+      vchart() %>% 
+      v_waterfall(aes(x = desc, y = amount)) %>% 
+      my_theme()
+  })
+  
+  output$sunburst <- renderVchart({
+    vchart(countries_gdp) %>%
+      v_sunburst(
+        aes(lvl1 = REGION_UN, lvl2 = SUBREGION, lvl3 = ADMIN, value = GDP_MD),
+        gap = 10,
+        labelAutoVisible = list(
+          enable = TRUE
+        ),
+        labelLayout = list(
+          align = "center",
+          rotate = "radial"
+        )
+      ) %>% 
+      my_theme()
   })
   
 }

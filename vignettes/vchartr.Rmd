@@ -36,6 +36,7 @@ The following graphs (and more) can be produced:
 
 ![charts-overview](figures/vchart-types.png)
 
+See the [JavaScript library website](https://www.visactor.io/vchart) for more examples and documentation.
 
 
 ## Usage
@@ -47,5 +48,48 @@ vchart(eco2mix) %>%
   v_line(aes(date, solar))
 ```
 
+Modify scales options for aesthetics with `v_scale_*` functions:
 
+```r
+vchart(eco2mix) %>% 
+  v_line(aes(date, solar)) %>% 
+  v_scale_x_date(
+    date_breaks = "2 years",
+    date_labels = "MM-YYYY",
+    name = "Date"
+  ) %>% 
+  v_scale_y_continuous(
+    labels = "~s", 
+    name = "Electricity generation"
+  )
+```
 
+Set any options with `v_specs` (see all options available [here](https://www.visactor.io/vchart/option/lineChart)):
+
+```r
+vchart(eco2mix) %>% 
+  v_line(aes(date, solar)) %>% 
+  v_specs(
+    brush = list(
+      brushType = "x",
+      zoomAfterBrush = TRUE
+    ),
+    dataZoom = list(
+      orient = "bottom",
+      startText = list(formatter = "{label:%Y-%m-%d}"),
+      endText = list(formatter = "{label:%Y-%m-%d}")
+    )
+  )
+```
+
+Or use `v_specs_*` helpers:
+
+```r
+vchart(eco2mix) %>% 
+  v_line(aes(date, solar)) %>% 
+  v_specs_datazoom(
+    start = "{label:%Y-%m-%d}",
+    end = "{label:%Y-%m-%d}",
+    brush = TRUE
+  )
+```

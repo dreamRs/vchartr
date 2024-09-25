@@ -1,0 +1,14 @@
+pandoc: 3.1.11
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  articles/bar: bar.html
+  articles/charts: charts.html
+  articles/line: line.html
+  articles/pie: pie.html
+  articles/scatter: scatter.html
+  vchartr: vchartr.html
+last_built: 2024-09-25T08:08Z
+urls:
+  reference: https://dreamrs.github.io/vchartr/reference
+  article: https://dreamrs.github.io/vchartr/articles

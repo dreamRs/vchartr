@@ -48,6 +48,8 @@ vchart(eco2mix) %>%
   v_line(aes(date, solar))
 ```
 
+![v_line](figures/v_line.png)
+
 Modify scales options for aesthetics with `v_scale_*` functions:
 
 ```r
@@ -63,6 +65,8 @@ vchart(eco2mix) %>%
     name = "Electricity generation"
   )
 ```
+
+![v_scales](figures/v_scales.png)
 
 Set any options with `v_specs` (see all options available [here](https://www.visactor.io/vchart/option/lineChart)):
 
@@ -81,6 +85,8 @@ vchart(eco2mix) %>%
     )
   )
 ```
+
+![v_specs](figures/v_specs.png)
 
 Or use `v_specs_*` helpers:
 

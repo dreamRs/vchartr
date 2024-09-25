@@ -1,6 +1,7 @@
 url: https://dreamrs.github.io/vchartr/
 template:
   bootstrap: 5
+  bootswatch: sandstone
   bslib:
     base_font: {google: "Poppins"}
     primary: "#112446"

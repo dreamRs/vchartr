@@ -91,32 +91,26 @@ server <- function(input, output, session) {
       mapping <- aes(country, generation, fill = country)
     }
 
+    vc <- vchart(elec_data, mapping = mapping)
     if (input$type == "bar") {
-      vc <- vbar(elec_data, mapping) \%>\%
+      vc <- vc \%>\% 
+        v_bar(serie_id = "bar_serie") \%>\%
         v_specs_legend(visible = FALSE) \%>\%
         v_specs(
           xField = "x",
-          label = list(visible = input$show_label)
+          label = list(visible = input$show_label),
+          serie_id = "bar_serie"
         )
     } else if (input$type == "pie") {
-      vc <- vpie(elec_data, mapping, serie_id = "pie"
-      ) \%>\%
-        v_specs(
-          label = list(visible = input$show_label),
-          serie = "pie"
-        )
+      vc <- vc \%>\% 
+        v_pie(label = list(visible = input$show_label))
     } else if (input$type == "treemap") {
-      vc <- vtreemap(elec_data, mapping) \%>\%
-        v_specs(
-          label = list(visible = input$show_label)
-        )
+      vc <- vc \%>\% 
+        v_treemap(label = list(visible = input$show_label))
     } else if (input$type == "circlepacking") {
-      vc <- vcirclepacking(elec_data, mapping) \%>\%
-        v_specs(
-          label = list(style = list(visible = input$show_label))
-        )
+      vc <- vc \%>\% 
+        v_circlepacking(label = list(style = list(visible = input$show_label)))
     }
-
     vc \%>\%
       v_scale_color_manual(c(
         "oil" = "#80549f",

@@ -221,6 +221,12 @@ HTMLWidgets.widget({
           //vchart.setCurrentTheme(x.theme);
         }
         
+        if (x.hasOwnProperty("events")) {
+          for (let i = 0; i < x.events.length; i++) {
+            vchart.on(x.events[i].name, x.events[i].params, x.events[i].fun);
+          }
+        }
+        
         if (x.hasOwnProperty("select")) {
           var selectConfig = x.select.config;
           selectConfig.select = "#" + el.id + "_select";

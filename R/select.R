@@ -1,10 +1,8 @@
 
 
-
 v_default_select <- function(vc,
                              mapdata,
                              data_id,
-                             fun_values = identity,
                              ...) {
   mapdata <- split(mapdata, as.character(mapdata$select))
   vc$x$select <- list(

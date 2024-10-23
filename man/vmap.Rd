@@ -70,7 +70,9 @@ if (rlang::is_installed(c("sf", "geojsonio"))) {
       )
     ) \%>\% 
     v_specs_legend(
-      orient = "bottom"
+      orient = "bottom",
+      type = "color",
+      field = "fill"
     )
   
   # Map discrete data

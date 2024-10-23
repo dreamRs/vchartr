@@ -124,7 +124,7 @@ v_theme <- function(vc,
 #' @param name Name of the theme to use, see [available themes online](https://www.visactor.io/vchart/guide/tutorial_docs/Theme/Theme_Extension).
 #'
 #' @return A [vchart()] `htmlwidget` object.
-#' @export
+#' @noRd
 #'
 #' @example examples/theme_builtin.R
 v_theme_builtin <- function(vc, name) {

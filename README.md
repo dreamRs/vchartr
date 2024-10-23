@@ -3,6 +3,7 @@
 > R Htmlwidget for [VChart](https://github.com/VisActor/VChart) : VChart is a charting component library in VisActor visualization system. See the [online documentation](https://www.visactor.io/vchart) for examples.
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/vchartr)](https://CRAN.R-project.org/package=vchartr)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/dreamRs/vchartr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dreamRs/vchartr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->

@@ -12,6 +12,8 @@
 <url><loc>https://dreamrs.github.io/vchartr/authors.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/index.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/news/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/vchartr/reference/JS.html</loc></url>
+<url><loc>https://dreamrs.github.io/vchartr/reference/aes.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/co2_emissions.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/co2_world.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/countries_gdp.html</loc></url>
@@ -22,9 +24,11 @@
 <url><loc>https://dreamrs.github.io/vchartr/reference/format-date.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/format_num_d3.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/vchartr/reference/label_value.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/mark-area.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/mark-line.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/meteo_paris.html</loc></url>
+<url><loc>https://dreamrs.github.io/vchartr/reference/pipe.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/scale-color-manual.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/scale-continuous.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/scale-date.html</loc></url>
@@ -68,9 +72,9 @@
 <url><loc>https://dreamrs.github.io/vchartr/reference/v_venn.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/v_waterfall.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/v_wordcloud.html</loc></url>
+<url><loc>https://dreamrs.github.io/vchartr/reference/vars.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/vchart-shiny.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/vchart.html</loc></url>
-<url><loc>https://dreamrs.github.io/vchartr/reference/vchartr-exports.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/vchartr-package.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/vmap.html</loc></url>
 <url><loc>https://dreamrs.github.io/vchartr/reference/world_electricity.html</loc></url>

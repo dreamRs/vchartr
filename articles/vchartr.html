@@ -99,21 +99,21 @@ function, then choose the appropriate function according to the type of
 chart you wish to make and specify the variables to be used as
 aesthetics:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/vchartr-exports.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/aes.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
 <img src="figures%2Fv_line.png" alt="v_line"><div class="figcaption">v_line</div>
 </div>
 <p>Modify scales options for aesthetics with <code>v_scale_*</code>
 functions:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/vchartr-exports.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/aes.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/scale-date.html">v_scale_x_date</a></span><span class="op">(</span></span>
 <span>    date_breaks <span class="op">=</span> <span class="st">"2 years"</span>,</span>
 <span>    date_labels <span class="op">=</span> <span class="st">"MM-YYYY"</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"Date"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/scale-continuous.html">v_scale_y_continuous</a></span><span class="op">(</span></span>
 <span>    labels <span class="op">=</span> <span class="st">"~s"</span>, </span>
 <span>    name <span class="op">=</span> <span class="st">"Electricity generation"</span></span>
@@ -124,8 +124,8 @@ functions:</p>
 <p>Set any options with <code>v_specs</code> (see all options available
 <a href="https://www.visactor.io/vchart/option/lineChart" class="external-link">here</a>):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/vchartr-exports.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/aes.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/v_specs.html">v_specs</a></span><span class="op">(</span></span>
 <span>    brush <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      brushType <span class="op">=</span> <span class="st">"x"</span>,</span>
@@ -142,8 +142,8 @@ functions:</p>
 </div>
 <p>Or use <code>v_specs_*</code> helpers:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/vchartr-exports.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/vchartr-exports.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/vchart.html">vchart</a></span><span class="op">(</span><span class="va">eco2mix</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/v_line.html">v_line</a></span><span class="op">(</span><span class="fu"><a href="../reference/aes.html">aes</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">solar</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/v_specs_datazoom.html">v_specs_datazoom</a></span><span class="op">(</span></span>
 <span>    start <span class="op">=</span> <span class="st">"{label:%Y-%m-%d}"</span>,</span>
 <span>    end <span class="op">=</span> <span class="st">"{label:%Y-%m-%d}"</span>,</span>

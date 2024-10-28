@@ -25,7 +25,7 @@ NULL
 #' @usage JS(...)
 #' @inheritParams htmlwidgets::JS
 #' @return A string that will be interpreted as JavaScript code in htmlwidgets.
-NULL
+htmlwidgets::JS
 
 #' Construct aesthetic mappings
 #'
@@ -38,7 +38,7 @@ NULL
 #' @usage aes(x, y, ...)
 #' @inheritParams ggplot2::aes
 #' @return A list with class `uneval`. Components of the list are either quosures or constants. 
-NULL
+ggplot2::aes
 
 #' Quote faceting variables
 #'
@@ -51,7 +51,7 @@ NULL
 #' @usage vars(...)
 #' @inheritParams ggplot2::vars
 #' @return A list with class `uneval`. Components of the list are either quosures or constants. 
-NULL
+ggplot2::vars
 
 #' Useful labeller functions
 #'
@@ -64,4 +64,4 @@ NULL
 #' @usage label_value(labels, multi_line = TRUE)
 #' @inheritParams ggplot2::label_value
 #' @return Labels to be used in a facetted chart.
-NULL
+ggplot2::label_value

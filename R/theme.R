@@ -32,7 +32,7 @@
 #' @param .infoColor info Color
 #' @param .discreteLegendPagerTextColor discrete Legend Pager Text Color
 #' @param .discreteLegendPagerHandlerColor discrete Legend Pager Handler Color
-#' @param .discreteLegendPagerHandlerDisableColor discrete LegendP ager Handler Disable Color
+#' @param .discreteLegendPagerHandlerDisableColor discrete Legend Pager Handler Disable Color
 #' @param ... Other parameters.
 #'
 #' @return A [vchart()] `htmlwidget` object.

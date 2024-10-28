@@ -398,7 +398,7 @@ v_scale_datetime <- function(vc,
 #' @param breaks One of:
 #'   * A single `numeric` value giving the number of breaks.
 #'   * A numeric vector of positions.
-#' @param pretty Use [pretty()] to dertimen breaks if `breaks` is a single numeric value.
+#' @param pretty Use [pretty()] to identify breaks if `breaks` is a single numeric value.
 #' @param labels,labels_tooltip The format to be applied on numeric in the labels/tooltip. Either:
 #'   * A single character indicating the D3 format.
 #'   * A `JS` function, such as [format_num_d3()].

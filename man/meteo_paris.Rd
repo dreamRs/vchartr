@@ -3,7 +3,7 @@
 \docType{data}
 \name{meteo_paris}
 \alias{meteo_paris}
-\title{Paris climat}
+\title{Paris climate}
 \format{
 A data frame with 177 observations and 3 variables:
 \itemize{

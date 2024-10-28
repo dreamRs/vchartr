@@ -44,7 +44,7 @@
 #' @param serie_id Used to set or modify options for a chart where there are multiple series. You can use :
 #'   * a `numeric` to target the position of the serie in the order where it's added to the chart
 #'   * a `character` to refer to a `serie_id` set when the serie was added to the plot.
-#' @param drop_nulls Drom NULL elements from the options.
+#' @param drop_nulls Drop NULL elements from the options.
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export

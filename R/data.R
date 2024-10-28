@@ -186,7 +186,7 @@
 
 
 
-#' @title Paris climat
+#' @title Paris climate
 #'
 #' @description This data contains information about the climate in Paris, France.
 #'

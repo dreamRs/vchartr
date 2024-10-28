@@ -75,7 +75,7 @@ v_scale_y_log(
 \item A numeric vector of positions.
 }}
 
-\item{pretty}{Use \code{\link[=pretty]{pretty()}} to dertimen breaks if \code{breaks} is a single numeric value.}
+\item{pretty}{Use \code{\link[=pretty]{pretty()}} to identify breaks if \code{breaks} is a single numeric value.}
 
 \item{labels, labels_tooltip}{The format to be applied on numeric in the labels/tooltip. Either:
 \itemize{

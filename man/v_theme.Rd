@@ -103,7 +103,7 @@ v_theme(
 
 \item{.discreteLegendPagerHandlerColor}{discrete Legend Pager Handler Color}
 
-\item{.discreteLegendPagerHandlerDisableColor}{discrete LegendP ager Handler Disable Color}
+\item{.discreteLegendPagerHandlerDisableColor}{discrete Legend Pager Handler Disable Color}
 
 \item{...}{Other parameters.}
 }

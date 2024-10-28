@@ -17,7 +17,7 @@ v_specs(vc, ..., serie_id = NULL, drop_nulls = FALSE)
 \item a \code{character} to refer to a \code{serie_id} set when the serie was added to the plot.
 }}
 
-\item{drop_nulls}{Drom NULL elements from the options.}
+\item{drop_nulls}{Drop NULL elements from the options.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

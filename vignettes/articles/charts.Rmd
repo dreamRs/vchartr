@@ -87,7 +87,7 @@ subset(world_electricity, year == 2023 & type == "total") %>%
 
 ## Histogram Chart
 
-Create histograms wioth `v_hist()`:
+Create histograms with `v_hist()`:
 
 ```{r hist}
 vchart(palmerpenguins::penguins) %>%

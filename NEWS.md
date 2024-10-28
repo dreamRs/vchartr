@@ -1,3 +1,7 @@
+# vchartr 0.1.3
+
+* CRAN requests taken into account
+
 # vchartr 0.1.2
 
 * Added `v_event()` to register events on chart.

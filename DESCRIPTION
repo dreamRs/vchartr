@@ -1,6 +1,6 @@
 Package: vchartr
 Title: Interactive Charts with the 'JavaScript' 'VChart' Library
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(
   person("Victor", "Perrier", email = "victor.perrier@dreamrs.fr", role = c("aut", "cre")),
   person("Fanny", "Meyer", role = "aut"))

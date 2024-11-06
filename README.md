@@ -11,6 +11,12 @@
 
 ## Installation
 
+Install from [CRAN](https://CRAN.R-project.org/package=vchartr) with:
+
+```r
+install.packages("vchartr")
+```
+
 You can install the development version of vchartr from [GitHub](https://github.com/dreamRs/vchartr) with:
 
 ```r

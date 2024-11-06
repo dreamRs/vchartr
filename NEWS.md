@@ -1,3 +1,7 @@
+# vchartr 0.1.4
+
+* Updated @visactor/vchart to 1.12.10 (https://github.com/VisActor/VChart/releases).
+
 # vchartr 0.1.3
 
 * CRAN requests taken into account

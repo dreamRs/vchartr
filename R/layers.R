@@ -50,8 +50,7 @@ v_bar <- function(vc,
     seriesField = if (has_name(mapping, "fill")) "fill",
     stack = stack,
     percent = percent,
-    direction = direction,
-    ...
+    direction = direction
   )
   if (direction == "horizontal") {
     serie$xField <- "y"
@@ -76,10 +75,8 @@ v_bar <- function(vc,
     vc <- v_specs_axes(vc, position = "left", type = "linear")
     vc <- v_specs_axes(vc, position = "bottom", type = "band")
   }
-  vc <- .vchart_specs(
-    vc, "series",
-    list(serie)
-  )
+  serie <- modifyList(serie, list(...))
+  vc <- .vchart_specs(vc, "series", list(serie))
   if (has_name(mapping, "fill")) {
     vc <- v_scale_fill_discrete(vc, palette.colors(palette = "Okabe-Ito")[-1])
   }
@@ -148,9 +145,9 @@ v_line <- function(vc,
     yField = "y",
     seriesField = if (has_name(mapping, "colour")) "colour",
     point = point,
-    line = line,
-    ...
+    line = line
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
@@ -324,9 +321,9 @@ v_area <- function(vc,
     stack = isTRUE(stack),
     point = point,
     line = line,
-    area = area,
-    ...
+    area = area
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
@@ -476,9 +473,9 @@ v_scatter <- function(vc,
     seriesField = if (has_name(mapping, "colour")) "colour",
     sizeField = if (has_name(mapping, "size")) "size",
     shapeField = shapeField,
-    shape = shape,
-    ...
+    shape = shape
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(
     vc, position = "left",
@@ -623,9 +620,9 @@ v_pie <- function(vc,
     dataId = data_id,
     seriesField = "x",
     valueField = "y",
-    label = label,
-    ...
+    label = label
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   if (has_player(mapdata)) {
     vc <- v_default_player(vc, mapdata, data_id)
@@ -677,9 +674,9 @@ v_radar <- function(vc,
     dataId = data_id,
     categoryField = "x",
     valueField = "y",
-    seriesField = if (has_name(mapping, "colour")) "colour",
-    ...
+    seriesField = if (has_name(mapping, "colour")) "colour"
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- v_specs_axes(vc, position = "angle")
   vc <- v_specs_axes(vc, position = "radius")
@@ -764,8 +761,7 @@ v_circlepacking <- function(vc,
     name = name,
     categoryField = "name",
     valueField = "value",
-    drill = drill,
-    ...
+    drill = drill
   )
   if (!is.null(fill_opacity)) {
     serie$circlePacking$style$fillOpacity <- fill_opacity
@@ -773,6 +769,7 @@ v_circlepacking <- function(vc,
   if (!is.null(label_visible)) {
     serie$label$style$visible <- label_visible
   }
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   if (has_player(mapdata)) {
     if (length(lvl_vars) > 1) {
@@ -856,9 +853,9 @@ v_treemap <- function(vc,
     name = name,
     categoryField = "name",
     valueField = "value",
-    drill = drill,
-    ...
+    drill = drill
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   if (has_player(mapdata)) {
     if (length(lvl_vars) > 1) {
@@ -961,9 +958,9 @@ v_heatmap <- function(vc,
       style = list(
         fill = list(field = "fill", scale = "color")
       )
-    ),
-    ...
+    )
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   vc <- .vchart_specs(vc, "color", color)
   vc <- .vchart_specs(vc, "legends", legend)
@@ -1039,9 +1036,9 @@ v_wordcloud <- function(vc,
     name = name,
     nameField = "word",
     valueField = "count",
-    seriesField = if (has_name(mapping, "colour")) "colour",
-    ...
+    seriesField = if (has_name(mapping, "colour")) "colour"
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   return(vc)
 }
@@ -1354,9 +1351,9 @@ v_boxplot <- function(vc,
     maxField = "ymax",
     seriesField = if (has_name(mapping, "colour")) "colour",
     direction = "vertical",
-    boxPlot = boxPlot,
-    ...
+    boxPlot = boxPlot
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   pscales <- layer_scales(p)
   vc <- v_scale_x_continuous(
@@ -1470,9 +1467,9 @@ v_venn <- function(vc,
     name = name,
     categoryField = "sets",
     valueField = "value",
-    seriesField = if (has_name(mapping, "colour")) "colour",
-    ...
+    seriesField = if (has_name(mapping, "colour")) "colour"
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   return(vc)
 }
@@ -1526,9 +1523,9 @@ v_waterfall <- function(vc,
       tagField = "total",
       valueField = "y"
     ),
-    seriesField = if (has_name(mapping, "colour")) "colour",
-    ...
+    seriesField = if (has_name(mapping, "colour")) "colour"
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   scale_x <- attr(mapdata, "scale_x")
   if (identical(scale_x, "discrete")) {
@@ -1606,9 +1603,9 @@ v_sunburst <- function(vc,
     categoryField = "name",
     valueField = "value",
     drill = drill,
-    gap = gap,
-    ...
+    gap = gap
   )
+  serie <- modifyList(serie, list(...))
   vc <- .vchart_specs(vc, "series", list(serie))
   if (has_player(mapdata)) {
     if (length(lvl_vars) > 1) {

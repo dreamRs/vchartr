@@ -11,6 +11,8 @@
 #' @param direction The direction configuration of the chart: `"vertical"` (default) or `"horizontal"`.
 #' @param ... Additional parameters for the serie.
 #' @param data_id,serie_id ID for the data/serie, can be used to further customize the chart with [v_specs()].
+#' @param data_specs Additional options for the data,
+#'  see [online documentation](https://visactor.io/vchart/option/commonChart#data(IDataType%7CIDataType%5B%5D).IDataValues).
 #'
 #' @return A [vchart()] `htmlwidget` object.
 #' @export
@@ -27,7 +29,8 @@ v_bar <- function(vc,
                   direction = c("vertical", "horizontal"),
                   ...,
                   serie_id = NULL,
-                  data_id = NULL) {
+                  data_id = NULL,
+                  data_specs = list()) {
   direction <- match.arg(direction)
   stopifnot(
     "\'vc\' must be a chart constructed with vchart()" = inherits(vc, "vchart")
@@ -38,10 +41,14 @@ v_bar <- function(vc,
   vc$x$type <- c(vc$x$type, "bar")
   serie_id <- serie_id %||% genSerieId()
   data_id <- data_id %||% genDataId()
-  vc <- .vchart_specs(
-    vc, "data",
-    list(list(id = data_id, values = filter_values(mapdata)))
+  data <- modifyList(
+    list(
+      id = data_id, 
+      values = filter_values(mapdata)
+    ),
+    data_specs
   )
+  vc <- .vchart_specs(vc, "data", list(data))
   serie <- list_(
     type = "bar",
     id = serie_id,
@@ -251,7 +258,8 @@ v_smooth <- function(vc,
 #'
 #' @inheritParams v_line
 #' @param stack Whether to stack the data or not (if `fill` aesthetic is provided).
-#' @param area Area's options, such as curve interpolation type, see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
+#' @param area Area's options, such as curve interpolation type,
+#'  see [online documentation](https://www.visactor.io/vchart/option/AreaChart#area.style.curveType).
 #' @param line Options for showing lines or not.
 #'
 #' @return A [vchart()] `htmlwidget` object.

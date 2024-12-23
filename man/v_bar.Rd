@@ -14,7 +14,8 @@ v_bar(
   direction = c("vertical", "horizontal"),
   ...,
   serie_id = NULL,
-  data_id = NULL
+  data_id = NULL,
+  data_specs = list()
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 \item{...}{Additional parameters for the serie.}
 
 \item{data_id, serie_id}{ID for the data/serie, can be used to further customize the chart with \code{\link[=v_specs]{v_specs()}}.}
+
+\item{data_specs}{Additional options for the data,
+see \href{https://visactor.io/vchart/option/commonChart#data(IDataType\%7CIDataType\%5B\%5D).IDataValues}{online documentation}.}
 }
 \value{
 A \code{\link[=vchart]{vchart()}} \code{htmlwidget} object.

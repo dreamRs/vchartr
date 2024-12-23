@@ -30,7 +30,8 @@ a \code{data.frame}, it will be coerced to with \code{as.data.frame}.}
 
 \item{stack}{Whether to stack the data or not (if \code{fill} aesthetic is provided).}
 
-\item{area}{Area's options, such as curve interpolation type, see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
+\item{area}{Area's options, such as curve interpolation type,
+see \href{https://www.visactor.io/vchart/option/AreaChart#area.style.curveType}{online documentation}.}
 
 \item{point}{Options for showing points on lines or not.}
 

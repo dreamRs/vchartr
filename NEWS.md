@@ -1,6 +1,7 @@
 # vchartr 0.1.4
 
 * Updated @visactor/vchart to 1.13.3 (https://github.com/VisActor/VChart/releases).
+* `v_lien()` / `v_area()` : use correct scale for y-axis dor POSIX vectors.
 
 # vchartr 0.1.3
 

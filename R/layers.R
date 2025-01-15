@@ -161,6 +161,8 @@ v_line <- function(vc,
     vc <- v_scale_x_discrete(vc)
   } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc)
+  } else if (identical(scale_x, "datetime")) {
+    vc <- v_scale_x_datetime(vc)
   } else {
     vc <- v_scale_x_continuous(vc)
   }
@@ -338,6 +340,8 @@ v_area <- function(vc,
     vc <- v_scale_x_discrete(vc)
   } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc)
+  } else if (identical(scale_x, "datetime")) {
+    vc <- v_scale_x_datetime(vc)
   } else {
     vc <- v_scale_x_continuous(vc)
   }
@@ -1540,6 +1544,8 @@ v_waterfall <- function(vc,
     vc <- v_scale_x_discrete(vc)
   } else if (identical(scale_x, "date")) {
     vc <- v_scale_x_date(vc)
+  } else if (identical(scale_x, "datetime")) {
+    vc <- v_scale_x_datetime(vc)
   } else if (identical(scale_x, "continuous")) {
     vc <- v_scale_x_continuous(vc)
   }

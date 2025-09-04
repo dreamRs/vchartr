@@ -1,6 +1,6 @@
 # vchartr 0.1.5
 
-* Updated @visactor/vchart to 1.13.8 (https://github.com/VisActor/VChart/releases).
+* Updated @visactor/vchart to 2.0.2 (https://github.com/VisActor/VChart/releases).
 
 
 # vchartr 0.1.4

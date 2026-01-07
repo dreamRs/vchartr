@@ -52,7 +52,7 @@ model that \code{method = NULL} would use, then set
 \code{method = NULL} implies \code{formula = y ~ x} when there are fewer than 1,000
 observations and \code{formula = y ~ s(x, bs = "cs")} otherwise.}
 
-\item{se}{Display confidence interval around smooth? (\code{TRUE} by default, see
+\item{se}{Display confidence band around smooth? (\code{TRUE} by default, see
 \code{level} to control.)}
 
 \item{n}{Number of points at which to evaluate smoother.}

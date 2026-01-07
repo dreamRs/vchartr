@@ -1,0 +1,260 @@
+# line
+
+``` r
+library(vchartr)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+```
+
+## Line Chart
+
+``` r
+co2_emissions %>% 
+  filter(country %in% c("China", "United States", "India")) %>% 
+  vchart() %>% 
+  v_line(
+    aes(year, co2, color = country),
+    lineLabel = list(visible = TRUE)
+  ) %>% 
+  v_specs_legend(visible = FALSE) %>% 
+  v_scale_y_continuous(
+    name = "measured in million tonnes", 
+    labels = ","
+  ) %>% 
+    v_scale_x_continuous(
+    expand = list(max = 0.15)
+  ) %>% 
+  v_labs(
+    title = "Annual CO₂ emissions",
+    subtitle = "Source: Our World In Data"
+  )
+```
+
+## Line with data zoom
+
+``` r
+co2_emissions %>% 
+  filter(country %in% c("China", "United States", "India")) %>% 
+  vchart() %>% 
+  v_line(
+    aes(year, co2, color = country)
+  ) %>% 
+  v_specs_datazoom(
+    start = "{label:.0f}",
+    startValue = 2000, 
+    end = "{label:.0f}"
+  ) %>% 
+  v_specs_legend(
+    orient = "top",
+    position = "start",
+    layout = "vertical",
+    layoutType = "absolute",
+    left = 30,
+    top = 20,
+    item = list(
+      shape = list(
+        style = list(
+          symbolType = "roundLine"
+        )
+      )
+    )
+  )
+```
+
+## Line and area range
+
+``` r
+vchart(temperatures, aes(date)) %>% 
+  v_area(
+    aes(ymin = low, ymax = high),
+    area = list(style = list(fill = "#848585", fillOpacity = 0.3)),
+    name = "Low/high between 2019 and 2023"
+  ) %>% 
+  v_line(
+    aes(y = `2024`), 
+    line = list(style = list(stroke = "firebrick")),
+  ) %>%
+  v_scale_x_date(
+    date_breaks = "2 months", 
+    date_labels = "MMMM",
+    date_labels_tooltip = "DD MMMM"
+  ) %>% 
+  v_scale_y_continuous(
+    name = "Temperature in degree celsius",
+    labels = format_num_d3(".0f", suffix = "°C"),
+    labels_tooltip = format_num_d3(".3r", suffix = "°C")
+  ) %>% 
+  v_labs(
+    title = "Temperatures in France in 2024 compared with previous years",
+    subtitle = "Source: Enedis"
+  ) %>% 
+  v_specs_legend(
+    visible = TRUE,
+    orient = "top",
+    position = "left"
+  )
+```
+
+## Area chart
+
+``` r
+vchart(eco2mix_long) %>% 
+  v_area(
+    aes(date, production, fill = source),
+    stack = TRUE,
+    area = list(
+      style = list(
+        fillOpacity = 0.6
+      )
+    )
+  ) %>%
+  v_scale_x_date(
+    date_labels = "YYYY",
+    date_labels_tooltip = "DD/MM/YYYY",
+    date_breaks = "2 years"
+  ) %>% 
+  v_scale_y_continuous(
+    min = -2000,
+    labels = format_num_d3(",", locale = "fr-FR", suffix = " TWh")
+  ) %>% 
+  v_scale_color_manual(c(
+    "oil" = "#80549f",
+    "coal" = "#a68832",
+    "solar" = "#d66b0d",
+    "gas" = "#f20809",
+    "wind" = "#72cbb7",
+    "hydro" = "#2672b0",
+    "nuclear" = "#e4a701",
+    "pumping" = "#2f5673",
+    "bioenergies" = "#156956"
+  )) %>% 
+  v_specs_legend(
+    orient = "right",
+    position = "middle",
+    item = list(focus = TRUE),
+    title = list(
+      visible = TRUE,
+      text = "Source"
+    )
+  ) %>% 
+  v_specs_crosshair(
+    xField = list(
+      visible = TRUE,
+      label = list(
+        visible = TRUE, 
+        formatMethod = label_format_date("DD/MM/YYYY"),
+        style = list(
+          fill = "#000"
+        ),
+        labelBackground = list(
+          padding = 5,
+          style = list(
+            stroke = "#000",
+            fill = "#19ff00"
+          )
+        )
+      ),
+      line = list(
+        type = "line",
+        width = 5,
+        style = list(
+          stroke = "#19ff00",
+          lineDash = list(0)
+        )
+      )
+    )
+  )
+```
+
+## Line with bar
+
+``` r
+vchart(meteo_paris) %>% 
+  v_bar(
+    aes(month, precipitation),
+    serie_id = "precipitation",
+    name = "Precipitation (mm)",
+    bar = list(style = list(fill = "steelblue"))
+  ) %>% 
+  v_line(
+    aes(month, temperature_avg),
+    serie_id = "temperature", 
+    point = list(
+      visible = TRUE,
+      style = list(fill = "firebrick")
+    ),
+    name = "Average temperature (°C)",
+    line = list(style = list(stroke = "firebrick")),
+    label = list(
+      visible = TRUE,
+      style = list(fill = "firebrick", strokeOpacity = 0)
+    )
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "temperature",
+    name = "Average temperature (°C)"
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "precipitation",
+    name = "Precipitation (mm)",
+    position = "right"
+  ) %>% 
+  v_labs(title = "Climate in Paris")
+```
+
+## Left and right axis
+
+``` r
+data("economics", package = "ggplot2")
+vchart(economics) %>% 
+  v_line(
+    aes(date, unemploy),
+    serie_id = "unemploy",
+    line = list(style = list(stroke = "#E69F00")),
+  )%>% 
+  v_line(
+    aes(date, uempmed),
+    serie_id = "uempmed",
+    line = list(style = list(stroke = "#56B4E9")),
+  ) %>% 
+  v_scale_x_date(date_breaks = "10 years", date_labels = "YYYY", nice = FALSE) %>% 
+  v_scale_y_continuous(
+    seriesId = "unemploy",
+    name = list(
+      visible = TRUE,
+      text = "number of unemployed, in thousands",
+      position = "middle",
+      shape = list(
+        visible = TRUE,
+        style = list(
+          symbolType = "rect",
+          fill = "#E69F00"
+        )
+      )
+    )
+  ) %>% 
+  v_scale_y_continuous(
+    seriesId = "uempmed",
+    name = list(
+      visible = TRUE,
+      text = "median duration of unemployment, in weeks",
+      position = "middle",
+      shape = list(
+        visible = TRUE,
+        style = list(
+          symbolType = "rect",
+          fill = "#56B4E9"
+        )
+      )
+    ),
+    position = "right"
+  ) %>% 
+  v_labs(title = "US economic time series")
+```

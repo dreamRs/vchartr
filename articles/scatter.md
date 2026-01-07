@@ -1,0 +1,95 @@
+# scatter
+
+``` r
+library(vchartr)
+library(palmerpenguins)
+#> 
+#> Attaching package: 'palmerpenguins'
+#> The following objects are masked from 'package:datasets':
+#> 
+#>     penguins, penguins_raw
+```
+
+## Scatter chart
+
+``` r
+vchart(penguins, height = 600) %>% 
+  v_scatter(
+    aes(
+      x = flipper_length_mm,
+      y = body_mass_g,
+      color = species, 
+      shape = species
+    )
+  ) %>%
+  v_scale_x_continuous(
+    name = "Flipper length (mm)"
+  ) %>% 
+  v_scale_y_continuous(
+    name = "Body mass (g)"
+  ) %>% 
+  v_labs(
+    title = "Penguin size, Palmer Station LTER",
+    subtitle = "Flipper length and body mass for Adelie, Chinstrap and Gentoo Penguins"
+  ) %>% 
+  v_specs_legend(
+    orient = "top",
+    position = "start",
+    layout = "vertical",
+    layoutType = "absolute",
+    left = 50,
+    top = 80,
+    title = list(
+      visible = TRUE,
+      text = "Penguin species"
+    )
+  )
+```
+
+## Scatter with smooth line
+
+``` r
+vchart(penguins, height = 600) %>% 
+  v_scatter(
+    aes(
+      x = bill_length_mm,
+      y = bill_depth_mm,
+      color = species, 
+      shape = species
+    )
+  ) %>%
+  v_smooth(
+    aes(
+      x = bill_length_mm,
+      y = bill_depth_mm,
+      color = species
+    ),
+    method = "lm",
+    se = FALSE
+  ) %>% 
+  v_scale_x_continuous(
+    name = "Bill length (mm)"
+  ) %>% 
+  v_scale_y_continuous(
+    name = "Bill depth (mm)"
+  ) %>% 
+  v_labs(
+    title = "Penguin bill dimensions",
+    subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER"
+  ) %>% 
+  v_specs_legend(
+    orient = "top",
+    position = "start",
+    layout = "vertical",
+    layoutType = "absolute",
+    right = 0,
+    bottom = 40,
+    title = list(
+      visible = TRUE,
+      text = "Penguin species"
+    )
+  )
+#> `geom_smooth()` using formula = 'y ~ x'
+#> Warning: Removed 2 rows containing non-finite outside the scale range
+#> (`stat_smooth()`).
+```

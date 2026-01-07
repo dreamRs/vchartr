@@ -1,0 +1,232 @@
+# bar
+
+``` r
+library(vchartr)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+```
+
+## Bar Chart
+
+Create a bar chart :
+
+``` r
+electricity_mix %>% 
+  filter(country == "South Korea") %>% 
+  arrange(desc(generation)) %>% 
+  vchart() %>% 
+  v_bar(aes(source, generation)) %>% 
+  v_specs_colors("#5E81AC") %>% 
+  v_scale_y_continuous(labels = format_num_d3(",", suffix = " TWh")) %>% 
+  v_labs(
+    title = "South Korea electricity mix"
+  )
+```
+
+Colorize bars :
+
+``` r
+electricity_mix %>%
+  filter(country == "South Korea") %>%
+  arrange(desc(generation)) %>%
+  vchart() %>%
+  v_bar(aes(source, generation, fill = source), serie_id = "bar") %>%
+  v_specs(xField = "x", serie_id = "bar") %>% # <- use only 'x' aesthetic on x-axis
+  v_specs_legend(visible = FALSE) %>%
+  v_scale_fill_manual(
+    c(
+      "oil" = "#80549f",
+      "coal" = "#a68832",
+      "solar" = "#d66b0d",
+      "gas" = "#f20809",
+      "wind" = "#72cbb7",
+      "hydro" = "#2672b0",
+      "nuclear" = "#e4a701"
+    )
+  )
+```
+
+## Horizontal Bar Chart
+
+Create a basic horizontal bar chart with :
+
+``` r
+vchart(top_generation) %>% 
+  v_bar(
+    aes(country, electricity_generation), 
+    direction = "horizontal",
+    label = list(visible = TRUE)
+  ) %>% 
+  v_specs_colors("#8FBCBB") %>% 
+  v_labs(
+    title = "Top electricity-generating countries",
+    subtitle = "Data for 2023, source: Our World In Data"
+  )
+```
+
+Highlight a specific bar in the chart :
+
+``` r
+vchart(top_generation) %>% 
+  v_bar(
+    aes(country, electricity_generation), 
+    direction = "horizontal",
+    bar = list(
+      style = list(
+        fill = JS("datum => datum.x == 'Japan' ? '#5E81AC' : '#88C0D0'")
+      )
+    )
+  )
+```
+
+Or :
+
+``` r
+co2_emissions %>% 
+  filter(country == "China") %>% 
+  vchart() %>% 
+  v_bar(
+    aes(year, co2_growth_prct),
+    bar = list(
+      style = list(
+        fill = JS("datum => datum.y <= 0 ? 'forestgreen' : 'firebrick'")
+      )
+    )
+  ) %>% 
+  v_specs_axes(
+    position = "left",
+    title = list(
+      visible = TRUE,
+      text = "Annual CO₂ emissions growth (%)",
+      position = "start"
+    )
+  ) %>% 
+  v_labs(
+    title = "Annual percentage growth in total emissions of carbon dioxide (CO₂)"
+  )
+```
+
+## Grouped Bar Chart
+
+A grouped bar chart with specific colors and custom legend :
+
+``` r
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(aes(year, generation, fill = source)) %>% 
+  v_scale_color_manual(c(
+    "Low carbon" = "#A3BE8C", 
+    "Fossil fuels" = "#4C566A"
+  )) %>% 
+  v_specs_legend(
+    title = list(text = "Source of electricity", visible = TRUE),
+    orient = "right",
+    position = "start",
+    item = list(focus = TRUE)
+  )
+```
+
+Stack bars :
+
+``` r
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(aes(year, generation, fill = source), stack = TRUE) %>% 
+  v_scale_color_manual(c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")) %>% 
+  v_specs_legend(
+    title = list(text = "Source of electricity", visible = TRUE),
+    orient = "right",
+    position = "start",
+    item = list(focus = TRUE)
+  )
+```
+
+``` r
+world_electricity %>% 
+  filter(type == "total") %>% 
+  vchart() %>% 
+  v_bar(
+    aes(year, generation, fill = source), 
+    stack = TRUE, 
+    percent = TRUE
+  ) %>% 
+  v_scale_color_manual(
+    c("Low carbon" = "#A3BE8C", "Fossil fuels" = "#4C566A")
+  ) %>% 
+  v_scale_y_continuous(
+    min = 0, 
+    max = 1,
+    labels = ".0%",
+    labels_tooltip = "~s"
+  )
+```
+
+## Bar Chart with custom labels
+
+``` r
+electricity_mix %>% 
+  filter(source == "nuclear") %>% 
+  arrange(generation) %>% 
+  vchart() %>% 
+  v_bar(
+    aes(country, generation),
+    direction = "horizontal",
+    data_id = "mydataid",
+    bar = list(
+      style = list(cornerRadius = c(5, 5, 5, 5), height = 10)
+    ),
+    barBackground = list(
+      visible = TRUE,
+      style = list(cornerRadius = c(5, 5, 5, 5), height = 10),
+      state = list(
+        hover = list(
+          stroke = "#D9D9D9",
+          lineWidth = 1
+        )
+      )
+    )
+  ) %>% 
+  v_specs_axes(
+    position = "bottom",
+    visible = FALSE
+  ) %>% 
+  v_specs_axes(
+    position = "left",
+    domainLine = list(visible = FALSE),
+    tick = list(visible = FALSE)
+  ) %>% 
+  v_specs(
+    padding = list(right = 50, left = 10),
+    extensionMark = list(
+      list(
+        type = "text",
+        dataId = "mydataid",
+        visible = TRUE,
+        style = list(
+          text = JS("datum => Math.round(datum.y)"),
+          fontSize = 12,
+          x = JS("(datum, ctx) => { return ctx.getRegion().getLayoutRect().width + 10; }"),
+          y = JS("(datum, ctx) => { return ctx.valueToY([datum.x]) + ctx.yBandwidth() / 2; }"),
+          textBaseline = "middle",
+          textAlign = "left",
+          fill = "#595959",
+          size = 20
+        )
+      )
+    )
+  ) %>% 
+  v_specs_tooltip(
+    mark = list(title = list(visible = FALSE)),
+    dimension = list(title = list(visible = FALSE)),
+    style = list(shape = list(shapeType = "circle"))
+  )
+```

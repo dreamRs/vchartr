@@ -1,7 +1,7 @@
 #  ------------------------------------------------------------------------
 #
 # temperature data for France
-# https://data.enedis.fr/explore/dataset/donnees-de-temperature-et-de-pseudo-rayonnement
+# https://opendata.enedis.fr/datasets/donnees-de-temperature-et-de-pseudo-rayonnement/
 #
 #  ------------------------------------------------------------------------
 

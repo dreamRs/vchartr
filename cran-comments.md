@@ -1,10 +1,13 @@
+## Test environments
+* local R installation, R 4.5.2
+* ubuntu 24.04, Windows 10, macOS (on GitHub Actions), R 4.6.0
+* win-builder (devel)
+
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 note
 
-* This is a re-submission of a new release, following requests have been taken into account:
-  + 'JavaScript' in package's title
-  + documentation for re-exported functions
-  + replace if (interactive()) {} by \donttest{} when possible
-  
-Thank you
+Updated JavaScript dependencies.
+Thanks,
+
+Victor

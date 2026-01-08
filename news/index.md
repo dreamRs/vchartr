@@ -2,6 +2,8 @@
 
 ## vchartr 0.1.5
 
+CRAN release: 2026-01-07
+
 - Updated @visactor/vchart to 2.0.12
   (<https://github.com/VisActor/VChart/releases>).
 
